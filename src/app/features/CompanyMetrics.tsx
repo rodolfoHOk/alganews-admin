@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { MetricService } from 'rodolfohiok-sdk';
 import transformDataIntoAntdChart from '../../core/utils/transformDataIntoAntdChart';
 import { format } from 'date-fns';
+import { ptBR } from 'date-fns/locale';
 
 export default function CompanyMetrics() {
   const [data, setData] = useState<
@@ -27,6 +28,21 @@ export default function CompanyMetrics() {
     xField: 'yearMonth',
     yField: 'value',
     seriesField: 'category',
+    tooltip: {
+      title(title) {
+        return format(new Date(title), 'MMMM yyyy', { locale: ptBR });
+      },
+      formatter(data) {
+        return {
+          name: data.category === 'totalRevenues' ? 'Receitas' : 'Despesas',
+          value: (data.value as number).toLocaleString('pt-BR', {
+            currency: 'BRL',
+            style: 'currency',
+            maximumFractionDigits: 2,
+          }),
+        };
+      },
+    },
     xAxis: {
       label: {
         formatter(item) {
@@ -34,6 +50,7 @@ export default function CompanyMetrics() {
         },
       },
     },
+    yAxis: false,
     legend: {
       itemName: {
         formatter(legend) {
