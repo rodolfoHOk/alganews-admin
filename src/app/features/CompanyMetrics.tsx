@@ -22,7 +22,7 @@ export default function CompanyMetrics() {
 
   const config: AreaConfig = {
     data,
-    height: 400,
+    height: 256,
     color: ['#0099FF', '#274060'],
     areaStyle: { fillOpacity: 1 },
     xField: 'yearMonth',
