@@ -12,7 +12,7 @@ export default function LatestPosts() {
     <Row gutter={16}>
       {posts?.map((post) => {
         return (
-          <Col span={8} key={post.id}>
+          <Col key={post.id} xs={24} md={8}>
             <Card
               cover={
                 <img
