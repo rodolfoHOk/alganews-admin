@@ -2,6 +2,7 @@ import { Area, AreaConfig } from '@ant-design/charts';
 import { useEffect, useState } from 'react';
 import { MetricService } from 'rodolfohiok-sdk';
 import transformDataIntoAntdChart from '../../core/utils/transformDataIntoAntdChart';
+import { format } from 'date-fns';
 
 export default function CompanyMetrics() {
   const [data, setData] = useState<
@@ -13,7 +14,7 @@ export default function CompanyMetrics() {
   >([]);
 
   useEffect(() => {
-    MetricService.getMonthlyRevenuesExpenses('2021-08')
+    MetricService.getMonthlyRevenuesExpenses('')
       .then(transformDataIntoAntdChart)
       .then(setData);
   }, []);
@@ -26,6 +27,13 @@ export default function CompanyMetrics() {
     xField: 'yearMonth',
     yField: 'value',
     seriesField: 'category',
+    xAxis: {
+      label: {
+        formatter(item) {
+          return format(new Date(item), 'MM/yyyy');
+        },
+      },
+    },
     legend: {
       itemName: {
         formatter(legend) {
