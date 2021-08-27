@@ -7,7 +7,11 @@ export default function DefaultLayoutHeader() {
   return (
     <Header className="header">
       <div className="logo" />
-      <Row justify="space-between" align="middle" style={{ height: '100%' }}>
+      <Row
+        justify="space-between"
+        align="middle"
+        style={{ height: '100%', maxWidth: 1190, margin: '0 auto' }}
+      >
         <img src={logo} alt="AlgaNews Admin" />
         <Avatar />
       </Row>

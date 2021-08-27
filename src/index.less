@@ -22,14 +22,22 @@
 @layout-trigger-background: #274060;
 @layout-trigger-height: 120px;
 
+.ant-layout-sider-zero-width-trigger {
+  background-color: @text-color;
+}
+
 #root > section.ant-layout {
+  max-width: 1190px;
   min-height: 100vh;
+  margin: auto;
 }
 
 .ant-layout-header {
   position: fixed;
+  left: 0;
   z-index: 2;
   width: 100%;
+  box-shadow: 0 0 20px -10px rgba(@text-color, 0.5);
 }
 
 #PageLayout {
