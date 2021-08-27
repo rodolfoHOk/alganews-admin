@@ -2,7 +2,12 @@ import { Layout, Menu } from 'antd';
 import {
   UserOutlined,
   LaptopOutlined,
-  NotificationOutlined,
+  HomeOutlined,
+  TableOutlined,
+  PlusCircleOutlined,
+  DiffOutlined,
+  FallOutlined,
+  RiseOutlined,
 } from '@ant-design/icons';
 
 const { Sider } = Layout;
@@ -22,23 +27,32 @@ export default function DefaultLayoutSideBar() {
         defaultOpenKeys={['sub1']}
         style={{ height: '100%', borderRight: 0 }}
       >
-        <SubMenu key="sub1" icon={<UserOutlined />} title="subnav 1">
-          <Menu.Item key="1">option1</Menu.Item>
-          <Menu.Item key="2">option2</Menu.Item>
-          <Menu.Item key="3">option3</Menu.Item>
-          <Menu.Item key="4">option4</Menu.Item>
+        <Menu.Item key="0" icon={<HomeOutlined />}>
+          Home
+        </Menu.Item>
+        <SubMenu key="sub1" icon={<UserOutlined />} title="Usuários">
+          <Menu.Item key="1" icon={<TableOutlined />}>
+            Consulta
+          </Menu.Item>
+          <Menu.Item key="2" icon={<PlusCircleOutlined />}>
+            Cadastro
+          </Menu.Item>
         </SubMenu>
-        <SubMenu key="sub2" icon={<LaptopOutlined />} title="subnav 2">
-          <Menu.Item key="5">option5</Menu.Item>
-          <Menu.Item key="6">option6</Menu.Item>
-          <Menu.Item key="7">option7</Menu.Item>
-          <Menu.Item key="8">option8</Menu.Item>
+        <SubMenu key="sub2" icon={<LaptopOutlined />} title="Pagamentos">
+          <Menu.Item key="3" icon={<TableOutlined />}>
+            Consulta
+          </Menu.Item>
+          <Menu.Item key="4" icon={<PlusCircleOutlined />}>
+            Cadastro
+          </Menu.Item>
         </SubMenu>
-        <SubMenu key="sub3" icon={<NotificationOutlined />} title="subnav 3">
-          <Menu.Item key="9">option9</Menu.Item>
-          <Menu.Item key="10">option10</Menu.Item>
-          <Menu.Item key="11">option11</Menu.Item>
-          <Menu.Item key="12">option12</Menu.Item>
+        <SubMenu key="sub3" icon={<DiffOutlined />} title="Fluxo de caixa">
+          <Menu.Item key="5" icon={<FallOutlined />}>
+            Despesa
+          </Menu.Item>
+          <Menu.Item key="6" icon={<RiseOutlined />}>
+            Receita
+          </Menu.Item>
         </SubMenu>
       </Menu>
     </Sider>
