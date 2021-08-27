@@ -1,3 +1,4 @@
+import { useHistory } from 'react-router-dom';
 import { Layout, Menu } from 'antd';
 import {
   UserOutlined,
@@ -14,6 +15,7 @@ const { Sider } = Layout;
 const { SubMenu } = Menu;
 
 export default function DefaultLayoutSideBar() {
+  const history = useHistory();
   return (
     <Sider
       width={200}
@@ -23,34 +25,62 @@ export default function DefaultLayoutSideBar() {
     >
       <Menu
         mode="inline"
-        defaultSelectedKeys={['1']}
-        defaultOpenKeys={['sub1']}
+        defaultSelectedKeys={['/']}
+        defaultOpenKeys={['/']}
         style={{ height: '100%', borderRight: 0 }}
       >
-        <Menu.Item key="0" icon={<HomeOutlined />}>
+        <Menu.Item
+          key="/"
+          icon={<HomeOutlined />}
+          onClick={() => history.push('/')}
+        >
           Home
         </Menu.Item>
         <SubMenu key="sub1" icon={<UserOutlined />} title="Usuários">
-          <Menu.Item key="1" icon={<TableOutlined />}>
+          <Menu.Item
+            key="/usuarios"
+            icon={<TableOutlined />}
+            onClick={() => history.push('/usuarios')}
+          >
             Consulta
           </Menu.Item>
-          <Menu.Item key="2" icon={<PlusCircleOutlined />}>
+          <Menu.Item
+            key="/usuarios/cadastro"
+            icon={<PlusCircleOutlined />}
+            onClick={() => history.push('/usuarios/cadastro')}
+          >
             Cadastro
           </Menu.Item>
         </SubMenu>
         <SubMenu key="sub2" icon={<LaptopOutlined />} title="Pagamentos">
-          <Menu.Item key="3" icon={<TableOutlined />}>
+          <Menu.Item
+            key="/pagamentos"
+            icon={<TableOutlined />}
+            onClick={() => history.push('/pagamentos')}
+          >
             Consulta
           </Menu.Item>
-          <Menu.Item key="4" icon={<PlusCircleOutlined />}>
+          <Menu.Item
+            key="/pagamentos/cadastro"
+            icon={<PlusCircleOutlined />}
+            onClick={() => history.push('/pagamentos/cadastro')}
+          >
             Cadastro
           </Menu.Item>
         </SubMenu>
         <SubMenu key="sub3" icon={<DiffOutlined />} title="Fluxo de caixa">
-          <Menu.Item key="5" icon={<FallOutlined />}>
+          <Menu.Item
+            key="/fluxo-de-caixa/despesas"
+            icon={<FallOutlined />}
+            onClick={() => history.push('/fluxo-de-caixa/despesas')}
+          >
             Despesa
           </Menu.Item>
-          <Menu.Item key="6" icon={<RiseOutlined />}>
+          <Menu.Item
+            key="/fluxo-de-caixa/receitas"
+            icon={<RiseOutlined />}
+            onClick={() => history.push('/fluxo-de-caixa/receitas')}
+          >
             Receita
           </Menu.Item>
         </SubMenu>
