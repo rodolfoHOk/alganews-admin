@@ -4,7 +4,7 @@ import reportWebVitals from './reportWebVitals';
 import { Provider } from 'react-redux';
 import { store } from './core/store';
 import { DefaultLayout } from './app/layouts/Default';
-import App from './App';
+import Routes from './app/routes';
 import 'antd/dist/antd.css';
 import './index.css';
 
@@ -12,7 +12,7 @@ ReactDOM.render(
   <React.StrictMode>
     <Provider store={store}>
       <DefaultLayout>
-        <App />
+        <Routes />
       </DefaultLayout>
     </Provider>
   </React.StrictMode>,
