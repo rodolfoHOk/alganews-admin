@@ -1,4 +1,4 @@
-import { useHistory, Link } from 'react-router-dom';
+import { useHistory, Link, useLocation } from 'react-router-dom';
 import { Layout, Menu } from 'antd';
 import {
   UserOutlined,
@@ -16,6 +16,8 @@ const { SubMenu } = Menu;
 
 export default function DefaultLayoutSideBar() {
   const history = useHistory();
+  const location = useLocation();
+
   return (
     <Sider
       width={200}
@@ -25,8 +27,8 @@ export default function DefaultLayoutSideBar() {
     >
       <Menu
         mode="inline"
-        defaultSelectedKeys={['/']}
-        defaultOpenKeys={['/']}
+        defaultSelectedKeys={[location.pathname]}
+        defaultOpenKeys={[location.pathname.split('/')[1]]}
         style={{ height: '100%', borderRight: 0 }}
       >
         <Menu.Item
@@ -36,7 +38,7 @@ export default function DefaultLayoutSideBar() {
         >
           <Link to={'/'}>Home</Link>
         </Menu.Item>
-        <SubMenu key="sub1" icon={<UserOutlined />} title="Usuários">
+        <SubMenu key="usuarios" icon={<UserOutlined />} title="Usuários">
           <Menu.Item
             key="/usuarios"
             icon={<TableOutlined />}
@@ -52,7 +54,7 @@ export default function DefaultLayoutSideBar() {
             <Link to={'/usuarios/cadastro'}>Cadastro</Link>
           </Menu.Item>
         </SubMenu>
-        <SubMenu key="sub2" icon={<LaptopOutlined />} title="Pagamentos">
+        <SubMenu key="pagamentos" icon={<LaptopOutlined />} title="Pagamentos">
           <Menu.Item
             key="/pagamentos"
             icon={<TableOutlined />}
@@ -68,7 +70,11 @@ export default function DefaultLayoutSideBar() {
             <Link to={'/pagamentos/cadastro'}>Cadastro</Link>
           </Menu.Item>
         </SubMenu>
-        <SubMenu key="sub3" icon={<DiffOutlined />} title="Fluxo de caixa">
+        <SubMenu
+          key="fluxo-de-caixa"
+          icon={<DiffOutlined />}
+          title="Fluxo de caixa"
+        >
           <Menu.Item
             key="/fluxo-de-caixa/despesas"
             icon={<FallOutlined />}
