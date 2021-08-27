@@ -1,4 +1,5 @@
-import { Layout, Menu } from 'antd';
+import { Avatar, Layout, Row } from 'antd';
+import logo from '../../../assets/logo.svg';
 
 const { Header } = Layout;
 
@@ -6,11 +7,10 @@ export default function DefaultLayoutHeader() {
   return (
     <Header className="header">
       <div className="logo" />
-      <Menu theme="dark" mode="horizontal" defaultSelectedKeys={['2']}>
-        <Menu.Item key="1">nav 1</Menu.Item>
-        <Menu.Item key="2">nav 2</Menu.Item>
-        <Menu.Item key="3">nav 3</Menu.Item>
-      </Menu>
+      <Row justify="space-between" align="middle" style={{ height: '100%' }}>
+        <img src={logo} alt="AlgaNews Admin" />
+        <Avatar />
+      </Row>
     </Header>
   );
 }
