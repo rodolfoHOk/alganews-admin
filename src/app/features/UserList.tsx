@@ -21,6 +21,7 @@ export default function UserList() {
           {
             dataIndex: 'name',
             title: 'Nome',
+            width: 160,
             render(name: string, row) {
               return (
                 <Space>
@@ -35,6 +36,8 @@ export default function UserList() {
           {
             dataIndex: 'email',
             title: 'Email',
+            width: 240,
+            ellipsis: true,
           },
           {
             dataIndex: 'role',
