@@ -25,7 +25,9 @@ export default function UserList() {
               return (
                 <Space>
                   <Avatar size="small" src={row.avatarUrls.small} />
-                  <Typography.Text>{name}</Typography.Text>
+                  <Typography.Text ellipsis style={{ maxWidth: 120 }}>
+                    {name}
+                  </Typography.Text>
                 </Space>
               );
             },
