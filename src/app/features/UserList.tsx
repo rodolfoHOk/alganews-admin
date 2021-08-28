@@ -7,7 +7,7 @@ import { EyeOutlined, EditOutlined } from '@ant-design/icons';
 import Avatar from 'antd/lib/avatar/avatar';
 
 export default function UserList() {
-  const { users, fetchUsers } = useUsers();
+  const { users, fetchUsers, toggleUserStatus } = useUsers();
 
   useEffect(() => {
     fetchUsers();
@@ -69,8 +69,13 @@ export default function UserList() {
             dataIndex: 'active',
             title: 'Ativo',
             align: 'center',
-            render(active) {
-              return <Switch defaultChecked={active} />;
+            render(active, user) {
+              return (
+                <Switch
+                  defaultChecked={active}
+                  onChange={() => toggleUserStatus(user)}
+                />
+              );
             },
           },
           {

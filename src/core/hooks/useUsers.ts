@@ -1,5 +1,6 @@
 import { useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { User } from 'rodolfohiok-sdk';
 import { RootState } from '../store';
 import * as UserActions from '../store/User.reducer';
 
@@ -12,9 +13,17 @@ export default function useUsers() {
     dispatch(UserActions.getAllUsers());
   }, [dispatch]);
 
+  const toggleUserStatus = useCallback(
+    (user: User.Summary | User.Detailed) => {
+      dispatch(UserActions.toggleUserStatus(user));
+    },
+    [dispatch]
+  );
+
   return {
     users,
     fetching,
     fetchUsers,
+    toggleUserStatus,
   };
 }
