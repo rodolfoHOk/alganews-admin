@@ -21,12 +21,12 @@ export default function UserList() {
           {
             dataIndex: 'name',
             title: 'Nome',
-            width: 160,
+            width: 180,
             render(name: string, row) {
               return (
                 <Space>
                   <Avatar size="small" src={row.avatarUrls.small} />
-                  <Typography.Text ellipsis style={{ maxWidth: 120 }}>
+                  <Typography.Text ellipsis style={{ maxWidth: 150 }}>
                     {name}
                   </Typography.Text>
                 </Space>
