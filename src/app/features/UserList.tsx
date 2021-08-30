@@ -17,7 +17,7 @@ import Avatar from 'antd/lib/avatar/avatar';
 import { ColumnProps } from 'antd/lib/table';
 
 export default function UserList() {
-  const { users, fetchUsers, toggleUserStatus } = useUsers();
+  const { users, fetchUsers, toggleUserStatus, fetching } = useUsers();
 
   useEffect(() => {
     fetchUsers();
@@ -75,6 +75,7 @@ export default function UserList() {
   return (
     <>
       <Table<User.Summary>
+        loading={fetching}
         dataSource={users}
         columns={[
           {
