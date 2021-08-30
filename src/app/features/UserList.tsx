@@ -75,6 +75,7 @@ export default function UserList() {
             title: '',
             width: 48,
             fixed: 'left',
+            responsive: ['xs'],
             render(avatarUrls: User.Summary['avatarUrls']) {
               return <Avatar size="small" src={avatarUrls.small} />;
             },
@@ -91,6 +92,7 @@ export default function UserList() {
             title: 'Email',
             width: 240,
             ellipsis: true,
+            responsive: ['md'],
             ...getColumnSearchProps('email', 'Email'),
           },
           {
@@ -117,6 +119,7 @@ export default function UserList() {
             title: 'Criação',
             align: 'center',
             width: 110,
+            responsive: ['lg'],
             render(createdAt: string) {
               return format(new Date(createdAt), 'dd/MM/yyyy');
             },
