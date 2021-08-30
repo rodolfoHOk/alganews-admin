@@ -1,13 +1,4 @@
-import {
-  Button,
-  Space,
-  Switch,
-  Table,
-  Tag,
-  Typography,
-  Card,
-  Input,
-} from 'antd';
+import { Button, Space, Switch, Table, Tag, Card, Input } from 'antd';
 import { format } from 'date-fns';
 import { useEffect } from 'react';
 import { User } from 'rodolfohiok-sdk';
@@ -77,24 +68,23 @@ export default function UserList() {
       <Table<User.Summary>
         loading={fetching}
         dataSource={users}
-        // pagination={{ pageSize: 2, current: 3 }}
         pagination={false}
         columns={[
           {
+            dataIndex: 'avatarUrls',
+            title: '',
+            width: 48,
+            fixed: 'left',
+            render(avatarUrls: User.Summary['avatarUrls']) {
+              return <Avatar size="small" src={avatarUrls.small} />;
+            },
+          },
+          {
             dataIndex: 'name',
             title: 'Nome',
-            width: 180,
+            width: 160,
+            ellipsis: true,
             ...getColumnSearchProps('name', 'Nome'),
-            render(name: string, row) {
-              return (
-                <Space>
-                  <Avatar size="small" src={row.avatarUrls.small} />
-                  <Typography.Text ellipsis style={{ maxWidth: 150 }}>
-                    {name}
-                  </Typography.Text>
-                </Space>
-              );
-            },
           },
           {
             dataIndex: 'email',
@@ -107,6 +97,7 @@ export default function UserList() {
             dataIndex: 'role',
             title: 'Perfil',
             align: 'center',
+            width: 100,
             render(role) {
               return (
                 <Tag color={role === 'MANAGER' ? 'red' : 'blue'}>
@@ -125,6 +116,7 @@ export default function UserList() {
             dataIndex: 'createdAt',
             title: 'Criação',
             align: 'center',
+            width: 110,
             render(createdAt: string) {
               return format(new Date(createdAt), 'dd/MM/yyyy');
             },
@@ -133,6 +125,7 @@ export default function UserList() {
             dataIndex: 'active',
             title: 'Ativo',
             align: 'center',
+            width: 80,
             render(active, user) {
               return (
                 <Switch
@@ -146,6 +139,7 @@ export default function UserList() {
             dataIndex: 'id',
             title: 'Ações',
             align: 'center',
+            width: 100,
             render() {
               return (
                 <Space>
