@@ -1,4 +1,13 @@
-import { Button, Space, Switch, Table, Tag, Card, Input } from 'antd';
+import {
+  Button,
+  Space,
+  Switch,
+  Table,
+  Tag,
+  Card,
+  Input,
+  Descriptions,
+} from 'antd';
 import { format } from 'date-fns';
 import { useEffect } from 'react';
 import { User } from 'rodolfohiok-sdk';
@@ -69,13 +78,50 @@ export default function UserList() {
         loading={fetching}
         dataSource={users}
         pagination={false}
+        rowKey={'id'}
         columns={[
+          {
+            title: 'Usuários',
+            responsive: ['xs'],
+            render(user: User.Summary) {
+              return (
+                <Descriptions column={1} size={'small'}>
+                  <Descriptions.Item label={'Nome'}>
+                    {user.name}
+                  </Descriptions.Item>
+                  <Descriptions.Item label={'Email'}>
+                    {user.email}
+                  </Descriptions.Item>
+                  <Descriptions.Item label={'Perfil'}>
+                    <Tag color={user.role === 'MANAGER' ? 'red' : 'blue'}>
+                      {user.role === 'EDITOR'
+                        ? 'Editor'
+                        : user.role === 'MANAGER'
+                        ? 'Gerente'
+                        : user.role === 'ASSISTANT'
+                        ? 'Assistente'
+                        : user.role}
+                    </Tag>
+                  </Descriptions.Item>
+                  <Descriptions.Item label={'Criação'}>
+                    {format(new Date(user.createdAt), 'dd/MM/yyyy')}
+                  </Descriptions.Item>
+                  <Descriptions.Item label={'Ações'}>
+                    <Space>
+                      <Button size="small" icon={<EyeOutlined />} />
+                      <Button size="small" icon={<EditOutlined />} />
+                    </Space>
+                  </Descriptions.Item>
+                </Descriptions>
+              );
+            },
+          },
           {
             dataIndex: 'avatarUrls',
             title: '',
             width: 48,
             fixed: 'left',
-            responsive: ['xs'],
+            responsive: ['sm'],
             render(avatarUrls: User.Summary['avatarUrls']) {
               return <Avatar size="small" src={avatarUrls.small} />;
             },
@@ -85,6 +131,7 @@ export default function UserList() {
             title: 'Nome',
             width: 160,
             ellipsis: true,
+            responsive: ['sm'],
             ...getColumnSearchProps('name', 'Nome'),
           },
           {
@@ -100,6 +147,7 @@ export default function UserList() {
             title: 'Perfil',
             align: 'center',
             width: 100,
+            responsive: ['sm'],
             render(role) {
               return (
                 <Tag color={role === 'MANAGER' ? 'red' : 'blue'}>
@@ -129,6 +177,7 @@ export default function UserList() {
             title: 'Ativo',
             align: 'center',
             width: 80,
+            responsive: ['sm'],
             render(active, user) {
               return (
                 <Switch
@@ -143,6 +192,7 @@ export default function UserList() {
             title: 'Ações',
             align: 'center',
             width: 100,
+            responsive: ['sm'],
             render() {
               return (
                 <Space>
