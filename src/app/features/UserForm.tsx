@@ -13,7 +13,7 @@ import {
 } from 'antd';
 import { UserOutlined } from '@ant-design/icons';
 import React, { useCallback, useState } from 'react';
-import { FileService } from 'rodolfohiok-sdk';
+import { FileService, User } from 'rodolfohiok-sdk';
 import ImageCrop from 'antd-img-crop';
 
 const { TabPane } = Tabs;
@@ -27,7 +27,12 @@ export default function UserForm() {
   }, []);
 
   return (
-    <Form layout="vertical" onFinish={(form) => console.log(form)}>
+    <Form
+      layout="vertical"
+      onFinish={(form: User.Input) => {
+        if (form) console.log(form);
+      }}
+    >
       <Row gutter={24} align="middle">
         <Col lg={4}>
           <ImageCrop rotate shape={'round'} grid aspect={1 / 1}>
@@ -49,15 +54,42 @@ export default function UserForm() {
           </ImageCrop>
         </Col>
         <Col lg={10}>
-          <Form.Item label="Nome" name={'name'}>
+          <Form.Item
+            label="Nome"
+            name={'name'}
+            rules={[
+              {
+                required: true,
+                message: 'O campo é obrigatório',
+              },
+            ]}
+          >
             <Input placeholder={'E.g.: João Silva'} />
           </Form.Item>
-          <Form.Item label="Data de nascimento" name={'birthdate'}>
+          <Form.Item
+            label="Data de nascimento"
+            name={'birthdate'}
+            rules={[
+              {
+                required: true,
+                message: 'O campo é obrigatório',
+              },
+            ]}
+          >
             <DatePicker style={{ width: '100%' }} format={'DD/MM/YYYY'} />
           </Form.Item>
         </Col>
         <Col lg={10}>
-          <Form.Item label="Bio" name={'bio'}>
+          <Form.Item
+            label="Bio"
+            name={'bio'}
+            rules={[
+              {
+                required: true,
+                message: 'O campo é obrigatório',
+              },
+            ]}
+          >
             <Input.TextArea rows={5} />
           </Form.Item>
         </Col>
@@ -65,7 +97,16 @@ export default function UserForm() {
           <Divider />
         </Col>
         <Col lg={12}>
-          <Form.Item label="Perfil de usuário" name={'role'}>
+          <Form.Item
+            label="Perfil de usuário"
+            name={'role'}
+            rules={[
+              {
+                required: true,
+                message: 'O campo é obrigatório',
+              },
+            ]}
+          >
             <Select placeholder="Selecione um perfil">
               <Select.Option value={'EDITOR'}>Editor</Select.Option>
               <Select.Option value={'ASSISTANT'}>Assitente</Select.Option>
@@ -74,7 +115,16 @@ export default function UserForm() {
           </Form.Item>
         </Col>
         <Col lg={12}>
-          <Form.Item label="Email" name={'email'}>
+          <Form.Item
+            label="Email"
+            name={'email'}
+            rules={[
+              {
+                required: true,
+                message: 'O campo é obrigatório',
+              },
+            ]}
+          >
             <Input type="email" placeholder="E.g.: contato@joao.silva" />
           </Form.Item>
         </Col>
@@ -86,32 +136,86 @@ export default function UserForm() {
             <TabPane key="personal" tab="Dados pessoais">
               <Row gutter={24}>
                 <Col lg={8}>
-                  <Form.Item label="País" name={['location', 'country']}>
+                  <Form.Item
+                    label="País"
+                    name={['location', 'country']}
+                    rules={[
+                      {
+                        required: true,
+                        message: 'O campo é obrigatório',
+                      },
+                    ]}
+                  >
                     <Input placeholder="E.g.: Brasil" />
                   </Form.Item>
                 </Col>
                 <Col lg={8}>
-                  <Form.Item label="Estado" name={['location', 'state']}>
+                  <Form.Item
+                    label="Estado"
+                    name={['location', 'state']}
+                    rules={[
+                      {
+                        required: true,
+                        message: 'O campo é obrigatório',
+                      },
+                    ]}
+                  >
                     <Input placeholder="E.g.: Espírito Santo" />
                   </Form.Item>
                 </Col>
                 <Col lg={8}>
-                  <Form.Item label="Cidade" name={['location', 'city']}>
+                  <Form.Item
+                    label="Cidade"
+                    name={['location', 'city']}
+                    rules={[
+                      {
+                        required: true,
+                        message: 'O campo é obrigatório',
+                      },
+                    ]}
+                  >
                     <Input placeholder="E.g.: Vitória" />
                   </Form.Item>
                 </Col>
                 <Col lg={8}>
-                  <Form.Item label="Telefone" name={'phone'}>
+                  <Form.Item
+                    label="Telefone"
+                    name={'phone'}
+                    rules={[
+                      {
+                        required: true,
+                        message: 'O campo é obrigatório',
+                      },
+                    ]}
+                  >
                     <Input placeholder="(12) 91234-4567 " />
                   </Form.Item>
                 </Col>
                 <Col lg={8}>
-                  <Form.Item label="CPF" name={'taxpayerId'}>
+                  <Form.Item
+                    label="CPF"
+                    name={'taxpayerId'}
+                    rules={[
+                      {
+                        required: true,
+                        message: 'O campo é obrigatório',
+                      },
+                    ]}
+                  >
                     <Input placeholder="123.456.789-01" />
                   </Form.Item>
                 </Col>
                 <Col lg={8}>
-                  <Form.Item label="Preço por palavra" name={'pricePerWord'}>
+                  <Form.Item
+                    label="Preço por palavra"
+                    name={'pricePerWord'}
+                    rules={[
+                      {
+                        required: true,
+                        message: 'O campo é obrigatório',
+                      },
+                    ]}
+                  >
                     <Input placeholder="0,00" />
                   </Form.Item>
                 </Col>
@@ -124,6 +228,12 @@ export default function UserForm() {
                           <Form.Item
                             label="Habilidade"
                             name={['skills', index, 'name']}
+                            rules={[
+                              {
+                                required: true,
+                                message: 'O campo é obrigatório',
+                              },
+                            ]}
                           >
                             <Input placeholder="E.g.: Javascript" />
                           </Form.Item>
@@ -132,6 +242,12 @@ export default function UserForm() {
                           <Form.Item
                             label="%"
                             name={['skills', index, 'percentage']}
+                            rules={[
+                              {
+                                required: true,
+                                message: '',
+                              },
+                            ]}
                           >
                             <Input />
                           </Form.Item>
@@ -147,12 +263,27 @@ export default function UserForm() {
                   <Form.Item
                     label="Instituição"
                     name={['bankAccount', 'bankCode']}
+                    rules={[
+                      {
+                        required: true,
+                        message: 'O campo é obrigatório',
+                      },
+                    ]}
                   >
                     <Input placeholder="123" />
                   </Form.Item>
                 </Col>
                 <Col lg={8}>
-                  <Form.Item label="Agência" name={['bankAccount', 'agency']}>
+                  <Form.Item
+                    label="Agência"
+                    name={['bankAccount', 'agency']}
+                    rules={[
+                      {
+                        required: true,
+                        message: 'O campo é obrigatório',
+                      },
+                    ]}
+                  >
                     <Input placeholder="1234" />
                   </Form.Item>
                 </Col>
@@ -160,12 +291,27 @@ export default function UserForm() {
                   <Form.Item
                     label="Conta sem o dígito"
                     name={['bankAccount', 'number']}
+                    rules={[
+                      {
+                        required: true,
+                        message: 'O campo é obrigatório',
+                      },
+                    ]}
                   >
                     <Input placeholder="12345" />
                   </Form.Item>
                 </Col>
                 <Col lg={8}>
-                  <Form.Item label="Dígito" name={['bankAccount', 'digit']}>
+                  <Form.Item
+                    label="Dígito"
+                    name={['bankAccount', 'digit']}
+                    rules={[
+                      {
+                        required: true,
+                        message: 'O campo é obrigatório',
+                      },
+                    ]}
+                  >
                     <Input placeholder="1" />
                   </Form.Item>
                 </Col>
@@ -173,6 +319,12 @@ export default function UserForm() {
                   <Form.Item
                     label="Tipo de conta"
                     name={['bankAccount', 'type']}
+                    rules={[
+                      {
+                        required: true,
+                        message: 'O campo é obrigatório',
+                      },
+                    ]}
                   >
                     <Select placeholder="Selecione o tipo de conta">
                       <Select.Option value={'CHECKING'}>
