@@ -29,6 +29,17 @@ export default function UserForm() {
   return (
     <Form
       layout="vertical"
+      onFinishFailed={(fields) => {
+        const bankAccountErrors = fields.errorFields.reduce(
+          (previous, current) =>
+            current.name.includes('bankAccount') ? previous + 1 : previous,
+          0
+        );
+        if (bankAccountErrors >= 1)
+          window.alert(
+            `existem ${bankAccountErrors} erros na aba dados bancários`
+          );
+      }}
       onFinish={(form: User.Input) => {
         if (form) console.log(form);
       }}
