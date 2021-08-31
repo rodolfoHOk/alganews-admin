@@ -55,7 +55,38 @@ export default function UserForm() {
         <Col lg={24}>
           <Tabs defaultActiveKey="personal">
             <TabPane key="personal" tab="Dados pessoais">
-              dados pessoais
+              <Row gutter={24}>
+                <Col lg={8}>
+                  <Form.Item label="País">
+                    <Input placeholder="E.g.: Brasil" />
+                  </Form.Item>
+                </Col>
+                <Col lg={8}>
+                  <Form.Item label="Estado">
+                    <Input placeholder="E.g.: Espírito Santo" />
+                  </Form.Item>
+                </Col>
+                <Col lg={8}>
+                  <Form.Item label="Cidade">
+                    <Input placeholder="E.g.: Vitória" />
+                  </Form.Item>
+                </Col>
+                <Col lg={8}>
+                  <Form.Item label="Telefone">
+                    <Input placeholder="(12) 91234-4567 " />
+                  </Form.Item>
+                </Col>
+                <Col lg={8}>
+                  <Form.Item label="CPF">
+                    <Input placeholder="123.456.789-01" />
+                  </Form.Item>
+                </Col>
+                <Col lg={8}>
+                  <Form.Item label="Preço por palavra">
+                    <Input placeholder="0,00" />
+                  </Form.Item>
+                </Col>
+              </Row>
             </TabPane>
             <TabPane key="bankAccount" tab="Dados bancários">
               dados bancários
