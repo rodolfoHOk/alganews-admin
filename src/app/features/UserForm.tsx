@@ -30,14 +30,29 @@ export default function UserForm() {
     <Form
       layout="vertical"
       onFinishFailed={(fields) => {
-        const bankAccountErrors = fields.errorFields.reduce(
-          (previous, current) =>
-            current.name.includes('bankAccount') ? previous + 1 : previous,
-          0
-        );
+        let bankAccountErrors = 0;
+        let personalDataErrors = 0;
+
+        fields.errorFields.forEach(({ name }) => {
+          if (name.includes('bankAccount')) bankAccountErrors++;
+          if (
+            name.includes('location') ||
+            name.includes('skills') ||
+            name.includes('phone') ||
+            name.includes('taxpayerId') ||
+            name.includes('pricePerWord')
+          )
+            personalDataErrors++;
+        });
+
         if (bankAccountErrors >= 1)
           window.alert(
             `existem ${bankAccountErrors} erros na aba dados bancários`
+          );
+
+        if (personalDataErrors >= 1)
+          window.alert(
+            `existem ${personalDataErrors} erros na aba dados pessoais`
           );
       }}
       onFinish={(form: User.Input) => {
