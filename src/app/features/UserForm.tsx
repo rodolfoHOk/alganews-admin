@@ -20,6 +20,9 @@ const { TabPane } = Tabs;
 
 export default function UserForm() {
   const [avatar, setAvatar] = useState('');
+  const [activeTab, setActiveTab] = useState<'personal' | 'bankAccount'>(
+    'personal'
+  );
 
   const handleAvatarUpload = useCallback(async (file: File) => {
     const avatarSource = await FileService.upload(file);
@@ -45,15 +48,8 @@ export default function UserForm() {
             personalDataErrors++;
         });
 
-        if (bankAccountErrors >= 1)
-          window.alert(
-            `existem ${bankAccountErrors} erros na aba dados bancários`
-          );
-
-        if (personalDataErrors >= 1)
-          window.alert(
-            `existem ${personalDataErrors} erros na aba dados pessoais`
-          );
+        if (bankAccountErrors > personalDataErrors) setActiveTab('bankAccount');
+        if (personalDataErrors > bankAccountErrors) setActiveTab('personal');
       }}
       onFinish={(form: User.Input) => {
         if (form) console.log(form);
@@ -158,7 +154,11 @@ export default function UserForm() {
           <Divider />
         </Col>
         <Col lg={24}>
-          <Tabs defaultActiveKey="personal">
+          <Tabs
+            defaultActiveKey="personal"
+            activeKey={activeTab}
+            onChange={(tab) => setActiveTab(tab as 'personal' | 'bankAccount')}
+          >
             <TabPane key="personal" tab="Dados pessoais">
               <Row gutter={24}>
                 <Col lg={8}>
