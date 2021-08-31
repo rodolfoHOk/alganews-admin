@@ -10,15 +10,19 @@ import {
   Tabs,
   Upload,
   Button,
+  notification,
 } from 'antd';
 import { UserOutlined } from '@ant-design/icons';
 import React, { useCallback, useState } from 'react';
-import { FileService, User } from 'rodolfohiok-sdk';
+import { FileService, User, UserService } from 'rodolfohiok-sdk';
+import CustomError from 'rodolfohiok-sdk/dist/CustomError';
 import ImageCrop from 'antd-img-crop';
+import { useEffect } from 'react';
 
 const { TabPane } = Tabs;
 
 export default function UserForm() {
+  const [form] = Form.useForm<User.Input>();
   const [avatar, setAvatar] = useState('');
   const [activeTab, setActiveTab] = useState<'personal' | 'bankAccount'>(
     'personal'
@@ -29,8 +33,15 @@ export default function UserForm() {
     setAvatar(avatarSource);
   }, []);
 
+  useEffect(() => {
+    form.setFieldsValue({
+      avatarUrl: avatar || undefined,
+    });
+  }, [avatar, form]);
+
   return (
     <Form
+      form={form}
       layout="vertical"
       onFinishFailed={(fields) => {
         let bankAccountErrors = 0;
@@ -51,8 +62,31 @@ export default function UserForm() {
         if (bankAccountErrors > personalDataErrors) setActiveTab('bankAccount');
         if (personalDataErrors > bankAccountErrors) setActiveTab('personal');
       }}
-      onFinish={(form: User.Input) => {
-        if (form) console.log(form);
+      onFinish={async (userInput: User.Input) => {
+        try {
+          await UserService.insertNewUser(userInput);
+          notification.success({
+            message: 'Sucesso',
+            description: 'Usuário cadastrado com sucesso',
+          });
+        } catch (error) {
+          if (error instanceof CustomError) {
+            if (error.data?.objects) {
+              form.setFields(
+                error.data.objects.map((error) => {
+                  return {
+                    name: error.name?.split('.') as string[],
+                    errors: [error.userMessage],
+                  };
+                })
+              );
+            }
+          } else {
+            notification.error({
+              message: 'Houve um erro',
+            });
+          }
+        }
       }}
     >
       <Row gutter={24} align="middle">
@@ -64,7 +98,9 @@ export default function UserForm() {
                 handleAvatarUpload(file);
                 return false;
               }}
-              onRemove={() => setAvatar('')}
+              onRemove={() => {
+                setAvatar('');
+              }}
             >
               <Avatar
                 style={{ cursor: 'pointer' }}
@@ -74,6 +110,9 @@ export default function UserForm() {
               />
             </Upload>
           </ImageCrop>
+          <Form.Item name={'avatarUrl'} hidden>
+            <Input hidden />
+          </Form.Item>
         </Col>
         <Col lg={10}>
           <Form.Item
