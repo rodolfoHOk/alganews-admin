@@ -1,4 +1,4 @@
-import { notification, Skeleton } from 'antd';
+import { Card, notification, Skeleton } from 'antd';
 import moment from 'moment';
 import { useCallback, useEffect } from 'react';
 import { Redirect, useParams } from 'react-router-dom';
@@ -8,7 +8,7 @@ import UserForm from '../features/UserForm';
 
 export default function UserEditView() {
   const params = useParams<{ id: string }>();
-  const { user, fetchUser } = useUser();
+  const { user, fetchUser, notFound } = useUser();
 
   useEffect(() => {
     if (!isNaN(Number(params.id))) fetchUser(Number(params.id));
@@ -24,12 +24,14 @@ export default function UserEditView() {
   }, []);
 
   function handleUserUpdate(user: User.Input) {
-    UserService.updateExistingUser(1, user).then(() => {
+    UserService.updateExistingUser(Number(params.id), user).then(() => {
       notification.success({ message: 'Usuário foi atualizado com sucesso' });
     });
   }
 
   if (isNaN(Number(params.id))) return <Redirect to={'/usuarios'} />;
+
+  if (notFound) return <Card>Usuário não encontrado</Card>;
 
   if (!user) return <Skeleton />;
 
