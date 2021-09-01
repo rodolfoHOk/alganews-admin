@@ -148,6 +148,9 @@ export default function UserList() {
             align: 'center',
             width: 100,
             responsive: ['sm'],
+            sorter(a, b) {
+              return a.role.localeCompare(b.role);
+            },
             render(role) {
               return (
                 <Tag color={role === 'MANAGER' ? 'red' : 'blue'}>
@@ -168,6 +171,9 @@ export default function UserList() {
             align: 'center',
             width: 110,
             responsive: ['lg'],
+            sorter(a, b) {
+              return new Date(a.createdAt) > new Date(b.createdAt) ? 1 : -1;
+            },
             render(createdAt: string) {
               return format(new Date(createdAt), 'dd/MM/yyyy');
             },
