@@ -64,8 +64,14 @@ export default function UserForm() {
         if (personalDataErrors > bankAccountErrors) setActiveTab('personal');
       }}
       onFinish={async (userInput: User.Input) => {
+        const userDTO: User.Input = {
+          ...userInput,
+          phone: userInput.phone.replace(/\D/g, ''),
+          taxpayerId: userInput.taxpayerId.replace(/\D/g, ''),
+        };
+
         try {
-          await UserService.insertNewUser(userInput);
+          await UserService.insertNewUser(userDTO);
           notification.success({
             message: 'Sucesso',
             description: 'Usuário cadastrado com sucesso',
@@ -300,12 +306,7 @@ export default function UserForm() {
                   >
                     <MaskedInput
                       mask="(11) 11111-1111"
-                      placeholder="(12) 91234-4567 "
-                      onChange={(event) => {
-                        form.setFieldsValue({
-                          phone: event.target.value.replace(/\D/g, ''),
-                        });
-                      }}
+                      placeholder="(12) 91234-4567"
                     />
                   </Form.Item>
                 </Col>
@@ -327,11 +328,6 @@ export default function UserForm() {
                     <MaskedInput
                       mask="111.111.111-11"
                       placeholder="123.456.789-01"
-                      onChange={(event) => {
-                        form.setFieldsValue({
-                          taxpayerId: event.target.value.replace(/\D/g, ''),
-                        });
-                      }}
                     />
                   </Form.Item>
                 </Col>
