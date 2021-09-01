@@ -185,6 +185,11 @@ export default function UserForm() {
                 required: true,
                 message: 'O campo é obrigatório',
               },
+              {
+                type: 'enum',
+                enum: ['EDITOR', 'ASSISTANT', 'MANAGER'],
+                message: 'O perfil precisa ser editor, assitente ou gerente',
+              },
             ]}
           >
             <Select placeholder="Selecione um perfil">
