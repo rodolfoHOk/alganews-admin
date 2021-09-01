@@ -134,6 +134,10 @@ export default function UserForm() {
                 required: true,
                 message: 'O campo é obrigatório',
               },
+              {
+                max: 255,
+                message: 'O campo não pode ter mais de 255 caracteres',
+              },
             ]}
           >
             <Input placeholder={'E.g.: João Silva'} />
@@ -159,6 +163,10 @@ export default function UserForm() {
               {
                 required: true,
                 message: 'O campo é obrigatório',
+              },
+              {
+                max: 255,
+                message: 'A biografia não pode ter mais de 255 caracteres',
               },
             ]}
           >
@@ -195,6 +203,10 @@ export default function UserForm() {
                 required: true,
                 message: 'O campo é obrigatório',
               },
+              {
+                max: 255,
+                message: 'O campo não pode ter mais de 255 caracteres',
+              },
             ]}
           >
             <Input type="email" placeholder="E.g.: contato@joao.silva" />
@@ -220,6 +232,10 @@ export default function UserForm() {
                         required: true,
                         message: 'O campo é obrigatório',
                       },
+                      {
+                        max: 50,
+                        message: 'O campo não pode ter mais de 50 caracteres',
+                      },
                     ]}
                   >
                     <Input placeholder="E.g.: Brasil" />
@@ -233,6 +249,10 @@ export default function UserForm() {
                       {
                         required: true,
                         message: 'O campo é obrigatório',
+                      },
+                      {
+                        max: 50,
+                        message: 'O campo não pode ter mais de 50 caracteres',
                       },
                     ]}
                   >
@@ -248,6 +268,10 @@ export default function UserForm() {
                         required: true,
                         message: 'O campo é obrigatório',
                       },
+                      {
+                        max: 255,
+                        message: 'O campo não pode ter mais de 255 caracteres',
+                      },
                     ]}
                   >
                     <Input placeholder="E.g.: Vitória" />
@@ -262,6 +286,10 @@ export default function UserForm() {
                         required: true,
                         message: 'O campo é obrigatório',
                       },
+                      {
+                        max: 20,
+                        message: 'O campo não pode ter mais de 20 caracteres',
+                      },
                     ]}
                   >
                     <Input placeholder="(12) 91234-4567 " />
@@ -275,6 +303,10 @@ export default function UserForm() {
                       {
                         required: true,
                         message: 'O campo é obrigatório',
+                      },
+                      {
+                        max: 14,
+                        message: 'O campo não pode ter mais de 14 caracteres',
                       },
                     ]}
                   >
@@ -308,6 +340,11 @@ export default function UserForm() {
                               {
                                 required: true,
                                 message: 'O campo é obrigatório',
+                              },
+                              {
+                                max: 50,
+                                message:
+                                  'O campo não pode ter mais de 50 caracteres',
                               },
                             ]}
                           >
@@ -344,6 +381,14 @@ export default function UserForm() {
                         required: true,
                         message: 'O campo é obrigatório',
                       },
+                      {
+                        min: 3,
+                        message: 'O campo deve ter no mínimo 3 caracteres',
+                      },
+                      {
+                        max: 3,
+                        message: 'O campo não pode ter mais de 3 caracteres',
+                      },
                     ]}
                   >
                     <Input placeholder="123" />
@@ -357,6 +402,14 @@ export default function UserForm() {
                       {
                         required: true,
                         message: 'O campo é obrigatório',
+                      },
+                      {
+                        min: 1,
+                        message: 'O campo deve ter no mínimo 1 caractere',
+                      },
+                      {
+                        max: 10,
+                        message: 'O campo não pode ter mais de 10 caracteres',
                       },
                     ]}
                   >
@@ -372,6 +425,14 @@ export default function UserForm() {
                         required: true,
                         message: 'O campo é obrigatório',
                       },
+                      {
+                        min: 1,
+                        message: 'O campo deve ter no mínimo 1 caractere',
+                      },
+                      {
+                        max: 20,
+                        message: 'O campo não pode ter mais de 20 caracteres',
+                      },
                     ]}
                   >
                     <Input placeholder="12345" />
@@ -385,6 +446,14 @@ export default function UserForm() {
                       {
                         required: true,
                         message: 'O campo é obrigatório',
+                      },
+                      {
+                        min: 1,
+                        message: 'O campo deve ter no mínimo 1 caractere',
+                      },
+                      {
+                        max: 1,
+                        message: 'O campo não pode ter mais de 1 caractere',
                       },
                     ]}
                   >
