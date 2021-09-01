@@ -18,6 +18,7 @@ import { FileService, User, UserService } from 'rodolfohiok-sdk';
 import CustomError from 'rodolfohiok-sdk/dist/CustomError';
 import ImageCrop from 'antd-img-crop';
 import { useEffect } from 'react';
+import { MaskedInput } from 'antd-mask-input';
 
 const { TabPane } = Tabs;
 
@@ -297,7 +298,10 @@ export default function UserForm() {
                       },
                     ]}
                   >
-                    <Input placeholder="(12) 91234-4567 " />
+                    <MaskedInput
+                      mask="(11) 11111-1111"
+                      placeholder="(12) 91234-4567 "
+                    />
                   </Form.Item>
                 </Col>
                 <Col lg={8}>
@@ -315,7 +319,10 @@ export default function UserForm() {
                       },
                     ]}
                   >
-                    <Input placeholder="123.456.789-01" />
+                    <MaskedInput
+                      mask="111.111.111-11"
+                      placeholder="123.456.789-01"
+                    />
                   </Form.Item>
                 </Col>
                 <Col lg={8}>
@@ -368,9 +375,11 @@ export default function UserForm() {
                               {
                                 async validator(field, value) {
                                   if (isNaN(Number(value)))
-                                    throw 'Apenas números';
-                                  if (Number(value) > 100) throw 'Máximo é 100';
-                                  if (Number(value) < 0) throw 'Mínimo é 0';
+                                    throw new Error('Apenas números');
+                                  if (Number(value) > 100)
+                                    throw new Error('Máximo é 100');
+                                  if (Number(value) < 0)
+                                    throw new Error('Mínimo é 0');
                                 },
                               },
                             ]}
