@@ -181,7 +181,7 @@ export default function UserList() {
             render(active, user) {
               return (
                 <Switch
-                  defaultChecked={active}
+                  checked={active}
                   onChange={() => toggleUserStatus(user)}
                 />
               );
