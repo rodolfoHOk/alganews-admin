@@ -8,6 +8,7 @@ import HomeView from './views/Home.view';
 import PaymentCreateView from './views/PaymentCreate.view';
 import PaymentListView from './views/PaymentList.view';
 import UserCreateView from './views/UserCreate.view';
+import UserEditView from './views/UserEdit.view';
 import UserListView from './views/UserList.view';
 
 export default function Routes() {
@@ -44,6 +45,7 @@ export default function Routes() {
       <Route path={'/'} exact component={HomeView} />
       <Route path={'/usuarios'} exact component={UserListView} />
       <Route path={'/usuarios/cadastro'} exact component={UserCreateView} />
+      <Route path={'/usuarios/edicao/:id'} exact component={UserEditView} />
       <Route path={'/pagamentos'} exact component={PaymentListView} />
       <Route
         path={'/pagamentos/cadastro'}
