@@ -1,7 +1,7 @@
-import { Skeleton } from 'antd';
+import { notification, Skeleton } from 'antd';
 import moment from 'moment';
 import { useCallback, useEffect } from 'react';
-import { User } from 'rodolfohiok-sdk';
+import { User, UserService } from 'rodolfohiok-sdk';
 import useUser from '../../core/hooks/useUser';
 import UserForm from '../features/UserForm';
 
@@ -21,11 +21,17 @@ export default function UserEditView() {
     };
   }, []);
 
+  function handleUserUpdate(user: User.Input) {
+    UserService.updateExistingUser(1, user).then(() => {
+      notification.success({ message: 'Usuário foi atualizado com sucesso' });
+    });
+  }
+
   if (!user) return <Skeleton />;
 
   return (
     <>
-      <UserForm user={transformUserData(user)} />
+      <UserForm user={transformUserData(user)} onUpdate={handleUserUpdate} />
     </>
   );
 }
