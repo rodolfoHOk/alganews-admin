@@ -5,6 +5,7 @@ import {
   Col,
   Descriptions,
   Divider,
+  Popconfirm,
   Progress,
   Row,
   Skeleton,
@@ -12,13 +13,15 @@ import {
   Typography,
 } from 'antd';
 import useBreakpoint from 'antd/lib/grid/hooks/useBreakpoint';
+import confirm from 'antd/lib/modal/confirm';
+import { WarningFilled } from '@ant-design/icons';
 import { useEffect } from 'react';
 import { Link, Redirect, useParams } from 'react-router-dom';
 import useUser from '../../core/hooks/useUser';
 
 export default function UserDetailsView() {
   const params = useParams<{ id: string }>();
-  const { user, fetchUser, notFound } = useUser();
+  const { user, fetchUser, notFound, toggleUserStatus } = useUser();
 
   const { lg } = useBreakpoint();
 
@@ -57,7 +60,33 @@ export default function UserDetailsView() {
               <Link to={`/usuarios/edicao/${user.id}`}>
                 <Button type="primary">Editar perfil</Button>
               </Link>
-              <Button type="primary">Desabilitar</Button>
+              <Popconfirm
+                title={
+                  user.active
+                    ? `Desabilitar ${user.name}`
+                    : `Habilitar ${user.name}`
+                }
+                onConfirm={() =>
+                  confirm({
+                    icon: <WarningFilled style={{ color: '#0099FF' }} />,
+                    title: user.active
+                      ? `Tem certeza que deseja desabilitar ${user.name}?`
+                      : `Tem certeza que deseja habilitar ${user.name}?`,
+                    content: user.active
+                      ? 'Desabilitar um usuário fará com que ele seja automaticamente desligado da plataforma, podendo causar prejuízos em seus ganhos.'
+                      : 'Habilitar um usuário fará com que ele ganhe acesso a plataforma novamente, possibilitando criação e publicação de posts.',
+                    onOk() {
+                      toggleUserStatus(user).then(() =>
+                        fetchUser(Number(params.id))
+                      );
+                    },
+                  })
+                }
+              >
+                <Button type="primary">
+                  {user.active ? 'Desabilitar' : 'Habilitar'}
+                </Button>
+              </Popconfirm>
             </Space>
           </Space>
         </Col>
