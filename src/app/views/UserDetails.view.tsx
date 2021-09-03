@@ -3,6 +3,7 @@ import {
   Button,
   Card,
   Col,
+  Descriptions,
   Progress,
   Row,
   Skeleton,
@@ -29,7 +30,7 @@ export default function UserDetailsView() {
 
   return (
     <>
-      <Row>
+      <Row gutter={24}>
         <Col xs={24} lg={4}>
           <Avatar size={120} src={user.avatarUrls.small} />
         </Col>
@@ -50,6 +51,20 @@ export default function UserDetailsView() {
               </div>
             ))}
           </Space>
+        </Col>
+        <Col xs={24} lg={12}>
+          <Descriptions column={1} bordered size="small">
+            <Descriptions.Item label="País">
+              {user.location.country}
+            </Descriptions.Item>
+            <Descriptions.Item label="Estado">
+              {user.location.state}
+            </Descriptions.Item>
+            <Descriptions.Item label="Cidade">
+              {user.location.city}
+            </Descriptions.Item>
+            <Descriptions.Item label="Telefone">{user.phone}</Descriptions.Item>
+          </Descriptions>
         </Col>
       </Row>
     </>
