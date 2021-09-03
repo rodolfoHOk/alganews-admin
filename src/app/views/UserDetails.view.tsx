@@ -3,6 +3,7 @@ import {
   Button,
   Card,
   Col,
+  Progress,
   Row,
   Skeleton,
   Space,
@@ -38,6 +39,16 @@ export default function UserDetailsView() {
           <Space>
             <Button type="primary">Editar perfil</Button>
             <Button type="primary">Remover</Button>
+          </Space>
+        </Col>
+        <Col xs={24} lg={12}>
+          <Space direction="vertical" style={{ width: '100%' }}>
+            {user.skills?.map((skill) => (
+              <div key={skill.name}>
+                <Typography.Text>{skill.name}</Typography.Text>
+                <Progress percent={skill.percentage} success={{ percent: 0 }} />
+              </div>
+            ))}
           </Space>
         </Col>
       </Row>
