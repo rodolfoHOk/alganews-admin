@@ -20,6 +20,7 @@ import ImageCrop from 'antd-img-crop';
 import { useEffect } from 'react';
 import { MaskedInput } from 'antd-mask-input';
 import { Moment } from 'moment';
+import { useHistory } from 'react-router-dom';
 
 const { TabPane } = Tabs;
 
@@ -31,11 +32,13 @@ type UserFormType = {
 
 interface UserFormProps {
   user?: UserFormType;
-  onUpdate?: (user: User.Input) => any;
+  onUpdate?: (user: User.Input) => Promise<any>;
 }
 
 export default function UserForm(props: UserFormProps) {
+  const history = useHistory();
   const [form] = Form.useForm<User.Input>();
+  const [loading, setLoading] = useState(false);
   const [avatar, setAvatar] = useState(props.user?.avatarUrls.default || '');
   const [activeTab, setActiveTab] = useState<'personal' | 'bankAccount'>(
     'personal'
@@ -77,16 +80,22 @@ export default function UserForm(props: UserFormProps) {
         if (personalDataErrors > bankAccountErrors) setActiveTab('personal');
       }}
       onFinish={async (userInput: User.Input) => {
+        setLoading(true);
         const userDTO: User.Input = {
           ...userInput,
           phone: userInput.phone.replace(/\D/g, ''),
           taxpayerId: userInput.taxpayerId.replace(/\D/g, ''),
         };
 
-        if (props.user) return props.onUpdate && props.onUpdate(userDTO);
+        if (props.user)
+          return (
+            props.onUpdate &&
+            props.onUpdate(userDTO).finally(() => setLoading(false))
+          );
 
         try {
           await UserService.insertNewUser(userDTO);
+          history.push('/usuarios');
           notification.success({
             message: 'Sucesso',
             description: 'Usuário cadastrado com sucesso',
@@ -127,6 +136,8 @@ export default function UserForm(props: UserFormProps) {
               message: 'Houve um erro',
             });
           }
+        } finally {
+          setLoading(false);
         }
       }}
     >
@@ -550,7 +561,7 @@ export default function UserForm(props: UserFormProps) {
         </Col>
         <Col xs={24}>
           <Row justify="end">
-            <Button type="primary" htmlType="submit">
+            <Button type="primary" htmlType="submit" loading={loading}>
               {props.user ? 'Atualizar usuário' : 'Cadastrar usuário'}
             </Button>
           </Row>
