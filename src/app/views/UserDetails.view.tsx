@@ -18,7 +18,7 @@ import {
 import useBreakpoint from 'antd/lib/grid/hooks/useBreakpoint';
 import confirm from 'antd/lib/modal/confirm';
 import { WarningFilled } from '@ant-design/icons';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { Link, Redirect, useParams } from 'react-router-dom';
 import useUser from '../../core/hooks/useUser';
 import usePosts from '../../core/hooks/usePosts';
@@ -29,8 +29,9 @@ import usePageTitle from '../../core/hooks/usePageTitle';
 export default function UserDetailsView() {
   usePageTitle('Detalhes do usuário');
   const params = useParams<{ id: string }>();
+  const [page, setPage] = useState(0);
   const { user, fetchUser, notFound, toggleUserStatus } = useUser();
-  const { posts, fetchPosts, togglePostStatus } = usePosts();
+  const { posts, fetchUserPosts, togglePostStatus, loadingPosts } = usePosts();
 
   const { lg } = useBreakpoint();
 
@@ -39,8 +40,8 @@ export default function UserDetailsView() {
   }, [fetchUser, params.id]);
 
   useEffect(() => {
-    if (user?.role === 'EDITOR') fetchPosts(user.id);
-  }, [fetchPosts, user]);
+    if (user?.role === 'EDITOR') fetchUserPosts(user.id, page);
+  }, [fetchUserPosts, user, page]);
 
   if (isNaN(Number(params.id))) return <Redirect to={'/usuarios'} />;
 
@@ -134,6 +135,12 @@ export default function UserDetailsView() {
             <Table<Post.Summary>
               dataSource={posts?.content}
               rowKey={'id'}
+              loading={loadingPosts}
+              pagination={{
+                total: posts?.totalElements,
+                pageSize: 5,
+                onChange: (page) => setPage(page - 1),
+              }}
               columns={[
                 {
                   title: 'Posts',
@@ -159,7 +166,7 @@ export default function UserDetailsView() {
                             checked={post.published}
                             onChange={() =>
                               togglePostStatus(post).then(() =>
-                                fetchPosts(user.id)
+                                fetchUserPosts(user.id)
                               )
                             }
                           />
@@ -211,7 +218,9 @@ export default function UserDetailsView() {
                       <Switch
                         checked={published}
                         onChange={() =>
-                          togglePostStatus(post).then(() => fetchPosts(user.id))
+                          togglePostStatus(post).then(() =>
+                            fetchUserPosts(user.id)
+                          )
                         }
                       />
                     );

@@ -6,12 +6,14 @@ export default function usePosts() {
   const [loadingPosts, setLoadingPosts] = useState(false);
   const [loadingPublish, setLoadingPublish] = useState(false);
 
-  const fetchPosts = useCallback(async (editorId: number) => {
+  const fetchUserPosts = useCallback(async (editorId: number, page = 0) => {
     setLoadingPosts(true);
     try {
       const paginatedPosts = await PostService.getAllPosts({
         editorId,
         showAll: true,
+        page,
+        size: 5,
       });
       setPosts(paginatedPosts);
     } finally {
@@ -34,7 +36,7 @@ export default function usePosts() {
     posts,
     loadingPosts,
     loadingPublish,
-    fetchPosts,
+    fetchUserPosts,
     togglePostStatus,
   };
 }
