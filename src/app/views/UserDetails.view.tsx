@@ -106,16 +106,21 @@ export default function UserDetailsView() {
           </Space>
         </Col>
         <Divider />
-        <Col xs={24} lg={12}>
-          <Space direction="vertical" style={{ width: '100%' }}>
-            {user.skills?.map((skill) => (
-              <div key={skill.name}>
-                <Typography.Text>{skill.name}</Typography.Text>
-                <Progress percent={skill.percentage} success={{ percent: 0 }} />
-              </div>
-            ))}
-          </Space>
-        </Col>
+        {!!user.skills?.length && (
+          <Col xs={24} lg={12}>
+            <Space direction="vertical" style={{ width: '100%' }}>
+              {user.skills?.map((skill) => (
+                <div key={skill.name}>
+                  <Typography.Text>{skill.name}</Typography.Text>
+                  <Progress
+                    percent={skill.percentage}
+                    success={{ percent: 0 }}
+                  />
+                </div>
+              ))}
+            </Space>
+          </Col>
+        )}
         <Col xs={24} lg={12}>
           <Descriptions column={1} bordered size="small">
             <Descriptions.Item label="País">
@@ -132,106 +137,108 @@ export default function UserDetailsView() {
             </Descriptions.Item>
           </Descriptions>
         </Col>
-        <Divider />
         {user.role === 'EDITOR' && (
-          <Col xs={24}>
-            <Table<Post.Summary>
-              dataSource={posts?.content}
-              rowKey={'id'}
-              loading={loadingPosts}
-              pagination={{
-                total: posts?.totalElements,
-                pageSize: 5,
-                onChange: (page) => setPage(page - 1),
-              }}
-              columns={[
-                {
-                  title: 'Posts',
-                  responsive: ['xs'],
-                  render(post) {
-                    return (
-                      <Descriptions>
-                        <Descriptions.Item label="Título">
-                          {post.title}
-                        </Descriptions.Item>
-                        <Descriptions.Item label="Criação">
-                          {moment(new Date(post.createdAt)).format(
-                            'DD/MM/YYYY'
-                          )}
-                        </Descriptions.Item>
-                        <Descriptions.Item label="Última atualização">
-                          {moment(new Date(post.updatedAt)).format(
-                            'DD/MM/YYYY'
-                          )}
-                        </Descriptions.Item>
-                        <Descriptions.Item label="Publicado">
-                          <Switch
-                            checked={post.published}
-                            onChange={() =>
-                              togglePostStatus(post).then(() =>
-                                fetchUserPosts(user.id)
-                              )
-                            }
-                          />
-                        </Descriptions.Item>
-                      </Descriptions>
-                    );
+          <>
+            <Divider />
+            <Col xs={24}>
+              <Table<Post.Summary>
+                dataSource={posts?.content}
+                rowKey={'id'}
+                loading={loadingPosts}
+                pagination={{
+                  total: posts?.totalElements,
+                  pageSize: 5,
+                  onChange: (page) => setPage(page - 1),
+                }}
+                columns={[
+                  {
+                    title: 'Posts',
+                    responsive: ['xs'],
+                    render(post) {
+                      return (
+                        <Descriptions>
+                          <Descriptions.Item label="Título">
+                            {post.title}
+                          </Descriptions.Item>
+                          <Descriptions.Item label="Criação">
+                            {moment(new Date(post.createdAt)).format(
+                              'DD/MM/YYYY'
+                            )}
+                          </Descriptions.Item>
+                          <Descriptions.Item label="Última atualização">
+                            {moment(new Date(post.updatedAt)).format(
+                              'DD/MM/YYYY'
+                            )}
+                          </Descriptions.Item>
+                          <Descriptions.Item label="Publicado">
+                            <Switch
+                              checked={post.published}
+                              onChange={() =>
+                                togglePostStatus(post).then(() =>
+                                  fetchUserPosts(user.id)
+                                )
+                              }
+                            />
+                          </Descriptions.Item>
+                        </Descriptions>
+                      );
+                    },
                   },
-                },
-                {
-                  dataIndex: 'title',
-                  title: 'Título',
-                  ellipsis: true,
-                  width: 300,
-                  responsive: ['sm'],
-                  render(title: string) {
-                    return <Tooltip title={title}>{title}</Tooltip>;
+                  {
+                    dataIndex: 'title',
+                    title: 'Título',
+                    ellipsis: true,
+                    width: 300,
+                    responsive: ['sm'],
+                    render(title: string) {
+                      return <Tooltip title={title}>{title}</Tooltip>;
+                    },
                   },
-                },
-                {
-                  dataIndex: 'createdAt',
-                  title: 'Criação',
-                  width: 120,
-                  align: 'center',
-                  responsive: ['sm'],
-                  render(createdAt: string) {
-                    return moment(new Date(createdAt)).format('DD/MM/YYYY');
+                  {
+                    dataIndex: 'createdAt',
+                    title: 'Criação',
+                    width: 120,
+                    align: 'center',
+                    responsive: ['sm'],
+                    render(createdAt: string) {
+                      return moment(new Date(createdAt)).format('DD/MM/YYYY');
+                    },
                   },
-                },
-                {
-                  dataIndex: 'updatedAt',
-                  title: 'Última atualização',
-                  width: 200,
-                  align: 'center',
-                  responsive: ['sm'],
-                  render(updatedAt: string) {
-                    return moment(new Date(updatedAt)).format(
-                      'DD/MM/YYYY [às] HH:mm'
-                    );
+                  {
+                    dataIndex: 'updatedAt',
+                    title: 'Última atualização',
+                    width: 200,
+                    align: 'center',
+                    responsive: ['sm'],
+                    render(updatedAt: string) {
+                      return moment(new Date(updatedAt)).format(
+                        'DD/MM/YYYY [às] HH:mm'
+                      );
+                    },
                   },
-                },
-                {
-                  dataIndex: 'published',
-                  title: 'Publicado',
-                  width: 100,
-                  align: 'center',
-                  responsive: ['sm'],
-                  render(published, post) {
-                    return (
-                      <Switch
-                        checked={published}
-                        onChange={() =>
-                          togglePostStatus(post).then(() =>
-                            fetchUserPosts(user.id)
-                          )
-                        }
-                      />
-                    );
+                  {
+                    dataIndex: 'published',
+                    title: 'Publicado',
+                    width: 100,
+                    align: 'center',
+                    responsive: ['sm'],
+                    render(published, post) {
+                      return (
+                        <Switch
+                          checked={published}
+                          onChange={() =>
+                            togglePostStatus(post).then(() =>
+                              fetchUserPosts(user.id)
+                            )
+                          }
+                        />
+                      );
+                    },
                   },
-                },
-              ]}
-            />
-          </Col>
+                ]}
+              />
+            </Col>
+          </>
         )}
       </Row>
     </>
