@@ -405,6 +405,7 @@ export default function UserForm(props: UserFormProps) {
                         ]}
                       >
                         <CurrencyInput
+                          placeholder="R$ 0,00"
                           onChange={(e, value) =>
                             form.setFieldsValue({
                               pricePerWord: value,
