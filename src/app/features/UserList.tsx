@@ -8,12 +8,18 @@ import {
   Input,
   Descriptions,
   Tooltip,
+  Row,
 } from 'antd';
 import { format } from 'date-fns';
 import { useEffect } from 'react';
 import { User } from 'rodolfohiok-sdk';
 import useUsers from '../../core/hooks/useUsers';
-import { EyeOutlined, EditOutlined, SearchOutlined } from '@ant-design/icons';
+import {
+  EyeOutlined,
+  EditOutlined,
+  SearchOutlined,
+  ReloadOutlined,
+} from '@ant-design/icons';
 import Avatar from 'antd/lib/avatar/avatar';
 import { ColumnProps } from 'antd/lib/table';
 import { Link } from 'react-router-dom';
@@ -76,6 +82,15 @@ export default function UserList() {
 
   return (
     <>
+      <Row justify="end">
+        <Button
+          icon={<ReloadOutlined />}
+          loading={fetching}
+          onClick={() => fetchUsers()}
+        >
+          Atualizar
+        </Button>
+      </Row>
       <Table<User.Summary>
         loading={fetching}
         dataSource={users}
