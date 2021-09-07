@@ -1,13 +1,15 @@
-import { Button, Popconfirm, Space, Table, Tag, Tooltip } from 'antd';
+import { Button, Popconfirm, Row, Space, Table, Tag, Tooltip } from 'antd';
 import moment from 'moment';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { Payment } from 'rodolfohiok-sdk';
 import usePayments from '../../core/hooks/usePayments';
 import { EyeOutlined, DeleteOutlined } from '@ant-design/icons';
 import confirm from 'antd/lib/modal/confirm';
+import { Key } from 'antd/lib/table/interface';
 
 export default function PaymentListView() {
   const { payments, fetchPayments, fetching } = usePayments();
+  const [selectedRowKeys, setSelectedRowKeys] = useState<Key[]>([]);
 
   useEffect(() => {
     fetchPayments({
@@ -18,10 +20,42 @@ export default function PaymentListView() {
 
   return (
     <>
+      <Row>
+        <Popconfirm
+          title={
+            selectedRowKeys.length === 1
+              ? 'Você deseja aprovar o pagamento selecionado?'
+              : 'Você deseja aprovar os pagamentos selecionados?'
+          }
+          onConfirm={() =>
+            confirm({
+              title: 'Aprovar pagamento',
+              content:
+                'Esta é um ação irreversível. Ao aprovar um pagamento, ele não poderá ser removido',
+              onOk() {
+                console.log(
+                  'todo: implementar a aprovação de vários pagamentos'
+                );
+              },
+            })
+          }
+        >
+          <Button type="primary" disabled={setSelectedRowKeys.length === 0}>
+            Aprovar pagamentos
+          </Button>
+        </Popconfirm>
+      </Row>
       <Table<Payment.Summary>
         loading={fetching}
         dataSource={payments?.content}
         rowKey="id"
+        rowSelection={{
+          selectedRowKeys,
+          onChange: setSelectedRowKeys,
+          getCheckboxProps(payment) {
+            return !payment.canBeApproved ? { disabled: true } : {};
+          },
+        }}
         columns={[
           {
             dataIndex: 'id',
