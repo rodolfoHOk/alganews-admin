@@ -44,7 +44,9 @@ export default function UserForm(props: UserFormProps) {
   const [activeTab, setActiveTab] = useState<'personal' | 'bankAccount'>(
     'personal'
   );
-  const [isEditorRole, setIsEditorRole] = useState(false);
+  const [isEditorRole, setIsEditorRole] = useState(
+    props.user?.role === 'EDITOR'
+  );
 
   const handleAvatarUpload = useCallback(async (file: File) => {
     const avatarSource = await FileService.upload(file);
