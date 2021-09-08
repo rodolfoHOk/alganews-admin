@@ -40,6 +40,7 @@ export default function PaymentListView() {
           onConfirm={() =>
             confirm({
               title: 'Aprovar pagamento',
+              cancelText: 'Cancelar',
               content:
                 'Esta é um ação irreversível. Ao aprovar um pagamento, ele não poderá ser removido',
               onOk() {
@@ -134,6 +135,7 @@ export default function PaymentListView() {
                     onConfirm={() =>
                       confirm({
                         title: 'Remover agendamento?',
+                        cancelText: 'Cancelar',
                         content:
                           'Esta ação é irreversível. Ao remover um agendamento, ele não poderá ser recuperado!',
                         onOk() {
