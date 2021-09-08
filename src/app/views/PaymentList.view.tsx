@@ -18,6 +18,7 @@ import confirm from 'antd/lib/modal/confirm';
 import { Key } from 'antd/lib/table/interface';
 import useBreakpoint from 'antd/lib/grid/hooks/useBreakpoint';
 import DoubleConfirm from '../components/DoubleConfirm';
+import { Link } from 'react-router-dom';
 
 export default function PaymentListView() {
   const { payments, fetchPayments, fetching } = usePayments();
@@ -99,7 +100,9 @@ export default function PaymentListView() {
               return (
                 <Descriptions column={1} size="small">
                   <Descriptions.Item label="Editor">
-                    {payment.payee.name}
+                    <Link to={`/usuarios/${payment.payee.id}`}>
+                      {payment.payee.name}
+                    </Link>
                   </Descriptions.Item>
                   <Descriptions.Item label="Agendamento">
                     {moment(payment.scheduledTo).format('DD/MM/YYYY')}
@@ -164,7 +167,7 @@ export default function PaymentListView() {
             width: 180,
             ellipsis: true,
             render(payee: Payment.Summary['payee']) {
-              return payee.name;
+              return <Link to={`/usuarios/${payee.id}`}>{payee.name}</Link>;
             },
           },
           {
