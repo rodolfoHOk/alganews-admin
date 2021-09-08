@@ -17,6 +17,7 @@ import { EyeOutlined, DeleteOutlined } from '@ant-design/icons';
 import confirm from 'antd/lib/modal/confirm';
 import { Key } from 'antd/lib/table/interface';
 import useBreakpoint from 'antd/lib/grid/hooks/useBreakpoint';
+import DoubleConfirm from '../components/DoubleConfirm';
 
 export default function PaymentListView() {
   const { payments, fetchPayments, fetching } = usePayments();
@@ -35,26 +36,20 @@ export default function PaymentListView() {
     <>
       <Row justify="space-between" gutter={24}>
         <div style={{ width: xs ? '100%' : 240, marginBottom: xs ? 8 : 0 }}>
-          <Popconfirm
-            title={
+          <DoubleConfirm
+            popConfirmTitle={
               selectedRowKeys.length === 1
                 ? 'Você deseja aprovar o agendamento selecionado?'
                 : 'Você deseja aprovar os agendamentos selecionados?'
             }
             disabled={selectedRowKeys.length === 0}
-            onConfirm={() =>
-              confirm({
-                title: 'Aprovar agendamento',
-                cancelText: 'Cancelar',
-                content:
-                  'Esta é um ação irreversível. Ao aprovar um agendamento, ele não poderá ser removido',
-                onOk() {
-                  console.log(
-                    'todo: implementar a aprovação de vários agendamentos'
-                  );
-                },
-              })
-            }
+            modalTitle="Aprovar agendamento"
+            modalContent="Esta ação é irreversível. Ao aprovar um agendamento, ele não poderá ser removido!"
+            onConfirm={() => {
+              console.log(
+                'todo: implementar aprovação multiplas de agendamento'
+              );
+            }}
           >
             <Button
               block={true}
@@ -63,7 +58,7 @@ export default function PaymentListView() {
             >
               Aprovar agendamentos
             </Button>
-          </Popconfirm>
+          </DoubleConfirm>
         </div>
         <div style={{ width: xs ? '100%' : 240 }}>
           <DatePicker.MonthPicker
