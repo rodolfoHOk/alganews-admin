@@ -15,23 +15,29 @@ import { Payment } from 'rodolfohiok-sdk';
 import usePayments from '../../core/hooks/usePayments';
 import { EyeOutlined, DeleteOutlined } from '@ant-design/icons';
 import confirm from 'antd/lib/modal/confirm';
-import { Key } from 'antd/lib/table/interface';
+import { Key, SorterResult } from 'antd/lib/table/interface';
 import useBreakpoint from 'antd/lib/grid/hooks/useBreakpoint';
 import DoubleConfirm from '../components/DoubleConfirm';
 import { Link } from 'react-router-dom';
 
 export default function PaymentListView() {
-  const { payments, fetchPayments, fetching } = usePayments();
+  const { payments, fetchPayments, fetchingPayments } = usePayments();
   const [selectedRowKeys, setSelectedRowKeys] = useState<Key[]>([]);
   const [yearMonth, setYearMonth] = useState<string | undefined>();
+  const [page, setPage] = useState(1);
+  const [sortingOrder, setSortingOrder] = useState<
+    'asc' | 'desc' | undefined
+  >();
   const { xs } = useBreakpoint();
 
   useEffect(() => {
     fetchPayments({
-      page: 0,
       scheduledToYearMonth: yearMonth,
+      page: page - 1,
+      size: 5,
+      sort: ['scheduledTo', sortingOrder || 'desc'],
     });
-  }, [fetchPayments, yearMonth]);
+  }, [fetchPayments, yearMonth, page, sortingOrder]);
 
   return (
     <>
@@ -73,9 +79,19 @@ export default function PaymentListView() {
         </div>
       </Row>
       <Table<Payment.Summary>
-        loading={fetching}
+        loading={fetchingPayments}
         dataSource={payments?.content}
         rowKey="id"
+        onChange={(p, f, sorter) => {
+          const { order } = sorter as SorterResult<Payment.Summary>;
+          order === 'ascend' ? setSortingOrder('asc') : setSortingOrder('desc');
+        }}
+        pagination={{
+          current: page,
+          onChange: setPage,
+          total: payments?.totalElements,
+          pageSize: 5,
+        }}
         rowSelection={{
           selectedRowKeys,
           onChange: setSelectedRowKeys,
@@ -176,6 +192,9 @@ export default function PaymentListView() {
             align: 'center',
             responsive: ['sm'],
             width: 120,
+            sorter(a, b) {
+              return 0;
+            },
             render(date: string) {
               return moment(date).format('DD/MM/YYYY');
             },

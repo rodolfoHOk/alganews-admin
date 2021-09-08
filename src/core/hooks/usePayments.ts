@@ -3,21 +3,21 @@ import { Payment, PaymentService } from 'rodolfohiok-sdk';
 
 export default function usePayments() {
   const [payments, setPayments] = useState<Payment.Paginated>();
-  const [fetching, setFetching] = useState(false);
+  const [fetchingPayments, setFetchingPayments] = useState(false);
 
   const fetchPayments = useCallback(async (query: Payment.Query) => {
-    setFetching(true);
+    setFetchingPayments(true);
     try {
       const payments = await PaymentService.getAllPayments(query);
       setPayments(payments);
     } finally {
-      setFetching(false);
+      setFetchingPayments(false);
     }
   }, []);
 
   return {
     payments,
-    fetching,
+    fetchingPayments,
     fetchPayments,
   };
 }
