@@ -41,6 +41,7 @@ export default function PaymentListView() {
                 ? 'Você deseja aprovar o agendamento selecionado?'
                 : 'Você deseja aprovar os agendamentos selecionados?'
             }
+            disabled={selectedRowKeys.length === 0}
             onConfirm={() =>
               confirm({
                 title: 'Aprovar agendamento',
@@ -125,6 +126,7 @@ export default function PaymentListView() {
                       </Tooltip>
                       <Popconfirm
                         title="Remover agendamento?"
+                        disabled={!payment.canBeDeleted}
                         onConfirm={() =>
                           confirm({
                             title: 'Remover agendamento?',
@@ -224,6 +226,7 @@ export default function PaymentListView() {
                   </Tooltip>
                   <Popconfirm
                     title="Remover agendamento?"
+                    disabled={!payment.canBeDeleted}
                     onConfirm={() =>
                       confirm({
                         title: 'Remover agendamento?',
