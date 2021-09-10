@@ -1,21 +1,15 @@
-import { Card, Descriptions, Divider, Typography, Table } from 'antd';
+import { Card, Divider } from 'antd';
 import { useEffect } from 'react';
 import { useParams } from 'react-router';
-import { Post } from 'rodolfohiok-sdk';
 import usePayment from '../../core/hooks/usePayment';
 import PaymentHeader from '../features/PaymentHeader';
+import PaymentBonuses from '../features/PaymentBonuses';
+import PaymentPosts from '../features/PaymentPosts';
 import moment from 'moment';
 
 export default function PaymentDetailsView() {
   const params = useParams<{ id: string }>();
-  const {
-    payment,
-    fetchPayment,
-    posts,
-    fetchPosts,
-    fetchingPayment,
-    fetchingPosts,
-  } = usePayment();
+  const { payment, fetchPayment, posts, fetchPosts } = usePayment();
 
   useEffect(() => {
     fetchPayment(Number(params.id));
@@ -38,38 +32,9 @@ export default function PaymentDetailsView() {
           totalEarnings={payment?.grandTotalAmount}
         />
         <Divider />
-        <Typography.Title level={2}>Bônus</Typography.Title>
-        <Descriptions column={1} bordered size="small">
-          <Descriptions.Item label="1 milhão de views em 1 dia">
-            {'R$ 12.345,67'}
-          </Descriptions.Item>
-          <Descriptions.Item label="20 milhão de views em 1 dia">
-            {'R$ 12.345,67'}
-          </Descriptions.Item>
-        </Descriptions>
+        <PaymentBonuses bonuses={payment?.bonuses} />
         <Divider />
-        <Table<Post.WithEarnings>
-          dataSource={[]}
-          columns={[
-            {
-              dataIndex: 'title',
-              title: 'Post',
-              ellipsis: true,
-            },
-            {
-              dataIndex: 'earnings.pricePerWord',
-              title: 'Preço por palavra',
-            },
-            {
-              dataIndex: 'earnings.words',
-              title: 'Palavras no post',
-            },
-            {
-              dataIndex: 'earnings.totalAmount',
-              title: 'Total ganho neste post',
-            },
-          ]}
-        />
+        <PaymentPosts posts={posts} />
       </Card>
     </>
   );
