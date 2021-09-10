@@ -1,11 +1,12 @@
 import { Card, Divider } from 'antd';
 import { useEffect } from 'react';
-import { useParams } from 'react-router';
+import { Redirect, useParams } from 'react-router';
 import usePayment from '../../core/hooks/usePayment';
 import PaymentHeader from '../features/PaymentHeader';
 import PaymentBonuses from '../features/PaymentBonuses';
 import PaymentPosts from '../features/PaymentPosts';
 import moment from 'moment';
+import NotFoundError from '../components/NotFoundError';
 
 export default function PaymentDetailsView() {
   const params = useParams<{ id: string }>();
@@ -16,12 +17,25 @@ export default function PaymentDetailsView() {
     fetchPosts,
     fetchingPayment,
     fetchingPosts,
+    paymentNotFound,
   } = usePayment();
 
   useEffect(() => {
     fetchPayment(Number(params.id));
     fetchPosts(Number(params.id));
   }, [fetchPayment, fetchPosts, params.id]);
+
+  if (isNaN(Number(params.id))) return <Redirect to="/pagamentos" />;
+
+  if (paymentNotFound) {
+    return (
+      <NotFoundError
+        title="Pagamento não encontrado"
+        actionTitle="Ir para a lista de pagamentos"
+        actionDestination="/pagamentos"
+      />
+    );
+  }
 
   return (
     <>
