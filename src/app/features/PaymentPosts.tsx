@@ -3,12 +3,14 @@ import { Post } from 'rodolfohiok-sdk';
 
 interface PaymentPostsProps {
   posts: Post.WithEarnings[];
+  loading?: boolean;
 }
 
 export default function PaymentPosts(props: PaymentPostsProps) {
   return (
     <>
       <Table<Post.WithEarnings>
+        loading={props.loading}
         dataSource={props.posts}
         rowKey={'id'}
         pagination={false}

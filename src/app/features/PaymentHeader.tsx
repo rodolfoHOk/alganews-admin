@@ -1,4 +1,4 @@
-import { Descriptions, Divider, Space, Tag, Typography } from 'antd';
+import { Descriptions, Divider, Skeleton, Space, Tag, Typography } from 'antd';
 import useBreakpoint from 'antd/lib/grid/hooks/useBreakpoint';
 
 interface PaymentHeaderProps {
@@ -8,10 +8,14 @@ interface PaymentHeaderProps {
   periodEnd?: string;
   postsEarnings?: number;
   totalEarnings?: number;
+  loading?: boolean;
 }
 
 export default function PaymentHeader(props: PaymentHeaderProps) {
   const { xs } = useBreakpoint();
+
+  if (props.loading) return <Skeleton />;
+
   return (
     <>
       <Typography.Title>Pagamento</Typography.Title>

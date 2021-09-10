@@ -9,7 +9,14 @@ import moment from 'moment';
 
 export default function PaymentDetailsView() {
   const params = useParams<{ id: string }>();
-  const { payment, fetchPayment, posts, fetchPosts } = usePayment();
+  const {
+    payment,
+    fetchPayment,
+    posts,
+    fetchPosts,
+    fetchingPayment,
+    fetchingPosts,
+  } = usePayment();
 
   useEffect(() => {
     fetchPayment(Number(params.id));
@@ -20,6 +27,7 @@ export default function PaymentDetailsView() {
     <>
       <Card>
         <PaymentHeader
+          loading={fetchingPayment}
           editorId={payment?.payee.id}
           editorName={payment?.payee.name}
           periodStart={moment(payment?.accountingPeriod.startsOn).format(
@@ -32,9 +40,9 @@ export default function PaymentDetailsView() {
           totalEarnings={payment?.grandTotalAmount}
         />
         <Divider />
-        <PaymentBonuses bonuses={payment?.bonuses} />
+        <PaymentBonuses loading={fetchingPayment} bonuses={payment?.bonuses} />
         <Divider />
-        <PaymentPosts posts={posts} />
+        <PaymentPosts loading={fetchingPosts} posts={posts} />
       </Card>
     </>
   );
