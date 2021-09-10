@@ -1,41 +1,42 @@
-import {
-  Card,
-  Descriptions,
-  Divider,
-  Space,
-  Tag,
-  Typography,
-  Table,
-} from 'antd';
+import { Card, Descriptions, Divider, Typography, Table } from 'antd';
+import { useEffect } from 'react';
+import { useParams } from 'react-router';
 import { Post } from 'rodolfohiok-sdk';
+import usePayment from '../../core/hooks/usePayment';
+import PaymentHeader from '../features/PaymentHeader';
+import moment from 'moment';
 
 export default function PaymentDetailsView() {
+  const params = useParams<{ id: string }>();
+  const {
+    payment,
+    fetchPayment,
+    posts,
+    fetchPosts,
+    fetchingPayment,
+    fetchingPosts,
+  } = usePayment();
+
+  useEffect(() => {
+    fetchPayment(Number(params.id));
+    fetchPosts(Number(params.id));
+  }, [fetchPayment, fetchPosts, params.id]);
+
   return (
     <>
       <Card>
-        <Typography.Title>Pagamento</Typography.Title>
-        <Typography.Text>
-          A base do pagamento é calculada pela quantidade de palavras escritas
-        </Typography.Text>
-        <Divider />
-        <Descriptions column={2}>
-          <Descriptions.Item label="Editor">
-            {'nome do editor'}
-          </Descriptions.Item>
-          <Descriptions.Item label="Período">
-            <Space size={8}>
-              <Tag style={{ margin: 0 }}>{'01/01/2021'}</Tag>
-              <span>até</span>
-              <Tag>{'02/02/2021'}</Tag>
-            </Space>
-          </Descriptions.Item>
-          <Descriptions.Item label="Ganhos por posts">
-            <Tag>{'R$ 12.345,67'}</Tag>
-          </Descriptions.Item>
-          <Descriptions.Item label="Total">
-            <Tag>{'R$ 123.456,78'}</Tag>
-          </Descriptions.Item>
-        </Descriptions>
+        <PaymentHeader
+          editorId={payment?.payee.id}
+          editorName={payment?.payee.name}
+          periodStart={moment(payment?.accountingPeriod.startsOn).format(
+            'DD/MM/YYYY'
+          )}
+          periodEnd={moment(payment?.accountingPeriod.endsOn).format(
+            'DD/MM/YYYY'
+          )}
+          postsEarnings={payment?.earnings.totalAmount}
+          totalEarnings={payment?.grandTotalAmount}
+        />
         <Divider />
         <Typography.Title level={2}>Bônus</Typography.Title>
         <Descriptions column={1} bordered size="small">
