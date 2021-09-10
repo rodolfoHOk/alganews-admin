@@ -1,5 +1,5 @@
-import { Card, Divider, Button } from 'antd';
-import { PrinterOutlined } from '@ant-design/icons';
+import { Card, Divider, Button, Tag, Space } from 'antd';
+import { PrinterOutlined, CheckCircleOutlined } from '@ant-design/icons';
 import { useEffect } from 'react';
 import { Redirect, useParams } from 'react-router';
 import usePayment from '../../core/hooks/usePayment';
@@ -9,6 +9,7 @@ import PaymentPosts from '../features/PaymentPosts';
 import moment from 'moment';
 import NotFoundError from '../components/NotFoundError';
 import usePageTitle from '../../core/hooks/usePageTitle';
+import DoubleConfirm from '../components/DoubleConfirm';
 
 export default function PaymentDetailsView() {
   usePageTitle('Detalhes do pagamento');
@@ -43,15 +44,39 @@ export default function PaymentDetailsView() {
 
   return (
     <>
-      <Button
-        className="no-print"
-        type="primary"
-        style={{ marginBottom: 16 }}
-        icon={<PrinterOutlined />}
-        onClick={window.print}
-      >
-        Imprimir
-      </Button>
+      <Space style={{ marginBottom: 16 }}>
+        <Button
+          className="no-print"
+          type="primary"
+          icon={<PrinterOutlined />}
+          onClick={window.print}
+        >
+          Imprimir
+        </Button>
+        {payment?.approvedAt ? (
+          <Tag>{`Pagamento aprovado em ${moment(payment?.approvedAt).format(
+            'DD/MM/YYYY'
+          )}`}</Tag>
+        ) : (
+          <DoubleConfirm
+            disabled={!payment}
+            popConfirmTitle="Deseja aprovar este agendamento?"
+            modalTitle="Ação irreversível"
+            modalContent="Aprovar um agendamento de pagamento gera uma despesa que não pode ser removida do fluxo de caixa. Essa ação não poderá ser desfeita."
+            onConfirm={() => console.log('todo: implement approval payment')}
+          >
+            <Button
+              disabled={!payment}
+              className="no-print"
+              type="primary"
+              danger
+              icon={<CheckCircleOutlined />}
+            >
+              Aprovar agendamento
+            </Button>
+          </DoubleConfirm>
+        )}
+      </Space>
       <Card>
         <PaymentHeader
           loading={fetchingPayment}
