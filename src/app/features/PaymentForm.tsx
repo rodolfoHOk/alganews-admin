@@ -3,7 +3,7 @@ import { Payment } from 'rodolfohiok-sdk';
 import useUsers from '../../core/hooks/useUsers';
 
 export default function PaymentForm() {
-  const { users } = useUsers();
+  const { editors } = useUsers();
 
   return (
     <Form<Payment.Input> layout="vertical">
@@ -15,7 +15,7 @@ export default function PaymentForm() {
               filterOption={(input, option) =>
                 (option?.children as string)
                   .normalize('NFD')
-                  .replace(/[\u300-\u036f]/g, '')
+                  .replace(/[\u0300-\u036f]/g, '')
                   .toLowerCase()
                   .indexOf(input.toLowerCase()) >= 0 ||
                 (option?.children as string)
@@ -23,9 +23,9 @@ export default function PaymentForm() {
                   .indexOf(input.toLowerCase()) >= 0
               }
             >
-              {users.map((user) => (
-                <Select.Option key={user.id} value={user.id}>
-                  {user.name}
+              {editors.map((editor) => (
+                <Select.Option key={editor.id} value={editor.id}>
+                  {editor.name}
                 </Select.Option>
               ))}
             </Select>

@@ -7,6 +7,11 @@ import * as UserActions from '../store/User.reducer';
 export default function useUsers() {
   const dispatch = useDispatch();
   const users = useSelector((state: RootState) => state.user.list);
+  const editors = useSelector((state: RootState) =>
+    state.user.list.filter((user) => {
+      return user.role === 'EDITOR';
+    })
+  );
   const fetching = useSelector((state: RootState) => state.user.fetching);
 
   const fetchUsers = useCallback(() => {
@@ -23,6 +28,7 @@ export default function useUsers() {
 
   return {
     users,
+    editors,
     fetching,
     fetchUsers,
     toggleUserStatus,
