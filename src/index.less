@@ -72,3 +72,23 @@
     overflow: auto;
   }
 }
+
+@media print {
+  .no-print {
+    display: none;
+  }
+
+  * {
+    color: #000 !important;
+    border-color: #ccc !important;
+    background-color: #ccc !important;
+  }
+
+  .ant-layout {
+    margin: 0 !important;
+  }
+
+  @page {
+    size: landscape;
+  }
+}

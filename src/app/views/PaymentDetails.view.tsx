@@ -1,4 +1,5 @@
-import { Card, Divider } from 'antd';
+import { Card, Divider, Button } from 'antd';
+import { PrinterOutlined } from '@ant-design/icons';
 import { useEffect } from 'react';
 import { Redirect, useParams } from 'react-router';
 import usePayment from '../../core/hooks/usePayment';
@@ -7,8 +8,11 @@ import PaymentBonuses from '../features/PaymentBonuses';
 import PaymentPosts from '../features/PaymentPosts';
 import moment from 'moment';
 import NotFoundError from '../components/NotFoundError';
+import usePageTitle from '../../core/hooks/usePageTitle';
 
 export default function PaymentDetailsView() {
+  usePageTitle('Detalhes do pagamento');
+
   const params = useParams<{ id: string }>();
   const {
     payment,
@@ -39,6 +43,15 @@ export default function PaymentDetailsView() {
 
   return (
     <>
+      <Button
+        className="no-print"
+        type="primary"
+        style={{ marginBottom: 16 }}
+        icon={<PrinterOutlined />}
+        onClick={window.print}
+      >
+        Imprimir
+      </Button>
       <Card>
         <PaymentHeader
           loading={fetchingPayment}
