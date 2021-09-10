@@ -3,6 +3,8 @@ import { Payment } from 'rodolfohiok-sdk';
 import useUsers from '../../core/hooks/useUsers';
 import moment, { Moment } from 'moment';
 import useForm from 'antd/lib/form/hooks/useForm';
+import { PlusOutlined, DeleteOutlined } from '@ant-design/icons';
+import CurrencyInput from '../components/CurrencyInput';
 
 export default function PaymentForm() {
   const [form] = useForm();
@@ -83,6 +85,68 @@ export default function PaymentForm() {
               }}
             />
           </Form.Item>
+        </Col>
+        <Col xs={24} lg={12}>
+          todo: payment preview
+        </Col>
+        <Col xs={24} lg={12}>
+          <Form.List name="bonuses">
+            {(fields, { add, remove }) => {
+              return (
+                <>
+                  {fields.map((field) => {
+                    return (
+                      <Row gutter={24}>
+                        <Col xs={24} lg={14}>
+                          <Form.Item
+                            {...field}
+                            name={[field.name, 'title']}
+                            label="Descrição"
+                          >
+                            <Input placeholder="E.g.: 1 milhão de views" />
+                          </Form.Item>
+                        </Col>
+                        <Col xs={24} lg={6}>
+                          <Form.Item
+                            {...field}
+                            name={[field.name, 'amount']}
+                            initialValue={0}
+                            label="Valor"
+                          >
+                            <CurrencyInput
+                              onChange={(e, amount) => {
+                                form.setFieldsValue({
+                                  [field.name]: amount,
+                                });
+                              }}
+                            />
+                          </Form.Item>
+                        </Col>
+                        <Col xs={24} lg={4}>
+                          <Form.Item label="Remover">
+                            <Button
+                              icon={<DeleteOutlined />}
+                              onClick={() => remove(field.name)}
+                              danger
+                              size="small"
+                            />
+                          </Form.Item>
+                        </Col>
+                      </Row>
+                    );
+                  })}
+                  <Button
+                    type="dashed"
+                    onClick={() => add()}
+                    block
+                    icon={<PlusOutlined />}
+                  >
+                    Adicionar bônus
+                  </Button>
+                </>
+              );
+            }}
+          </Form.List>
         </Col>
       </Row>
       <Button htmlType="submit">enviar</Button>
