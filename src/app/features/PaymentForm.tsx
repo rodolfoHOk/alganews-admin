@@ -24,7 +24,7 @@ import {
   InfoCircleFilled,
 } from '@ant-design/icons';
 import CurrencyInput from '../components/CurrencyInput';
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { FieldData } from 'rc-field-form/lib/interface';
 import debounce from 'lodash.debounce';
 import usePayment from '../../core/hooks/usePayment';
@@ -37,7 +37,7 @@ const { TabPane } = Tabs;
 
 export default function PaymentForm() {
   const [form] = useForm<Payment.Input>();
-  const { editors } = useUsers();
+  const { editors, fetchUsers, fetching } = useUsers();
   const {
     paymentPreview,
     fetchPaymentPreview,
@@ -46,6 +46,10 @@ export default function PaymentForm() {
   } = usePayment();
   const [scheduledTo, setScheduleTo] = useState('');
   const [paymentPreviewError, setPaymentPreviewError] = useState<CustomError>();
+
+  useEffect(() => {
+    fetchUsers();
+  }, [fetchUsers]);
 
   const updateScheduleDate = useCallback(() => {
     const { scheduledTo } = form.getFieldsValue();
@@ -115,6 +119,10 @@ export default function PaymentForm() {
           <Form.Item label="Editor" name={['payee', 'id']}>
             <Select
               showSearch
+              loading={fetching}
+              placeholder={
+                fetching ? 'Carregando editores...' : 'Selecione um editor'
+              }
               filterOption={(input, option) =>
                 (option?.children as string)
                   .normalize('NFD')
