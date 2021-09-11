@@ -10,34 +10,57 @@ import {
   Typography,
   Divider,
   Descriptions,
+  Space,
+  Tooltip,
 } from 'antd';
 import { Payment } from 'rodolfohiok-sdk';
 import useUsers from '../../core/hooks/useUsers';
 import moment, { Moment } from 'moment';
 import useForm from 'antd/lib/form/hooks/useForm';
-import { PlusOutlined, DeleteOutlined } from '@ant-design/icons';
+import {
+  PlusOutlined,
+  DeleteOutlined,
+  InfoCircleFilled,
+} from '@ant-design/icons';
 import CurrencyInput from '../components/CurrencyInput';
 import { useCallback } from 'react';
 import { FieldData } from 'rc-field-form/lib/interface';
 import debounce from 'lodash.debounce';
+import usePayment from '../../core/hooks/usePayment';
+import formatToBrl from '../../core/utils/formatToBrl';
 
 const { TabPane } = Tabs;
 
 export default function PaymentForm() {
   const [form] = useForm<Payment.Input>();
   const { editors } = useUsers();
+  const { paymentPreview, fetchPaymentPreview } = usePayment();
 
-  const handleFormChange = useCallback(([field]: FieldData[]) => {
-    if (Array.isArray(field.name)) {
-      if (
-        field.name.includes('payee') ||
-        field.name.includes('_accountingPeriod') ||
-        field.name.includes('bonuses')
-      ) {
-        console.log('necessário atualizar a prévia de pagamento');
-      }
+  const getPaymentPreview = useCallback(() => {
+    const { payee, accountingPeriod, bonuses } = form.getFieldsValue();
+    if (payee.id && accountingPeriod.startsOn && accountingPeriod.endsOn) {
+      fetchPaymentPreview({
+        payee,
+        accountingPeriod,
+        bonuses: bonuses || [],
+      });
     }
-  }, []);
+  }, [form, fetchPaymentPreview]);
+
+  const handleFormChange = useCallback(
+    ([field]: FieldData[]) => {
+      if (Array.isArray(field?.name)) {
+        if (
+          field.name.includes('payee') ||
+          field.name.includes('_accountingPeriod') ||
+          field.name.includes('bonuses')
+        ) {
+          getPaymentPreview();
+        }
+      }
+    },
+    [getPaymentPreview]
+  );
 
   const debouncedHandleFormChange = debounce(handleFormChange, 1000);
 
@@ -129,27 +152,47 @@ export default function PaymentForm() {
                 size="small"
               >
                 <Descriptions.Item label="Editor">
-                  {'Daniel Bonifácio'}
+                  {paymentPreview?.payee.name}
                 </Descriptions.Item>
                 <Descriptions.Item label="Período">
-                  {'01/05/2021 à 01/06/2021'}
+                  <Space>
+                    {moment(paymentPreview?.accountingPeriod.startsOn).format(
+                      'DD/MM/YYYY'
+                    )}
+                    <span>à</span>
+                    {moment(paymentPreview?.accountingPeriod.endsOn).format(
+                      'DD/MM/YYYY'
+                    )}
+                  </Space>
                 </Descriptions.Item>
                 <Descriptions.Item label="Agendamento">
-                  {'27/05/2021'}
+                  {form.getFieldsValue()['scheduledTo']}
                 </Descriptions.Item>
-                <Descriptions.Item label="Palavras">{'685'}</Descriptions.Item>
+                <Descriptions.Item label="Palavras">
+                  {paymentPreview?.earnings.words}
+                </Descriptions.Item>
                 <Descriptions.Item label="Ganhos">
-                  {'R$ 23.432,00'}
+                  {formatToBrl(paymentPreview?.grandTotalAmount)}
                 </Descriptions.Item>
-                {[1, 2].map((bonus, index) => {
+                {paymentPreview?.bonuses.map((bonus, index) => {
                   return (
-                    <Descriptions.Item label={`Bônus ${bonus}`} key={index}>
-                      {'R$ 7.500,00'}
+                    <Descriptions.Item
+                      label={
+                        <Space>
+                          {`Bônus ${index + 1}`}
+                          <Tooltip title={bonus.title}>
+                            <InfoCircleFilled style={{ color: '#09F' }} />
+                          </Tooltip>
+                        </Space>
+                      }
+                      key={index}
+                    >
+                      {formatToBrl(bonus.amount)}
                     </Descriptions.Item>
                   );
                 })}
                 <Descriptions.Item label="Ganhos de Posts">
-                  {'R$ 7.432,00'}
+                  {formatToBrl(paymentPreview?.earnings.totalAmount)}
                 </Descriptions.Item>
               </Descriptions>
             </TabPane>
@@ -161,17 +204,21 @@ export default function PaymentForm() {
                 size="small"
               >
                 <Descriptions.Item label="Código do banco">
-                  {'341'}
+                  {paymentPreview?.bankAccount.bankCode}
                 </Descriptions.Item>
                 <Descriptions.Item label="Número da conta">
-                  {'1065160'}
+                  {paymentPreview?.bankAccount.number}
                 </Descriptions.Item>
                 <Descriptions.Item label="Dígito da conta">
-                  {'8'}
+                  {paymentPreview?.bankAccount.digit}
                 </Descriptions.Item>
-                <Descriptions.Item label="Agência">{'0001'}</Descriptions.Item>
+                <Descriptions.Item label="Agência">
+                  {paymentPreview?.bankAccount.agency}
+                </Descriptions.Item>
                 <Descriptions.Item label="Tipo de conta">
-                  {'Conta Corrente'}
+                  {paymentPreview?.bankAccount.type === 'CHECKING'
+                    ? 'Conta corrente'
+                    : 'Conta poupança'}
                 </Descriptions.Item>
               </Descriptions>
             </TabPane>
