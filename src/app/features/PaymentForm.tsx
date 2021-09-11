@@ -1,10 +1,24 @@
-import { Col, Form, Row, Select, DatePicker, Button, Input } from 'antd';
+import {
+  Col,
+  Form,
+  Row,
+  Select,
+  DatePicker,
+  Button,
+  Input,
+  Tabs,
+  Typography,
+  Divider,
+  Descriptions,
+} from 'antd';
 import { Payment } from 'rodolfohiok-sdk';
 import useUsers from '../../core/hooks/useUsers';
 import moment, { Moment } from 'moment';
 import useForm from 'antd/lib/form/hooks/useForm';
 import { PlusOutlined, DeleteOutlined } from '@ant-design/icons';
 import CurrencyInput from '../components/CurrencyInput';
+
+const { TabPane } = Tabs;
 
 export default function PaymentForm() {
   const [form] = useForm<Payment.Input>();
@@ -86,10 +100,67 @@ export default function PaymentForm() {
             />
           </Form.Item>
         </Col>
+        <Divider />
         <Col xs={24} lg={12}>
-          todo: payment preview
+          <Tabs defaultActiveKey={'payment'}>
+            <TabPane tab="Demonstrativo" key="payment">
+              <Descriptions
+                column={1}
+                labelStyle={{ width: 160 }}
+                bordered
+                size="small"
+              >
+                <Descriptions.Item label="Editor">
+                  {'Daniel Bonifácio'}
+                </Descriptions.Item>
+                <Descriptions.Item label="Período">
+                  {'01/05/2021 à 01/06/2021'}
+                </Descriptions.Item>
+                <Descriptions.Item label="Agendamento">
+                  {'27/05/2021'}
+                </Descriptions.Item>
+                <Descriptions.Item label="Palavras">{'685'}</Descriptions.Item>
+                <Descriptions.Item label="Ganhos">
+                  {'R$ 23.432,00'}
+                </Descriptions.Item>
+                {[1, 2].map((bonus) => {
+                  return (
+                    <Descriptions.Item label={`Bônus ${bonus}`}>
+                      {'R$ 7.500,00'}
+                    </Descriptions.Item>
+                  );
+                })}
+                <Descriptions.Item label="Ganhos de Posts">
+                  {'R$ 7.432,00'}
+                </Descriptions.Item>
+              </Descriptions>
+            </TabPane>
+            <TabPane tab="Dados Bancários" key="bankAccount">
+              <Descriptions
+                column={1}
+                labelStyle={{ width: 160 }}
+                bordered
+                size="small"
+              >
+                <Descriptions.Item label="Código do banco">
+                  {'341'}
+                </Descriptions.Item>
+                <Descriptions.Item label="Número da conta">
+                  {'1065160'}
+                </Descriptions.Item>
+                <Descriptions.Item label="Dígito da conta">
+                  {'8'}
+                </Descriptions.Item>
+                <Descriptions.Item label="Agência">{'0001'}</Descriptions.Item>
+                <Descriptions.Item label="Tipo de conta">
+                  {'Conta Corrente'}
+                </Descriptions.Item>
+              </Descriptions>
+            </TabPane>
+          </Tabs>
         </Col>
         <Col xs={24} lg={12}>
+          <Typography.Title level={4}>Bônus</Typography.Title>
           <Form.List name="bonuses">
             {(fields, { add, remove }) => {
               return (
