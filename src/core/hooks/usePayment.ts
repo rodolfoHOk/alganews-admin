@@ -54,6 +54,10 @@ export default function usePayment() {
     []
   );
 
+  const clearPaymentPreview = useCallback(() => {
+    setPaymentPreview(undefined);
+  }, []);
+
   return {
     payment,
     posts,
@@ -65,5 +69,6 @@ export default function usePayment() {
     fetchPayment,
     fetchPosts,
     fetchPaymentPreview,
+    clearPaymentPreview,
   };
 }
