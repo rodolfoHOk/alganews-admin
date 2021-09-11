@@ -29,6 +29,8 @@ import debounce from 'lodash.debounce';
 import usePayment from '../../core/hooks/usePayment';
 import formatToBrl from '../../core/utils/formatToBrl';
 import NullPaymentPreview from '../components/NullPaymentPreview';
+import CustomError from 'rodolfohiok-sdk/dist/CustomError';
+import { BusinessError } from 'rodolfohiok-sdk/dist/errors';
 
 const { TabPane } = Tabs;
 
@@ -38,11 +40,16 @@ export default function PaymentForm() {
   const { paymentPreview, fetchPaymentPreview, clearPaymentPreview } =
     usePayment();
   const [scheduledTo, setScheduleTo] = useState('');
+  const [paymentPreviewError, setPaymentPreviewError] = useState<CustomError>();
 
   const updateScheduleDate = useCallback(() => {
     const { scheduledTo } = form.getFieldsValue();
     setScheduleTo(scheduledTo);
   }, [form]);
+
+  const clearPaymentPreviewError = useCallback(() => {
+    setPaymentPreviewError(undefined);
+  }, []);
 
   const getPaymentPreview = useCallback(async () => {
     const { payee, accountingPeriod, bonuses } = form.getFieldsValue();
@@ -53,14 +60,22 @@ export default function PaymentForm() {
           accountingPeriod,
           bonuses: bonuses || [],
         });
+        clearPaymentPreviewError();
       } catch (error) {
         clearPaymentPreview();
+        if (error instanceof BusinessError) setPaymentPreviewError(error);
         throw error;
       }
     } else {
       clearPaymentPreview();
+      clearPaymentPreviewError();
     }
-  }, [form, fetchPaymentPreview, clearPaymentPreview]);
+  }, [
+    form,
+    fetchPaymentPreview,
+    clearPaymentPreview,
+    clearPaymentPreviewError,
+  ]);
 
   const handleFormChange = useCallback(
     ([field]: FieldData[]) => {
@@ -163,7 +178,7 @@ export default function PaymentForm() {
         <Divider />
         <Col xs={24} lg={12}>
           {!paymentPreview ? (
-            <NullPaymentPreview />
+            <NullPaymentPreview error={paymentPreviewError} />
           ) : (
             <Tabs defaultActiveKey={'payment'}>
               <TabPane tab="Demonstrativo" key="payment">

@@ -10,3 +10,7 @@ https://github.com/ant-design/ant-design/blob/master/components/style/themes/def
 ## Ant Design Customize Theme (react)
 
 https://ant.design/docs/react/customize-theme
+
+## Tax Image
+
+Credits: https://storyset.com/
