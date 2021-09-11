@@ -11,11 +11,12 @@ export default function NullPaymentPreview(props: NullPaymentPreviewProps) {
   return (
     <Card>
       <Row justify="center" style={{ textAlign: 'center' }}>
-        {props.error ? (
-          <img src={confusingImage} alt="Payment" width={240} />
-        ) : (
-          <img src={taxImage} alt="Payment" width={240} />
-        )}
+        <img
+          key={props.error ? 'errorImg' : 'img'}
+          src={props.error ? confusingImage : taxImage}
+          alt="Payment Preview"
+          width={240}
+        />
         <Typography.Title level={4} style={{ maxWidth: 360 }}>
           {props.error
             ? props.error.message

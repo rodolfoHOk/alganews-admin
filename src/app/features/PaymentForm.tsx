@@ -12,6 +12,7 @@ import {
   Descriptions,
   Space,
   Tooltip,
+  Skeleton,
 } from 'antd';
 import { Payment } from 'rodolfohiok-sdk';
 import useUsers from '../../core/hooks/useUsers';
@@ -37,8 +38,12 @@ const { TabPane } = Tabs;
 export default function PaymentForm() {
   const [form] = useForm<Payment.Input>();
   const { editors } = useUsers();
-  const { paymentPreview, fetchPaymentPreview, clearPaymentPreview } =
-    usePayment();
+  const {
+    paymentPreview,
+    fetchPaymentPreview,
+    clearPaymentPreview,
+    fetchingPaymentPreview,
+  } = usePayment();
   const [scheduledTo, setScheduleTo] = useState('');
   const [paymentPreviewError, setPaymentPreviewError] = useState<CustomError>();
 
@@ -177,7 +182,12 @@ export default function PaymentForm() {
         </Col>
         <Divider />
         <Col xs={24} lg={12}>
-          {!paymentPreview ? (
+          {fetchingPaymentPreview ? (
+            <>
+              <Skeleton />
+              <Skeleton title={false} />
+            </>
+          ) : !paymentPreview ? (
             <NullPaymentPreview error={paymentPreviewError} />
           ) : (
             <Tabs defaultActiveKey={'payment'}>
