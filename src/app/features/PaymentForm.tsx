@@ -19,6 +19,7 @@ import { PlusOutlined, DeleteOutlined } from '@ant-design/icons';
 import CurrencyInput from '../components/CurrencyInput';
 import { useCallback } from 'react';
 import { FieldData } from 'rc-field-form/lib/interface';
+import debounce from 'lodash.debounce';
 
 const { TabPane } = Tabs;
 
@@ -38,11 +39,13 @@ export default function PaymentForm() {
     }
   }, []);
 
+  const debouncedHandleFormChange = debounce(handleFormChange, 1000);
+
   return (
     <Form<Payment.Input>
       form={form}
       layout="vertical"
-      onFieldsChange={handleFormChange}
+      onFieldsChange={debouncedHandleFormChange}
       onFinish={(form) => console.log(form)}
     >
       <Row gutter={24}>
