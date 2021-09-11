@@ -23,7 +23,7 @@ import {
   InfoCircleFilled,
 } from '@ant-design/icons';
 import CurrencyInput from '../components/CurrencyInput';
-import { useCallback } from 'react';
+import { useCallback, useState } from 'react';
 import { FieldData } from 'rc-field-form/lib/interface';
 import debounce from 'lodash.debounce';
 import usePayment from '../../core/hooks/usePayment';
@@ -35,6 +35,12 @@ export default function PaymentForm() {
   const [form] = useForm<Payment.Input>();
   const { editors } = useUsers();
   const { paymentPreview, fetchPaymentPreview } = usePayment();
+  const [scheduledTo, setScheduleTo] = useState('');
+
+  const updateScheduleDate = useCallback(() => {
+    const { scheduledTo } = form.getFieldsValue();
+    setScheduleTo(scheduledTo);
+  }, [form]);
 
   const getPaymentPreview = useCallback(() => {
     const { payee, accountingPeriod, bonuses } = form.getFieldsValue();
@@ -57,9 +63,13 @@ export default function PaymentForm() {
         ) {
           getPaymentPreview();
         }
+
+        if (field.name.includes('scheduledTo')) {
+          updateScheduleDate();
+        }
       }
     },
-    [getPaymentPreview]
+    [getPaymentPreview, updateScheduleDate]
   );
 
   const debouncedHandleFormChange = debounce(handleFormChange, 1000);
@@ -128,7 +138,7 @@ export default function PaymentForm() {
           </Form.Item>
         </Col>
         <Col xs={24} lg={8}>
-          <Form.Item label="Agendamento" name="scheduleTo">
+          <Form.Item label="Agendamento" name="scheduledTo">
             <DatePicker
               style={{ width: '100%' }}
               format="DD-MM-YYYY"
@@ -155,18 +165,20 @@ export default function PaymentForm() {
                   {paymentPreview?.payee.name}
                 </Descriptions.Item>
                 <Descriptions.Item label="Período">
-                  <Space>
-                    {moment(paymentPreview?.accountingPeriod.startsOn).format(
-                      'DD/MM/YYYY'
-                    )}
-                    <span>à</span>
-                    {moment(paymentPreview?.accountingPeriod.endsOn).format(
-                      'DD/MM/YYYY'
-                    )}
-                  </Space>
+                  {paymentPreview?.accountingPeriod && (
+                    <Space>
+                      {moment(paymentPreview?.accountingPeriod.startsOn).format(
+                        'DD/MM/YYYY'
+                      )}
+                      <span>à</span>
+                      {moment(paymentPreview?.accountingPeriod.endsOn).format(
+                        'DD/MM/YYYY'
+                      )}
+                    </Space>
+                  )}
                 </Descriptions.Item>
                 <Descriptions.Item label="Agendamento">
-                  {form.getFieldsValue()['scheduledTo']}
+                  {scheduledTo && moment(scheduledTo).format('DD/MM/YYYY')}
                 </Descriptions.Item>
                 <Descriptions.Item label="Palavras">
                   {paymentPreview?.earnings.words}
