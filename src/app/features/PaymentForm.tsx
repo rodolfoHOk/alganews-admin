@@ -17,6 +17,8 @@ import moment, { Moment } from 'moment';
 import useForm from 'antd/lib/form/hooks/useForm';
 import { PlusOutlined, DeleteOutlined } from '@ant-design/icons';
 import CurrencyInput from '../components/CurrencyInput';
+import { useCallback } from 'react';
+import { FieldData } from 'rc-field-form/lib/interface';
 
 const { TabPane } = Tabs;
 
@@ -24,10 +26,23 @@ export default function PaymentForm() {
   const [form] = useForm<Payment.Input>();
   const { editors } = useUsers();
 
+  const handleFormChange = useCallback(([field]: FieldData[]) => {
+    if (Array.isArray(field.name)) {
+      if (
+        field.name.includes('payee') ||
+        field.name.includes('_accountingPeriod') ||
+        field.name.includes('bonuses')
+      ) {
+        console.log('necessário atualizar a prévia de pagamento');
+      }
+    }
+  }, []);
+
   return (
     <Form<Payment.Input>
       form={form}
       layout="vertical"
+      onFieldsChange={handleFormChange}
       onFinish={(form) => console.log(form)}
     >
       <Row gutter={24}>
@@ -123,9 +138,9 @@ export default function PaymentForm() {
                 <Descriptions.Item label="Ganhos">
                   {'R$ 23.432,00'}
                 </Descriptions.Item>
-                {[1, 2].map((bonus) => {
+                {[1, 2].map((bonus, index) => {
                   return (
-                    <Descriptions.Item label={`Bônus ${bonus}`}>
+                    <Descriptions.Item label={`Bônus ${bonus}`} key={index}>
                       {'R$ 7.500,00'}
                     </Descriptions.Item>
                   );
@@ -167,7 +182,7 @@ export default function PaymentForm() {
                 <>
                   {fields.map((field) => {
                     return (
-                      <Row gutter={24}>
+                      <Row gutter={24} key={field.name}>
                         <Col xs={24} lg={14}>
                           <Form.Item
                             {...field}
