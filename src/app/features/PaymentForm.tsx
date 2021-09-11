@@ -28,6 +28,7 @@ import { FieldData } from 'rc-field-form/lib/interface';
 import debounce from 'lodash.debounce';
 import usePayment from '../../core/hooks/usePayment';
 import formatToBrl from '../../core/utils/formatToBrl';
+import NullPaymentPreview from '../components/NullPaymentPreview';
 
 const { TabPane } = Tabs;
 
@@ -161,7 +162,9 @@ export default function PaymentForm() {
         </Col>
         <Divider />
         <Col xs={24} lg={12}>
-          {!paymentPreview ? null : (
+          {!paymentPreview ? (
+            <NullPaymentPreview />
+          ) : (
             <Tabs defaultActiveKey={'payment'}>
               <TabPane tab="Demonstrativo" key="payment">
                 <Descriptions
