@@ -20,11 +20,11 @@ const initialState: PaymentState = {
   query: {
     sort: ['scheduledTo', 'desc'],
     page: 0,
-    size: 2,
+    size: 7,
   },
   paginated: {
     page: 0,
-    size: 2,
+    size: 7,
     totalPages: 1,
     totalElements: 0,
     content: [],
@@ -44,8 +44,9 @@ export const getAllPayments = createAsyncThunk(
 
 export const approvePaymentsInBatch = createAsyncThunk(
   'payment/approvePaymentsInBatch',
-  async (paymentIds: number[]) => {
+  async (paymentIds: number[], { dispatch }) => {
     await PaymentService.approvePaymentsBatch(paymentIds);
+    await dispatch(getAllPayments());
   }
 );
 
