@@ -13,6 +13,7 @@ import {
   Space,
   Tooltip,
   Skeleton,
+  notification,
 } from 'antd';
 import { Payment } from 'rodolfohiok-sdk';
 import useUsers from '../../core/hooks/useUsers';
@@ -32,10 +33,12 @@ import formatToBrl from '../../core/utils/formatToBrl';
 import NullPaymentPreview from '../components/NullPaymentPreview';
 import CustomError from 'rodolfohiok-sdk/dist/CustomError';
 import { BusinessError } from 'rodolfohiok-sdk/dist/errors';
+import { useHistory } from 'react-router';
 
 const { TabPane } = Tabs;
 
 export default function PaymentForm() {
+  const history = useHistory();
   const [form] = useForm<Payment.Input>();
   const { editors, fetchUsers, fetching } = useUsers();
   const {
@@ -43,6 +46,8 @@ export default function PaymentForm() {
     fetchPaymentPreview,
     clearPaymentPreview,
     fetchingPaymentPreview,
+    schedulePayment,
+    schedulingPayment,
   } = usePayment();
   const [scheduledTo, setScheduleTo] = useState('');
   const [paymentPreviewError, setPaymentPreviewError] = useState<CustomError>();
@@ -62,22 +67,24 @@ export default function PaymentForm() {
 
   const getPaymentPreview = useCallback(async () => {
     const { payee, accountingPeriod, bonuses } = form.getFieldsValue();
-    if (payee.id && accountingPeriod.startsOn && accountingPeriod.endsOn) {
-      try {
-        await fetchPaymentPreview({
-          payee,
-          accountingPeriod,
-          bonuses: bonuses || [],
-        });
-        clearPaymentPreviewError();
-      } catch (error) {
+    if (payee && accountingPeriod) {
+      if (payee.id && accountingPeriod.startsOn && accountingPeriod.endsOn) {
+        try {
+          await fetchPaymentPreview({
+            payee,
+            accountingPeriod,
+            bonuses: bonuses || [],
+          });
+          clearPaymentPreviewError();
+        } catch (error) {
+          clearPaymentPreview();
+          if (error instanceof BusinessError) setPaymentPreviewError(error);
+          throw error;
+        }
+      } else {
         clearPaymentPreview();
-        if (error instanceof BusinessError) setPaymentPreviewError(error);
-        throw error;
+        clearPaymentPreviewError();
       }
-    } else {
-      clearPaymentPreview();
-      clearPaymentPreviewError();
     }
   }, [
     form,
@@ -107,16 +114,45 @@ export default function PaymentForm() {
 
   const debouncedHandleFormChange = debounce(handleFormChange, 1000);
 
+  const handleFormSubmit = useCallback(
+    async (form: Payment.Input) => {
+      const paymentDto: Payment.Input = {
+        accountingPeriod: form.accountingPeriod,
+        payee: form.payee,
+        bonuses: form.bonuses || [],
+        scheduledTo: moment(form.scheduledTo).format('YYYY-MM-DD'),
+      };
+
+      await schedulePayment(paymentDto);
+
+      notification.success({
+        message: 'Pagamento agendado com sucesso',
+      });
+
+      history.push('/pagamentos');
+    },
+    [schedulePayment, history]
+  );
+
   return (
     <Form<Payment.Input>
       form={form}
       layout="vertical"
       onFieldsChange={debouncedHandleFormChange}
-      onFinish={(form) => console.log(form)}
+      onFinish={handleFormSubmit}
     >
       <Row gutter={24}>
         <Col xs={24} lg={8}>
-          <Form.Item label="Editor" name={['payee', 'id']}>
+          <Form.Item
+            label="Editor"
+            name={['payee', 'id']}
+            rules={[
+              {
+                required: true,
+                message: 'O campo é obrigatório',
+              },
+            ]}
+          >
             <Select
               showSearch
               loading={fetching}
@@ -149,7 +185,16 @@ export default function PaymentForm() {
           <Form.Item hidden name={['accountingPeriod', 'endsOn']}>
             <Input hidden />
           </Form.Item>
-          <Form.Item label="Período" name="_accountingPeriod">
+          <Form.Item
+            label="Período"
+            name="_accountingPeriod"
+            rules={[
+              {
+                required: true,
+                message: 'O campo é obrigatório',
+              },
+            ]}
+          >
             <DatePicker.RangePicker
               style={{ width: '100%' }}
               format="DD-MM-YYYY"
@@ -175,7 +220,16 @@ export default function PaymentForm() {
           </Form.Item>
         </Col>
         <Col xs={24} lg={8}>
-          <Form.Item label="Agendamento" name="scheduledTo">
+          <Form.Item
+            label="Agendamento"
+            name="scheduledTo"
+            rules={[
+              {
+                required: true,
+                message: 'O campo é obrigatório',
+              },
+            ]}
+          >
             <DatePicker
               style={{ width: '100%' }}
               format="DD-MM-YYYY"
@@ -296,6 +350,12 @@ export default function PaymentForm() {
                             {...field}
                             name={[field.name, 'title']}
                             label="Descrição"
+                            rules={[
+                              {
+                                required: true,
+                                message: 'O campo é obrigatório',
+                              },
+                            ]}
                           >
                             <Input placeholder="E.g.: 1 milhão de views" />
                           </Form.Item>
@@ -306,6 +366,12 @@ export default function PaymentForm() {
                             name={[field.name, 'amount']}
                             initialValue={0}
                             label="Valor"
+                            rules={[
+                              {
+                                required: true,
+                                message: 'O campo é obrigatório',
+                              },
+                            ]}
                           >
                             <CurrencyInput
                               onChange={(e, amount) => {
@@ -348,7 +414,11 @@ export default function PaymentForm() {
           </Form.List>
         </Col>
       </Row>
-      <Button htmlType="submit">enviar</Button>
+      <Row justify="end">
+        <Button type="primary" htmlType="submit" loading={schedulingPayment}>
+          Cadastrar agendamento
+        </Button>
+      </Row>
     </Form>
   );
 }

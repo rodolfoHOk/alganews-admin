@@ -10,6 +10,7 @@ export default function usePayment() {
   const [fetchingPayment, setFetchingPayment] = useState(false);
   const [fetchingPosts, setFetchingPosts] = useState(false);
   const [fetchingPaymentPreview, setFetchingPaymentPreview] = useState(false);
+  const [schedulingPayment, setSchedulingPayment] = useState(false);
 
   const [paymentNotFound, setPaymentNotFound] = useState(false);
 
@@ -58,6 +59,15 @@ export default function usePayment() {
     setPaymentPreview(undefined);
   }, []);
 
+  const schedulePayment = useCallback(async (paymentInput: Payment.Input) => {
+    try {
+      setSchedulingPayment(true);
+      await PaymentService.insertNewPayment(paymentInput);
+    } finally {
+      setSchedulingPayment(false);
+    }
+  }, []);
+
   return {
     payment,
     posts,
@@ -65,10 +75,12 @@ export default function usePayment() {
     fetchingPayment,
     fetchingPosts,
     fetchingPaymentPreview,
+    schedulingPayment,
     paymentNotFound,
     fetchPayment,
     fetchPosts,
     fetchPaymentPreview,
     clearPaymentPreview,
+    schedulePayment,
   };
 }
