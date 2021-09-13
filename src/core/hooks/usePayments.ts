@@ -1,3 +1,4 @@
+import { Key } from 'antd/lib/table/interface';
 import { useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Payment } from 'rodolfohiok-sdk';
@@ -10,6 +11,7 @@ export default function usePayments() {
   const fetching = useSelector((state: RootState) => state.payment.fetching);
   const payments = useSelector((state: RootState) => state.payment.paginated);
   const query = useSelector((state: RootState) => state.payment.query);
+  const selected = useSelector((state: RootState) => state.payment.selected);
 
   const fetchPayments = useCallback(
     () => dispatch(PaymentsActions.getAllPayments()),
@@ -27,12 +29,19 @@ export default function usePayments() {
     [dispatch]
   );
 
+  const setSelected = useCallback(
+    (keys: Key[]) => dispatch(PaymentsActions.storeSelectedKeys(keys)),
+    [dispatch]
+  );
+
   return {
     payments,
     fetching,
     query,
+    selected,
     fetchPayments,
     approvePaymentsInBatch,
     setQuery,
+    setSelected,
   };
 }
