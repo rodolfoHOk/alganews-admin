@@ -8,6 +8,7 @@ import {
   Tooltip,
   DatePicker,
   Descriptions,
+  notification,
 } from 'antd';
 import moment from 'moment';
 import { useEffect, useState } from 'react';
@@ -21,23 +22,20 @@ import DoubleConfirm from '../components/DoubleConfirm';
 import { Link } from 'react-router-dom';
 
 export default function PaymentListView() {
-  const { payments, fetchPayments, fetchingPayments } = usePayments();
-  const [selectedRowKeys, setSelectedRowKeys] = useState<Key[]>([]);
-  const [yearMonth, setYearMonth] = useState<string | undefined>();
-  const [page, setPage] = useState(1);
-  const [sortingOrder, setSortingOrder] = useState<
-    'asc' | 'desc' | undefined
-  >();
   const { xs } = useBreakpoint();
+  const {
+    payments,
+    fetching,
+    query,
+    fetchPayments,
+    approvePaymentsInBatch,
+    setQuery,
+  } = usePayments();
+  const [selectedRowKeys, setSelectedRowKeys] = useState<Key[]>([]);
 
   useEffect(() => {
-    fetchPayments({
-      scheduledToYearMonth: yearMonth,
-      page: page - 1,
-      size: 5,
-      sort: ['scheduledTo', sortingOrder || 'desc'],
-    });
-  }, [fetchPayments, yearMonth, page, sortingOrder]);
+    fetchPayments();
+  }, [fetchPayments]);
 
   return (
     <>
@@ -52,10 +50,11 @@ export default function PaymentListView() {
             disabled={selectedRowKeys.length === 0}
             modalTitle="Aprovar agendamento"
             modalContent="Esta ação é irreversível. Ao aprovar um agendamento, ele não poderá ser removido!"
-            onConfirm={() => {
-              console.log(
-                'todo: implementar aprovação multiplas de agendamento'
-              );
+            onConfirm={async () => {
+              await approvePaymentsInBatch(selectedRowKeys as number[]);
+              notification.success({
+                message: 'Os pagamentos selecionados foram aprovados',
+              });
             }}
           >
             <Button
@@ -73,24 +72,33 @@ export default function PaymentListView() {
             style={{ width: '100%' }}
             format="MMMM - YYYY"
             onChange={(date) => {
-              setYearMonth(date ? date.format('YYYY-MM') : undefined);
+              setQuery({
+                scheduledToYearMonth: date ? date.format('YYYY-MM') : undefined,
+              });
             }}
           />
         </div>
       </Row>
       <Table<Payment.Summary>
-        loading={fetchingPayments}
+        loading={fetching}
         dataSource={payments?.content}
         rowKey="id"
         onChange={(p, f, sorter) => {
           const { order } = sorter as SorterResult<Payment.Summary>;
-          order === 'ascend' ? setSortingOrder('asc') : setSortingOrder('desc');
+          const direction = order?.replace('end', '');
+          if (direction && direction !== query.sort![1])
+            setQuery({
+              sort: [query.sort![0], (direction as 'asc') || 'desc'],
+            });
         }}
         pagination={{
-          current: page,
-          onChange: setPage,
+          current: query.page ? query.page + 1 : 1,
+          onChange: (page) =>
+            setQuery({
+              page: page - 1,
+            }),
           total: payments?.totalElements,
-          pageSize: 5,
+          pageSize: query.size,
         }}
         rowSelection={{
           selectedRowKeys,

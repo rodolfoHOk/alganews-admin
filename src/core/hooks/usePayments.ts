@@ -1,23 +1,38 @@
-import { useCallback, useState } from 'react';
-import { Payment, PaymentService } from 'rodolfohiok-sdk';
+import { useCallback } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { Payment } from 'rodolfohiok-sdk';
+import { RootState } from '../store';
+import * as PaymentsActions from '../store/Payment.slice';
 
 export default function usePayments() {
-  const [payments, setPayments] = useState<Payment.Paginated>();
-  const [fetchingPayments, setFetchingPayments] = useState(false);
+  const dispatch = useDispatch();
 
-  const fetchPayments = useCallback(async (query: Payment.Query) => {
-    setFetchingPayments(true);
-    try {
-      const payments = await PaymentService.getAllPayments(query);
-      setPayments(payments);
-    } finally {
-      setFetchingPayments(false);
-    }
-  }, []);
+  const fetching = useSelector((state: RootState) => state.payment.fetching);
+  const payments = useSelector((state: RootState) => state.payment.paginated);
+  const query = useSelector((state: RootState) => state.payment.query);
+
+  const fetchPayments = useCallback(
+    () => dispatch(PaymentsActions.getAllPayments()),
+    [dispatch]
+  );
+
+  const approvePaymentsInBatch = useCallback(
+    (paymentIds: number[]) =>
+      dispatch(PaymentsActions.approvePaymentsInBatch(paymentIds)),
+    [dispatch]
+  );
+
+  const setQuery = useCallback(
+    (query: Payment.Query) => dispatch(PaymentsActions.setQuery(query)),
+    [dispatch]
+  );
 
   return {
     payments,
-    fetchingPayments,
+    fetching,
+    query,
     fetchPayments,
+    approvePaymentsInBatch,
+    setQuery,
   };
 }

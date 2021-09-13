@@ -20,9 +20,7 @@ export default function DoubleConfirm(props: DoubleConfirmProps) {
           title: props.modalTitle,
           cancelText: 'Cancelar',
           content: props.modalContent,
-          onOk() {
-            props.onConfirm();
-          },
+          onOk: props.onConfirm,
         })
       }
     >

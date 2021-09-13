@@ -4,10 +4,8 @@ import {
   isFulfilled,
   isPending,
   isRejected,
-  PayloadAction,
 } from '@reduxjs/toolkit';
 import { User, UserService } from 'rodolfohiok-sdk';
-import CustomError from 'rodolfohiok-sdk/dist/CustomError';
 
 interface UserState {
   list: User.Summary[];
@@ -46,7 +44,7 @@ export default createReducer(initialState, (builder) => {
     .addMatcher(success, (state) => {
       state.fetching = false;
     })
-    .addMatcher(error, (state, action: PayloadAction<CustomError>) => {
+    .addMatcher(error, (state) => {
       state.fetching = false;
     })
     .addMatcher(loading, (state) => {
