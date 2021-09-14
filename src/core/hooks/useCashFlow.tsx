@@ -1,50 +1,86 @@
-import { useCallback, useState } from 'react';
-import { CashFlow, CashFlowService } from 'rodolfohiok-sdk';
-import moment from 'moment';
+import { useCallback } from 'react';
+import { CashFlow } from 'rodolfohiok-sdk';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from '../store';
+import * as ExpenseActions from '../store/Expense.slice';
+import * as RevenueActions from '../store/Revenue.slice';
 import { Key } from 'antd/lib/table/interface';
 
 type CashFlowEntryType = CashFlow.EntrySummary['type'];
 
 export default function useCashFlow(type: CashFlowEntryType) {
-  const [entries, setEntries] = useState<CashFlow.EntrySummary[]>([]);
-  const [query, setQuery] = useState<CashFlow.Query>({
-    type,
-    sort: ['transactedOn', 'desc'],
-    yearMonth: moment().format('YYYY-MM'),
-  });
-  const [selected, setSelected] = useState<Key[]>([]);
+  const dispatch = useDispatch();
 
-  const [fetchingEntries, setFetchingEntries] = useState(false);
-  const [deletingEntriesInBatch, setDeletingEntriesInBatch] = useState(false);
+  const query = useSelector((state: RootState) =>
+    type === 'EXPENSE'
+      ? state.cashFlow.expense.query
+      : state.cashFlow.revenue.query
+  );
+  const entries = useSelector((state: RootState) =>
+    type === 'EXPENSE'
+      ? state.cashFlow.expense.list
+      : state.cashFlow.revenue.list
+  );
+  const selected = useSelector((state: RootState) =>
+    type === 'EXPENSE'
+      ? state.cashFlow.expense.selected
+      : state.cashFlow.revenue.selected
+  );
+  const fetching = useSelector((state: RootState) =>
+    type === 'EXPENSE'
+      ? state.cashFlow.expense.fetching
+      : state.cashFlow.revenue.fetching
+  );
 
   const fetchEntries = useCallback(async () => {
-    try {
-      setFetchingEntries(true);
-      const newEntries = await CashFlowService.getAllEntries(query);
-      setEntries(newEntries);
-    } finally {
-      setFetchingEntries(false);
-    }
-  }, [query]);
+    await dispatch(
+      type === 'EXPENSE'
+        ? ExpenseActions.getExpenses()
+        : RevenueActions.getRevenues()
+    );
+  }, [dispatch, type]);
 
-  const deleteEntriesInBatch = useCallback(async (entriesIds: number[]) => {
-    try {
-      setDeletingEntriesInBatch(true);
-      await CashFlowService.removeEntriesBatch(entriesIds);
-    } finally {
-      setDeletingEntriesInBatch(false);
-    }
-  }, []);
+  const removeEntriesInBatch = useCallback(
+    async (entriesIds: number[]) => {
+      await dispatch(
+        type === 'EXPENSE'
+          ? ExpenseActions.deleteEntriesInBatch(entriesIds)
+          : RevenueActions.deleteEntriesInBatch(entriesIds)
+      );
+    },
+    [dispatch, type]
+  );
+
+  const setSelected = useCallback(
+    async (keys: Key[]) => {
+      await dispatch(
+        type === 'EXPENSE'
+          ? ExpenseActions.setSelectedExpenses(keys)
+          : RevenueActions.setSelectedRevenues(keys)
+      );
+    },
+    [dispatch, type]
+  );
+
+  const setQuery = useCallback(
+    async (query: Partial<CashFlow.Query>) => {
+      await dispatch(
+        type === 'EXPENSE'
+          ? ExpenseActions.setQuery(query)
+          : RevenueActions.setQuery(query)
+      );
+    },
+    [dispatch, type]
+  );
 
   return {
     entries,
     query,
     selected,
-    fetchingEntries,
-    deletingEntriesInBatch,
+    fetching,
     fetchEntries,
+    removeEntriesInBatch,
     setQuery,
     setSelected,
-    deleteEntriesInBatch,
   };
 }
