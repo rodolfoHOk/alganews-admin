@@ -1,4 +1,4 @@
-import { Table, Tag, Space, Button, Tooltip } from 'antd';
+import { Table, Tag, Space, Button, Tooltip, Card, DatePicker } from 'antd';
 import { EyeOutlined, DeleteOutlined, EditOutlined } from '@ant-design/icons';
 import moment from 'moment';
 import { useEffect } from 'react';
@@ -7,14 +7,11 @@ import useCashFlow from '../../core/hooks/useCashFlow';
 import formatToBrl from '../../core/utils/formatToBrl';
 
 export default function EntriesList() {
-  const { entries, fetchEntries, fetchingEntries } = useCashFlow();
+  const { entries, fetchEntries, fetchingEntries, query, setQuery } =
+    useCashFlow('EXPENSE');
 
   useEffect(() => {
-    fetchEntries({
-      type: 'EXPENSE',
-      sort: ['transactedOn', 'desc'],
-      yearMonth: moment().format('YYYY-MM'),
-    });
+    fetchEntries();
   }, [fetchEntries]);
   return (
     <Table<CashFlow.EntrySummary>
@@ -26,6 +23,9 @@ export default function EntriesList() {
           title: 'Descrição',
           width: 300,
           ellipsis: true,
+          render(description: CashFlow.EntrySummary['description']) {
+            return <Tooltip title={description}>{description}</Tooltip>;
+          },
         },
         {
           dataIndex: 'category',
@@ -39,6 +39,23 @@ export default function EntriesList() {
           dataIndex: 'transactedOn',
           title: 'Data',
           align: 'center',
+          filterDropdown() {
+            return (
+              <Card>
+                <DatePicker.MonthPicker
+                  allowClear={false}
+                  format={'YYYY - MMM'}
+                  onChange={(date) =>
+                    setQuery({
+                      ...query,
+                      yearMonth:
+                        date?.format('YYYY-MM') || moment().format('YYYY-MM'),
+                    })
+                  }
+                />
+              </Card>
+            );
+          },
           render(transactedOn: CashFlow.EntrySummary['transactedOn']) {
             return moment(transactedOn).format('DD/MM/YYYY');
           },
