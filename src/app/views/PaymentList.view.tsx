@@ -32,6 +32,7 @@ export default function PaymentListView() {
     approvePaymentsInBatch,
     setQuery,
     setSelected,
+    removePayment,
   } = usePayments();
 
   useEffect(() => {
@@ -158,10 +159,11 @@ export default function PaymentListView() {
                             cancelText: 'Cancelar',
                             content:
                               'Esta ação é irreversível. Ao remover um agendamento, ele não poderá ser recuperado!',
-                            onOk() {
-                              console.log(
-                                'todo: implementar deleção de agendamento'
-                              );
+                            onOk: async () => {
+                              await removePayment(payment.id);
+                              notification.success({
+                                message: 'Agendamento foi removido',
+                              });
                             },
                           })
                         }
@@ -263,10 +265,11 @@ export default function PaymentListView() {
                         cancelText: 'Cancelar',
                         content:
                           'Esta ação é irreversível. Ao remover um agendamento, ele não poderá ser recuperado!',
-                        onOk() {
-                          console.log(
-                            'todo: implementar deleção de agendamento'
-                          );
+                        onOk: async () => {
+                          await removePayment(id);
+                          notification.success({
+                            message: 'Agendamento foi removido',
+                          });
                         },
                       })
                     }

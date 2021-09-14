@@ -1,4 +1,4 @@
-import { Card, Divider, Button, Tag, Space } from 'antd';
+import { Card, Divider, Button, Tag, Space, notification } from 'antd';
 import { PrinterOutlined, CheckCircleOutlined } from '@ant-design/icons';
 import { useEffect } from 'react';
 import { Redirect, useParams } from 'react-router';
@@ -23,6 +23,8 @@ export default function PaymentDetailsView() {
     fetchingPayment,
     fetchingPosts,
     paymentNotFound,
+    approvingPayment,
+    approvePayment,
   } = usePayment();
 
   useEffect(() => {
@@ -63,9 +65,18 @@ export default function PaymentDetailsView() {
             popConfirmTitle="Deseja aprovar este agendamento?"
             modalTitle="Ação irreversível"
             modalContent="Aprovar um agendamento de pagamento gera uma despesa que não pode ser removida do fluxo de caixa. Essa ação não poderá ser desfeita."
-            onConfirm={() => console.log('todo: implement approval payment')}
+            onConfirm={async () => {
+              if (payment) {
+                await approvePayment(payment.id);
+                fetchPayment(payment.id);
+                notification.success({
+                  message: 'Pagamento aprovado com sucesso',
+                });
+              }
+            }}
           >
             <Button
+              loading={approvingPayment}
               disabled={!payment}
               className="no-print"
               type="primary"

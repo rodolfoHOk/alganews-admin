@@ -34,6 +34,11 @@ export default function usePayments() {
     [dispatch]
   );
 
+  const removePayment = useCallback(
+    (paymentId: number) => dispatch(PaymentsActions.removePayment(paymentId)),
+    [dispatch]
+  );
+
   return {
     payments,
     fetching,
@@ -43,5 +48,6 @@ export default function usePayments() {
     approvePaymentsInBatch,
     setQuery,
     setSelected,
+    removePayment,
   };
 }

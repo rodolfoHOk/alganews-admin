@@ -11,6 +11,7 @@ export default function usePayment() {
   const [fetchingPosts, setFetchingPosts] = useState(false);
   const [fetchingPaymentPreview, setFetchingPaymentPreview] = useState(false);
   const [schedulingPayment, setSchedulingPayment] = useState(false);
+  const [approvingPayment, setApprovingPayment] = useState(false);
 
   const [paymentNotFound, setPaymentNotFound] = useState(false);
 
@@ -68,6 +69,15 @@ export default function usePayment() {
     }
   }, []);
 
+  const approvePayment = useCallback(async (paymentId: number) => {
+    try {
+      setApprovingPayment(true);
+      await PaymentService.approvePayment(paymentId);
+    } finally {
+      setApprovingPayment(false);
+    }
+  }, []);
+
   return {
     payment,
     posts,
@@ -76,11 +86,13 @@ export default function usePayment() {
     fetchingPosts,
     fetchingPaymentPreview,
     schedulingPayment,
+    approvingPayment,
     paymentNotFound,
     fetchPayment,
     fetchPosts,
     fetchPaymentPreview,
     clearPaymentPreview,
     schedulePayment,
+    approvePayment,
   };
 }
