@@ -9,6 +9,7 @@ import PaymentReducer from './Payment.slice';
 import UserReducer from './User.reducer';
 import ExpenseReducer from './Expense.slice';
 import RevenueReducer from './Revenue.slice';
+import entriesCategoryReducer from './EntriesCategory.slice';
 
 const observeActions: Middleware = () => (next) => (action) => {
   if (isRejected(action)) {
@@ -23,6 +24,7 @@ const observeActions: Middleware = () => (next) => (action) => {
 const cashFlowReducer = combineReducers({
   expense: ExpenseReducer,
   revenue: RevenueReducer,
+  category: entriesCategoryReducer,
 });
 
 export const store = configureStore({
