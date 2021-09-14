@@ -1,6 +1,7 @@
 import { useCallback, useState } from 'react';
 import { CashFlow, CashFlowService } from 'rodolfohiok-sdk';
 import moment from 'moment';
+import { Key } from 'antd/lib/table/interface';
 
 type CashFlowEntryType = CashFlow.EntrySummary['type'];
 
@@ -11,6 +12,7 @@ export default function useCashFlow(type: CashFlowEntryType) {
     sort: ['transactedOn', 'desc'],
     yearMonth: moment().format('YYYY-MM'),
   });
+  const [selected, setSelected] = useState<Key[]>([]);
 
   const [fetchingEntries, setFetchingEntries] = useState(false);
 
@@ -27,8 +29,10 @@ export default function useCashFlow(type: CashFlowEntryType) {
   return {
     entries,
     query,
+    selected,
     fetchingEntries,
     fetchEntries,
     setQuery,
+    setSelected,
   };
 }

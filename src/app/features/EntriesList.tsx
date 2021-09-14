@@ -5,8 +5,14 @@ import { useEffect } from 'react';
 import { CashFlow } from 'rodolfohiok-sdk';
 import useCashFlow from '../../core/hooks/useCashFlow';
 import formatToBrl from '../../core/utils/formatToBrl';
+import { Key } from 'antd/lib/table/interface';
 
-export default function EntriesList() {
+interface EntriesListProps {
+  selected: Key[];
+  onSelect: (keys: Key[]) => any;
+}
+
+export default function EntriesList(props: EntriesListProps) {
   const { entries, fetchEntries, fetchingEntries, query, setQuery } =
     useCashFlow('EXPENSE');
 
@@ -17,6 +23,14 @@ export default function EntriesList() {
     <Table<CashFlow.EntrySummary>
       loading={fetchingEntries}
       dataSource={entries}
+      rowKey="id"
+      rowSelection={{
+        selectedRowKeys: props.selected,
+        onChange: props.onSelect,
+        getCheckboxProps(record) {
+          return !record.canBeDeleted ? { disabled: true } : {};
+        },
+      }}
       columns={[
         {
           dataIndex: 'description',
