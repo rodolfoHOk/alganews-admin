@@ -1,4 +1,14 @@
-import { Button, Form, Input, Row, Table, Tooltip, Modal, Col } from 'antd';
+import {
+  Button,
+  Form,
+  Input,
+  Row,
+  Table,
+  Tooltip,
+  Modal,
+  Col,
+  notification,
+} from 'antd';
 import { DeleteOutlined, CheckCircleOutlined } from '@ant-design/icons';
 import { useCallback, useEffect, useState } from 'react';
 import { CashFlow } from 'rodolfohiok-sdk';
@@ -26,8 +36,16 @@ export default function EntryCategoryManager(props: {
         visible={showCreationModal}
         onCancel={closeCreationModal}
         footer={null}
+        destroyOnClose
       >
-        <CategoryForm />
+        <CategoryForm
+          onSuccess={() => {
+            closeCreationModal();
+            notification.success({
+              message: 'Categoria cadastrada com sucesso',
+            });
+          }}
+        />
       </Modal>
       <Row justify="space-between" style={{ marginBottom: 16 }}>
         <Button type="default">Atualizar categorias</Button>
@@ -73,9 +91,24 @@ export default function EntryCategoryManager(props: {
   );
 }
 
-function CategoryForm() {
+function CategoryForm(props: { onSuccess: () => any }) {
+  const { onSuccess } = props;
+  const { fetching, createCategory } = useEntriesCategories();
+
+  const handleFormSubmit = useCallback(
+    async (form: CashFlow.CategoryInput) => {
+      const newCategoryDto: CashFlow.CategoryInput = {
+        ...form,
+        type: 'EXPENSE',
+      };
+      await createCategory(newCategoryDto);
+      onSuccess();
+    },
+    [createCategory, onSuccess]
+  );
+
   return (
-    <Form layout="vertical">
+    <Form layout="vertical" onFinish={handleFormSubmit}>
       <Row justify="end">
         <Col xs={24}>
           <Form.Item
@@ -88,7 +121,12 @@ function CategoryForm() {
             <Input placeholder="E.g.: Infra" />
           </Form.Item>
         </Col>
-        <Button type="primary" htmlType="submit" icon={<CheckCircleOutlined />}>
+        <Button
+          loading={fetching}
+          type="primary"
+          htmlType="submit"
+          icon={<CheckCircleOutlined />}
+        >
           Cadastrar categoria
         </Button>
       </Row>

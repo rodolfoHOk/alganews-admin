@@ -38,6 +38,14 @@ export const getCategories = createAsyncThunk(
   }
 );
 
+export const createCategory = createAsyncThunk(
+  'cash-flow/categories/createCategory',
+  async (category: CashFlow.CategoryInput, { dispatch }) => {
+    await CashFlowService.insertNewCategory(category);
+    await dispatch(getCategories());
+  }
+);
+
 const entriesCategorySlice = createSlice({
   initialState,
   name: 'cash-flow/categories',
@@ -53,7 +61,10 @@ const entriesCategorySlice = createSlice({
     },
   },
   extraReducers(builder) {
-    const { success, error, loading } = getThunkStatus([getCategories]);
+    const { success, error, loading } = getThunkStatus([
+      getCategories,
+      createCategory,
+    ]);
 
     builder
       .addMatcher(success, (state) => {
