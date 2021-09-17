@@ -23,8 +23,9 @@ export default function CashFlowExpensesView() {
         closeIcon={<></>}
         visible={showCategoryModal}
         onCancel={closeCategoryModal}
+        footer={null}
       >
-        <EntryCategoryManager />
+        <EntryCategoryManager type="EXPENSE" />
       </Modal>
       <Row justify="space-between" style={{ marginBottom: 16 }}>
         <DoubleConfirm
@@ -39,12 +40,12 @@ export default function CashFlowExpensesView() {
             await removeEntriesInBatch(selected as number[])
           }
         >
-          <Button type="primary" loading={fetching} disabled={!selected.length}>
+          <Button type="default" loading={fetching} disabled={!selected.length}>
             Remover
           </Button>
         </DoubleConfirm>
         <Button
-          type="primary"
+          type="default"
           icon={<TagOutlined />}
           onClick={openCategoryModal}
         >

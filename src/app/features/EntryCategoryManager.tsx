@@ -4,7 +4,9 @@ import { useEffect } from 'react';
 import { CashFlow } from 'rodolfohiok-sdk';
 import useEntriesCategories from '../../core/hooks/useEntriesCategories';
 
-export default function EntryCategoryManager() {
+export default function EntryCategoryManager(props: {
+  type: 'EXPENSE' | 'REVENUE';
+}) {
   const { expenses, revenues, fetchCategories, fetching } =
     useEntriesCategories();
 
@@ -14,12 +16,13 @@ export default function EntryCategoryManager() {
 
   return (
     <>
-      <Row justify="space-between">
+      <Row justify="space-between" style={{ marginBottom: 16 }}>
         <Button type="primary">Atualizar categorias</Button>
         <Button type="primary">Adicionar categoria</Button>
       </Row>
       <Table<CashFlow.CategorySummary>
-        dataSource={expenses}
+        size="small"
+        dataSource={props.type === 'EXPENSE' ? expenses : revenues}
         loading={fetching}
         rowKey="id"
         columns={[
