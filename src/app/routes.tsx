@@ -32,7 +32,7 @@ export default function Routes() {
         }
       } else {
         notification.error({
-          message: 'Houve um erro',
+          message: reason?.message || 'Houve um erro',
         });
       }
     };

@@ -101,7 +101,9 @@ function CategoryForm(props: { onSuccess: () => any }) {
         ...form,
         type: 'EXPENSE',
       };
+
       await createCategory(newCategoryDto);
+
       onSuccess();
     },
     [createCategory, onSuccess]
