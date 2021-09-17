@@ -20,7 +20,7 @@ export default function CashFlowExpensesView() {
   return (
     <>
       <Modal
-        closeIcon={<></>}
+        title="Gerenciar Categorias"
         visible={showCategoryModal}
         onCancel={closeCategoryModal}
         footer={null}
@@ -40,12 +40,12 @@ export default function CashFlowExpensesView() {
             await removeEntriesInBatch(selected as number[])
           }
         >
-          <Button type="default" loading={fetching} disabled={!selected.length}>
+          <Button type="primary" loading={fetching} disabled={!selected.length}>
             Remover
           </Button>
         </DoubleConfirm>
         <Button
-          type="default"
+          type="primary"
           icon={<TagOutlined />}
           onClick={openCategoryModal}
         >
