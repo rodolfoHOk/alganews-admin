@@ -9,7 +9,7 @@ import {
   Button,
   Select,
 } from 'antd';
-import { useCallback, useEffect } from 'react';
+import { useCallback, useEffect, useMemo } from 'react';
 import { CashFlow } from 'rodolfohiok-sdk';
 import CurrencyInput from '../components/CurrencyInput';
 import { Moment } from 'moment';
@@ -20,18 +20,36 @@ type FormType = Omit<CashFlow.EntryInput, 'transactedOn'> & {
   transactedOn: Moment;
 };
 
-export default function EntryForm() {
+interface EntryFormProps {
+  type: 'EXPENSE' | 'REVENUE';
+}
+
+export default function EntryForm({ type }: EntryFormProps) {
   const [form] = useForm();
 
-  const { expenses, fetching, fetchCategories } = useEntriesCategories();
+  const { expenses, revenues, fetching, fetchCategories } =
+    useEntriesCategories();
 
   useEffect(() => {
     fetchCategories();
   }, [fetchCategories]);
 
-  const handleFormSubmit = useCallback((form: FormType) => {
-    console.log(form);
-  }, []);
+  const categories = useMemo(
+    () => (type === 'EXPENSE' ? expenses : revenues),
+    [type, expenses, revenues]
+  );
+
+  const handleFormSubmit = useCallback(
+    (form: FormType) => {
+      const newEntryDto: CashFlow.EntryInput = {
+        ...form,
+        transactedOn: form.transactedOn.format('YYYY-MM-DD'),
+        type,
+      };
+      console.log(newEntryDto);
+    },
+    [type]
+  );
 
   return (
     <Form layout="vertical" form={form} onFinish={handleFormSubmit}>
@@ -52,7 +70,7 @@ export default function EntryForm() {
             rules={[{ required: true, message: 'O campo é obrigatório' }]}
           >
             <Select loading={fetching} placeholder="Selecione uma categoria">
-              {expenses.map((category) => (
+              {categories.map((category) => (
                 <Select.Option key={category.id} value={category.id}>
                   {category.name}
                 </Select.Option>
@@ -91,7 +109,7 @@ export default function EntryForm() {
         <Space>
           <Button type="default">Cancelar</Button>
           <Button type="primary" htmlType="submit">
-            Cadastrar despesa
+            {type === 'EXPENSE' ? 'Cadastrar despesa' : 'Cadastrar receita'}
           </Button>
         </Space>
       </Row>
