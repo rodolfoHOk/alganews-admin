@@ -24,6 +24,7 @@ export default function CashFlowExpensesView() {
         visible={showCategoryModal}
         onCancel={closeCategoryModal}
         footer={null}
+        destroyOnClose
       >
         <EntryCategoryManager type="EXPENSE" />
       </Modal>

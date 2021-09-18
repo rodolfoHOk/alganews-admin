@@ -49,7 +49,9 @@ export default function EntryCategoryManager(props: {
         />
       </Modal>
       <Row justify="space-between" style={{ marginBottom: 16 }}>
-        <Button type="default">Atualizar categorias</Button>
+        <Button type="default" onClick={fetchCategories}>
+          Atualizar categorias
+        </Button>
         <Button type="default" onClick={openCreationModal}>
           Adicionar categoria
         </Button>

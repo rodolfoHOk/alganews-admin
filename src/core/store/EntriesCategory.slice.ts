@@ -72,6 +72,7 @@ const entriesCategorySlice = createSlice({
     const { success, error, loading } = getThunkStatus([
       getCategories,
       createCategory,
+      deleteCategory,
     ]);
 
     builder
