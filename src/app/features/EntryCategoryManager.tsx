@@ -8,6 +8,7 @@ import {
   Modal,
   Col,
   notification,
+  Popconfirm,
 } from 'antd';
 import { DeleteOutlined, CheckCircleOutlined } from '@ant-design/icons';
 import { useCallback, useEffect, useState } from 'react';
@@ -17,7 +18,7 @@ import useEntriesCategories from '../../core/hooks/useEntriesCategories';
 export default function EntryCategoryManager(props: {
   type: 'EXPENSE' | 'REVENUE';
 }) {
-  const { expenses, revenues, fetchCategories, fetching } =
+  const { expenses, revenues, fetchCategories, fetching, deleteCategory } =
     useEntriesCategories();
 
   const [showCreationModal, setShowCreationModal] = useState(false);
@@ -72,15 +73,26 @@ export default function EntryCategoryManager(props: {
             dataIndex: 'id',
             title: 'Ações',
             align: 'right',
-            render(id: number) {
+            render(id: number, record) {
               return (
                 <Tooltip title="Remover">
-                  <Button
-                    type="ghost"
-                    size="small"
-                    icon={<DeleteOutlined />}
-                    danger
-                  />
+                  <Popconfirm
+                    title="Remover categoria?"
+                    onConfirm={async () => {
+                      await deleteCategory(id);
+                      notification.success({
+                        message: 'Categoria removida com sucesso',
+                      });
+                    }}
+                  >
+                    <Button
+                      type="ghost"
+                      size="small"
+                      icon={<DeleteOutlined />}
+                      disabled={!record.canBeDeleted}
+                      danger
+                    />
+                  </Popconfirm>
                 </Tooltip>
               );
             },
