@@ -7,12 +7,14 @@ import {
   Divider,
   Space,
   Button,
+  Select,
 } from 'antd';
-import { useCallback } from 'react';
+import { useCallback, useEffect } from 'react';
 import { CashFlow } from 'rodolfohiok-sdk';
 import CurrencyInput from '../components/CurrencyInput';
 import { Moment } from 'moment';
 import { useForm } from 'antd/lib/form/Form';
+import useEntriesCategories from '../../core/hooks/useEntriesCategories';
 
 type FormType = Omit<CashFlow.EntryInput, 'transactedOn'> & {
   transactedOn: Moment;
@@ -20,6 +22,12 @@ type FormType = Omit<CashFlow.EntryInput, 'transactedOn'> & {
 
 export default function EntryForm() {
   const [form] = useForm();
+
+  const { expenses, fetching, fetchCategories } = useEntriesCategories();
+
+  useEffect(() => {
+    fetchCategories();
+  }, [fetchCategories]);
 
   const handleFormSubmit = useCallback((form: FormType) => {
     console.log(form);
@@ -43,7 +51,13 @@ export default function EntryForm() {
             name={['category', 'id']}
             rules={[{ required: true, message: 'O campo é obrigatório' }]}
           >
-            <Input />
+            <Select loading={fetching} placeholder="Selecione uma categoria">
+              {expenses.map((category) => (
+                <Select.Option key={category.id} value={category.id}>
+                  {category.name}
+                </Select.Option>
+              ))}
+            </Select>
           </Form.Item>
         </Col>
         <Col xs={24} lg={12}>
