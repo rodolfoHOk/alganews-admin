@@ -50,9 +50,14 @@ export const setQuery = createAsyncThunk(
 
 export const createExpense = createAsyncThunk(
   'cash-flow/expenses/createExpense',
-  async (expense: CashFlow.EntryInput, { dispatch }) => {
-    await CashFlowService.insertNewEntry(expense);
-    await dispatch(getExpenses());
+  async (expense: CashFlow.EntryInput, { dispatch, rejectWithValue }) => {
+    try {
+      await CashFlowService.insertNewEntry(expense);
+      await dispatch(getExpenses());
+    } catch (error) {
+      //@ts-ignore
+      return rejectWithValue({ ...error });
+    }
   }
 );
 
