@@ -18,6 +18,7 @@ import DoubleConfirm from '../components/DoubleConfirm';
 
 interface EntriesListProps {
   onEdit: (entryId: number) => any;
+  onDetail: (entryId: number) => any;
 }
 
 export default function EntriesList(props: EntriesListProps) {
@@ -125,7 +126,12 @@ export default function EntriesList(props: EntriesListProps) {
                   </DoubleConfirm>
                 </Tooltip>
                 <Tooltip title="Visualizar" placement="top">
-                  <Button type="text" size="small" icon={<EyeOutlined />} />
+                  <Button
+                    type="text"
+                    size="small"
+                    icon={<EyeOutlined />}
+                    onClick={() => props.onDetail(id)}
+                  />
                 </Tooltip>
                 <Tooltip title="Editar" placement="right">
                   <Button

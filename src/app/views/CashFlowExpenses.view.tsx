@@ -19,6 +19,7 @@ import DoubleConfirm from '../components/DoubleConfirm';
 import { useCallback, useState } from 'react';
 import EntryCategoryManager from '../features/EntryCategoryManager';
 import EntryForm from '../features/EntryForm';
+import EntryDetails from '../features/EntryDetails';
 
 const { Title, Text } = Typography;
 
@@ -27,7 +28,11 @@ export default function CashFlowExpensesView() {
 
   const [showCategoryModal, setShowCategoryModal] = useState(false);
   const [showFormModal, setShowFormModal] = useState(false);
+  const [showDetailsModal, setShowDetailsModal] = useState(false);
   const [editingEntry, setEditingEntry] = useState<number | undefined>(
+    undefined
+  );
+  const [detailedEntry, setDetailedEntry] = useState<number | undefined>(
     undefined
   );
 
@@ -35,6 +40,8 @@ export default function CashFlowExpensesView() {
   const closeCategoryModal = useCallback(() => setShowCategoryModal(false), []);
   const openFormModal = useCallback(() => setShowFormModal(true), []);
   const closeFormModal = useCallback(() => setShowFormModal(false), []);
+  const openDetailsModal = useCallback(() => setShowDetailsModal(true), []);
+  const closeDetailsModal = useCallback(() => setShowDetailsModal(false), []);
 
   return (
     <>
@@ -47,6 +54,7 @@ export default function CashFlowExpensesView() {
       >
         <EntryCategoryManager type="EXPENSE" />
       </Modal>
+
       <Modal
         title="Cadastrar despesa"
         visible={showFormModal}
@@ -71,6 +79,17 @@ export default function CashFlowExpensesView() {
           }}
         />
       </Modal>
+
+      <Modal
+        title="Detalhes da despesa"
+        visible={showDetailsModal}
+        onCancel={closeDetailsModal}
+        footer={null}
+        destroyOnClose
+      >
+        {detailedEntry && <EntryDetails entryId={detailedEntry} />}
+      </Modal>
+
       <Row justify="space-between" style={{ marginBottom: 16 }}>
         <DoubleConfirm
           popConfirmTitle={`Remover ${
@@ -120,6 +139,10 @@ export default function CashFlowExpensesView() {
         onEdit={(id) => {
           setEditingEntry(id);
           openFormModal();
+        }}
+        onDetail={(id) => {
+          setDetailedEntry(id);
+          openDetailsModal();
         }}
       />
     </>
