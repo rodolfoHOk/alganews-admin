@@ -1,10 +1,20 @@
-import { Table, Tag, Space, Button, Tooltip, Card, DatePicker } from 'antd';
+import {
+  Table,
+  Tag,
+  Space,
+  Button,
+  Tooltip,
+  Card,
+  DatePicker,
+  notification,
+} from 'antd';
 import { EyeOutlined, DeleteOutlined, EditOutlined } from '@ant-design/icons';
 import moment from 'moment';
 import { useEffect } from 'react';
 import { CashFlow } from 'rodolfohiok-sdk';
 import useCashFlow from '../../core/hooks/useCashFlow';
 import formatToBrl from '../../core/utils/formatToBrl';
+import DoubleConfirm from '../components/DoubleConfirm';
 
 interface EntriesListProps {
   onEdit: (entryId: number) => any;
@@ -19,6 +29,7 @@ export default function EntriesList(props: EntriesListProps) {
     setQuery,
     selected,
     setSelected,
+    deleteEntry,
   } = useCashFlow('EXPENSE');
 
   useEffect(() => {
@@ -93,12 +104,25 @@ export default function EntriesList(props: EntriesListProps) {
             return (
               <Space>
                 <Tooltip title="Remover" placement="left">
-                  <Button
-                    type="text"
-                    size="small"
-                    icon={<DeleteOutlined />}
-                    danger
-                  />
+                  <DoubleConfirm
+                    popConfirmTitle="Remover despesa?"
+                    modalTitle="Deseja mesmo remover esta despesa?"
+                    modalContent="Remover uma despesa pode gerar um impacto negativo no gráfico de receitas e despesas. Esta ação é irreversível"
+                    onConfirm={async () => {
+                      await deleteEntry(id);
+                      notification.success({
+                        message: 'Despesa removida com sucesso',
+                      });
+                    }}
+                  >
+                    <Button
+                      type="text"
+                      size="small"
+                      loading={fetching}
+                      icon={<DeleteOutlined />}
+                      danger
+                    />
+                  </DoubleConfirm>
                 </Tooltip>
                 <Tooltip title="Visualizar" placement="top">
                   <Button type="text" size="small" icon={<EyeOutlined />} />

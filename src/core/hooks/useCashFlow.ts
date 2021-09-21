@@ -95,6 +95,17 @@ export default function useCashFlow(type: CashFlowEntryType) {
     [dispatch, type]
   );
 
+  const deleteEntry = useCallback(
+    async (entryId: number) => {
+      await dispatch(
+        type === 'EXPENSE'
+          ? ExpenseActions.deleteExpense(entryId)
+          : RevenueActions.deleteRevenue(entryId)
+      ).unwrap();
+    },
+    [dispatch, type]
+  );
+
   return {
     entries,
     query,
@@ -106,5 +117,6 @@ export default function useCashFlow(type: CashFlowEntryType) {
     setSelected,
     createEntry,
     updateEntry,
+    deleteEntry,
   };
 }
