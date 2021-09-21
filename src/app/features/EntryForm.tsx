@@ -36,7 +36,11 @@ export default function EntryForm({
   const [form] = useForm();
   const { expenses, revenues, fetching, fetchCategories } =
     useEntriesCategories();
-  const { createEntry, fetching: fetchingEntries } = useCashFlow(type);
+  const {
+    createEntry,
+    fetching: fetchingEntries,
+    updateEntry,
+  } = useCashFlow(type);
 
   const [loading, setLoading] = useState(false);
 
@@ -70,11 +74,13 @@ export default function EntryForm({
         type,
       };
 
-      await createEntry(newEntryDto);
+      editingEntry
+        ? await updateEntry(editingEntry, newEntryDto)
+        : await createEntry(newEntryDto);
 
       onSuccess();
     },
-    [type, createEntry, onSuccess]
+    [type, editingEntry, createEntry, updateEntry, onSuccess]
   );
 
   return loading ? (
@@ -147,7 +153,9 @@ export default function EntryForm({
         <Space>
           <Button type="default">Cancelar</Button>
           <Button type="primary" htmlType="submit" loading={fetchingEntries}>
-            {type === 'EXPENSE' ? 'Cadastrar despesa' : 'Cadastrar receita'}
+            {`${editingEntry ? 'Atualizar' : 'Cadastrar'} ${
+              type === 'EXPENSE' ? 'despesa' : 'receita'
+            }`}
           </Button>
         </Space>
       </Row>

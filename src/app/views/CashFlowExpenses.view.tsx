@@ -63,8 +63,11 @@ export default function CashFlowExpensesView() {
           onSuccess={() => {
             closeFormModal();
             notification.success({
-              message: 'Despesa cadastrada com sucesso',
+              message: editingEntry
+                ? 'Despesa atualizada com sucesso'
+                : 'Despesa cadastrada com sucesso',
             });
+            setEditingEntry(undefined);
           }}
         />
       </Modal>
