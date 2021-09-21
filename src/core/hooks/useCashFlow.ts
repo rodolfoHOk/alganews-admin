@@ -1,7 +1,7 @@
 import { useCallback } from 'react';
 import { CashFlow } from 'rodolfohiok-sdk';
 import { useDispatch, useSelector } from 'react-redux';
-import { RootState } from '../store';
+import { AppDispatch, RootState } from '../store';
 import * as ExpenseActions from '../store/Expense.slice';
 import * as RevenueActions from '../store/Revenue.slice';
 import { Key } from 'antd/lib/table/interface';
@@ -9,7 +9,7 @@ import { Key } from 'antd/lib/table/interface';
 type CashFlowEntryType = CashFlow.EntrySummary['type'];
 
 export default function useCashFlow(type: CashFlowEntryType) {
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
 
   const query = useSelector((state: RootState) =>
     type === 'EXPENSE'
@@ -73,6 +73,17 @@ export default function useCashFlow(type: CashFlowEntryType) {
     [dispatch, type]
   );
 
+  const createEntry = useCallback(
+    async (entry: CashFlow.EntryInput) => {
+      await dispatch(
+        type === 'EXPENSE'
+          ? ExpenseActions.createExpense(entry)
+          : RevenueActions.createRevenue(entry)
+      ).unwrap();
+    },
+    [dispatch, type]
+  );
+
   return {
     entries,
     query,
@@ -82,5 +93,6 @@ export default function useCashFlow(type: CashFlowEntryType) {
     removeEntriesInBatch,
     setQuery,
     setSelected,
+    createEntry,
   };
 }

@@ -1,4 +1,13 @@
-import { Space, Typography, Tooltip, Divider, Row, Button, Modal } from 'antd';
+import {
+  Space,
+  Typography,
+  Tooltip,
+  Divider,
+  Row,
+  Button,
+  Modal,
+  notification,
+} from 'antd';
 import {
   InfoCircleFilled,
   TagOutlined,
@@ -42,7 +51,15 @@ export default function CashFlowExpensesView() {
         footer={null}
         destroyOnClose
       >
-        <EntryForm type="EXPENSE" />
+        <EntryForm
+          type="EXPENSE"
+          onSuccess={() => {
+            closeFormModal();
+            notification.success({
+              message: 'Despesa cadastrada com sucesso',
+            });
+          }}
+        />
       </Modal>
       <Row justify="space-between" style={{ marginBottom: 16 }}>
         <DoubleConfirm

@@ -15,6 +15,7 @@ import CurrencyInput from '../components/CurrencyInput';
 import { Moment } from 'moment';
 import { useForm } from 'antd/lib/form/Form';
 import useEntriesCategories from '../../core/hooks/useEntriesCategories';
+import useCashFlow from '../../core/hooks/useCashFlow';
 
 type FormType = Omit<CashFlow.EntryInput, 'transactedOn'> & {
   transactedOn: Moment;
@@ -22,13 +23,16 @@ type FormType = Omit<CashFlow.EntryInput, 'transactedOn'> & {
 
 interface EntryFormProps {
   type: 'EXPENSE' | 'REVENUE';
+  onSuccess: () => any;
 }
 
-export default function EntryForm({ type }: EntryFormProps) {
+export default function EntryForm({ type, onSuccess }: EntryFormProps) {
   const [form] = useForm();
 
   const { expenses, revenues, fetching, fetchCategories } =
     useEntriesCategories();
+
+  const { createEntry, fetching: fetchingEntries } = useCashFlow(type);
 
   useEffect(() => {
     fetchCategories();
@@ -40,15 +44,18 @@ export default function EntryForm({ type }: EntryFormProps) {
   );
 
   const handleFormSubmit = useCallback(
-    (form: FormType) => {
+    async (form: FormType) => {
       const newEntryDto: CashFlow.EntryInput = {
         ...form,
         transactedOn: form.transactedOn.format('YYYY-MM-DD'),
         type,
       };
-      console.log(newEntryDto);
+
+      await createEntry(newEntryDto);
+
+      onSuccess();
     },
-    [type]
+    [type, createEntry, onSuccess]
   );
 
   return (
@@ -108,7 +115,7 @@ export default function EntryForm({ type }: EntryFormProps) {
       <Row justify="end">
         <Space>
           <Button type="default">Cancelar</Button>
-          <Button type="primary" htmlType="submit">
+          <Button type="primary" htmlType="submit" loading={fetchingEntries}>
             {type === 'EXPENSE' ? 'Cadastrar despesa' : 'Cadastrar receita'}
           </Button>
         </Space>

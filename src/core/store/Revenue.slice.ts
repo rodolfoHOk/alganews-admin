@@ -48,6 +48,14 @@ export const setQuery = createAsyncThunk(
   }
 );
 
+export const createRevenue = createAsyncThunk(
+  'cash-flow/revenues/createRevenue',
+  async (revenue: CashFlow.EntryInput, { dispatch }) => {
+    await CashFlowService.insertNewEntry(revenue);
+    await dispatch(getRevenues());
+  }
+);
+
 const revenueSlice = createSlice({
   initialState,
   name: 'cash-flow/revenues',
@@ -72,6 +80,7 @@ const revenueSlice = createSlice({
     const { success, error, loading } = getThunkStatus([
       getRevenues,
       deleteEntriesInBatch,
+      createRevenue,
     ]);
     builder
       .addMatcher(success, (state) => {
