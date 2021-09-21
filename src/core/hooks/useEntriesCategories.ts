@@ -22,8 +22,8 @@ export default function useEntriesCategories() {
   }, [dispatch]);
 
   const createCategory = useCallback(
-    (category: CashFlow.CategoryInput) => {
-      dispatch(CategoryActions.createCategory(category)).unwrap();
+    async (category: CashFlow.CategoryInput) => {
+      await dispatch(CategoryActions.createCategory(category)).unwrap();
     },
     [dispatch]
   );
