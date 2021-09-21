@@ -6,7 +6,11 @@ import { CashFlow } from 'rodolfohiok-sdk';
 import useCashFlow from '../../core/hooks/useCashFlow';
 import formatToBrl from '../../core/utils/formatToBrl';
 
-export default function EntriesList() {
+interface EntriesListProps {
+  onEdit: (entryId: number) => any;
+}
+
+export default function EntriesList(props: EntriesListProps) {
   const {
     entries,
     fetchEntries,
@@ -100,7 +104,12 @@ export default function EntriesList() {
                   <Button type="text" size="small" icon={<EyeOutlined />} />
                 </Tooltip>
                 <Tooltip title="Editar" placement="right">
-                  <Button type="text" size="small" icon={<EditOutlined />} />
+                  <Button
+                    type="text"
+                    size="small"
+                    icon={<EditOutlined />}
+                    onClick={() => props.onEdit(id)}
+                  />
                 </Tooltip>
               </Space>
             );

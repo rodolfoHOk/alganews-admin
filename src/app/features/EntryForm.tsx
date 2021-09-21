@@ -8,9 +8,10 @@ import {
   Space,
   Button,
   Select,
+  Skeleton,
 } from 'antd';
-import { useCallback, useEffect, useMemo } from 'react';
-import { CashFlow } from 'rodolfohiok-sdk';
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import { CashFlow, CashFlowService } from 'rodolfohiok-sdk';
 import CurrencyInput from '../components/CurrencyInput';
 import moment, { Moment } from 'moment';
 import { useForm } from 'antd/lib/form/Form';
@@ -24,19 +25,37 @@ type FormType = Omit<CashFlow.EntryInput, 'transactedOn'> & {
 interface EntryFormProps {
   type: 'EXPENSE' | 'REVENUE';
   onSuccess: () => any;
+  editingEntry?: number | undefined;
 }
 
-export default function EntryForm({ type, onSuccess }: EntryFormProps) {
+export default function EntryForm({
+  type,
+  onSuccess,
+  editingEntry,
+}: EntryFormProps) {
   const [form] = useForm();
-
   const { expenses, revenues, fetching, fetchCategories } =
     useEntriesCategories();
-
   const { createEntry, fetching: fetchingEntries } = useCashFlow(type);
+
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     fetchCategories();
   }, [fetchCategories]);
+
+  useEffect(() => {
+    if (editingEntry) {
+      setLoading(true);
+      CashFlowService.getExistingEntry(editingEntry)
+        .then((entry) => ({
+          ...entry,
+          transactedOn: moment(entry.transactedOn),
+        }))
+        .then(form.setFieldsValue)
+        .finally(() => setLoading(false));
+    }
+  }, [editingEntry, form.setFieldsValue]);
 
   const categories = useMemo(
     () => (type === 'EXPENSE' ? expenses : revenues),
@@ -58,7 +77,13 @@ export default function EntryForm({ type, onSuccess }: EntryFormProps) {
     [type, createEntry, onSuccess]
   );
 
-  return (
+  return loading ? (
+    <>
+      <Skeleton />
+      <Skeleton title={false} />
+      <Skeleton title={false} />
+    </>
+  ) : (
     <Form layout="vertical" form={form} onFinish={handleFormSubmit}>
       <Row gutter={16}>
         <Col xs={24}>

@@ -27,6 +27,9 @@ export default function CashFlowExpensesView() {
 
   const [showCategoryModal, setShowCategoryModal] = useState(false);
   const [showFormModal, setShowFormModal] = useState(false);
+  const [editingEntry, setEditingEntry] = useState<number | undefined>(
+    undefined
+  );
 
   const openCategoryModal = useCallback(() => setShowCategoryModal(true), []);
   const closeCategoryModal = useCallback(() => setShowCategoryModal(false), []);
@@ -47,12 +50,16 @@ export default function CashFlowExpensesView() {
       <Modal
         title="Cadastrar despesa"
         visible={showFormModal}
-        onCancel={closeFormModal}
+        onCancel={() => {
+          closeFormModal();
+          setEditingEntry(undefined);
+        }}
         footer={null}
         destroyOnClose
       >
         <EntryForm
           type="EXPENSE"
+          editingEntry={editingEntry}
           onSuccess={() => {
             closeFormModal();
             notification.success({
@@ -106,7 +113,12 @@ export default function CashFlowExpensesView() {
       </Space>
       <Divider />
 
-      <EntriesList />
+      <EntriesList
+        onEdit={(id) => {
+          setEditingEntry(id);
+          openFormModal();
+        }}
+      />
     </>
   );
 }
