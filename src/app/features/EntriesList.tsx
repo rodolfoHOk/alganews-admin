@@ -7,6 +7,7 @@ import {
   Card,
   DatePicker,
   notification,
+  Descriptions,
 } from 'antd';
 import { EyeOutlined, DeleteOutlined, EditOutlined } from '@ant-design/icons';
 import moment from 'moment';
@@ -69,10 +70,84 @@ export default function EntriesList(props: EntriesListProps) {
       }}
       columns={[
         {
+          title: type === 'EXPENSE' ? 'Despesa' : 'Receita',
+          responsive: ['xs'],
+          render(entry: CashFlow.EntrySummary) {
+            return (
+              <Descriptions column={1} size="small">
+                <Descriptions.Item label="Descrição">
+                  {entry.description}
+                </Descriptions.Item>
+                <Descriptions.Item label="Categoria">
+                  {entry.category.name}
+                </Descriptions.Item>
+                <Descriptions.Item label="Data">
+                  {moment(entry.transactedOn).format('DD/MM/YYYY')}
+                </Descriptions.Item>
+                <Descriptions.Item label="Valor">
+                  {formatToBrl(entry.amount)}
+                </Descriptions.Item>
+                <Descriptions.Item label="Ações">
+                  <Space>
+                    <DoubleConfirm
+                      popConfirmTitle={
+                        type === 'EXPENSE'
+                          ? 'Remover despesa?'
+                          : 'Remover receita?'
+                      }
+                      modalTitle={`Deseja mesmo remover esta ${
+                        type === 'EXPENSE' ? 'despesa' : 'receita'
+                      }?`}
+                      modalContent={`Remover uma ${
+                        type === 'EXPENSE' ? 'despesa' : 'receita'
+                      } pode gerar um impacto negativo no gráfico de receitas e despesas. Esta ação é irreversível`}
+                      onConfirm={async () => {
+                        await deleteEntry(entry.id);
+                        notification.success({
+                          message: `${
+                            type === 'EXPENSE' ? 'Despesa' : 'Receita'
+                          } removida com sucesso`,
+                        });
+                      }}
+                    >
+                      <Tooltip title="Remover" placement="left">
+                        <Button
+                          type="text"
+                          size="small"
+                          loading={fetching}
+                          icon={<DeleteOutlined />}
+                          danger
+                        />
+                      </Tooltip>
+                    </DoubleConfirm>
+                    <Tooltip title="Visualizar" placement="top">
+                      <Button
+                        type="text"
+                        size="small"
+                        icon={<EyeOutlined />}
+                        onClick={() => props.onDetail(entry.id)}
+                      />
+                    </Tooltip>
+                    <Tooltip title="Editar" placement="right">
+                      <Button
+                        type="text"
+                        size="small"
+                        icon={<EditOutlined />}
+                        onClick={() => props.onEdit(entry.id)}
+                      />
+                    </Tooltip>
+                  </Space>
+                </Descriptions.Item>
+              </Descriptions>
+            );
+          },
+        },
+        {
           dataIndex: 'description',
           title: 'Descrição',
           width: 300,
           ellipsis: true,
+          responsive: ['sm'],
           render(description: CashFlow.EntrySummary['description']) {
             return <Tooltip title={description}>{description}</Tooltip>;
           },
@@ -81,6 +156,8 @@ export default function EntriesList(props: EntriesListProps) {
           dataIndex: 'category',
           title: 'Categoria',
           align: 'center',
+          width: 120,
+          responsive: ['sm'],
           render(category: CashFlow.EntrySummary['category']) {
             return <Tag>{category.name}</Tag>;
           },
@@ -89,6 +166,8 @@ export default function EntriesList(props: EntriesListProps) {
           dataIndex: 'transactedOn',
           title: 'Data',
           align: 'center',
+          width: 120,
+          responsive: ['sm'],
           filterDropdown() {
             return (
               <Card>
@@ -114,37 +193,39 @@ export default function EntriesList(props: EntriesListProps) {
           dataIndex: 'amount',
           title: 'Valor',
           align: 'right',
+          width: 120,
+          responsive: ['sm'],
           render: formatToBrl,
         },
         {
           dataIndex: 'id',
           title: 'Ações',
           align: 'center',
+          width: 120,
+          responsive: ['sm'],
           render(id: number) {
             return (
               <Space>
-                <Tooltip title="Remover" placement="left">
-                  <DoubleConfirm
-                    popConfirmTitle={
-                      type === 'EXPENSE'
-                        ? 'Remover despesa?'
-                        : 'Remover receita?'
-                    }
-                    modalTitle={`Deseja mesmo remover esta ${
-                      type === 'EXPENSE' ? 'despesa' : 'receita'
-                    }?`}
-                    modalContent={`Remover uma ${
-                      type === 'EXPENSE' ? 'despesa' : 'receita'
-                    } pode gerar um impacto negativo no gráfico de receitas e despesas. Esta ação é irreversível`}
-                    onConfirm={async () => {
-                      await deleteEntry(id);
-                      notification.success({
-                        message: `${
-                          type === 'EXPENSE' ? 'Despesa' : 'Receita'
-                        } removida com sucesso`,
-                      });
-                    }}
-                  >
+                <DoubleConfirm
+                  popConfirmTitle={
+                    type === 'EXPENSE' ? 'Remover despesa?' : 'Remover receita?'
+                  }
+                  modalTitle={`Deseja mesmo remover esta ${
+                    type === 'EXPENSE' ? 'despesa' : 'receita'
+                  }?`}
+                  modalContent={`Remover uma ${
+                    type === 'EXPENSE' ? 'despesa' : 'receita'
+                  } pode gerar um impacto negativo no gráfico de receitas e despesas. Esta ação é irreversível`}
+                  onConfirm={async () => {
+                    await deleteEntry(id);
+                    notification.success({
+                      message: `${
+                        type === 'EXPENSE' ? 'Despesa' : 'Receita'
+                      } removida com sucesso`,
+                    });
+                  }}
+                >
+                  <Tooltip title="Remover" placement="left">
                     <Button
                       type="text"
                       size="small"
@@ -152,8 +233,8 @@ export default function EntriesList(props: EntriesListProps) {
                       icon={<DeleteOutlined />}
                       danger
                     />
-                  </DoubleConfirm>
-                </Tooltip>
+                  </Tooltip>
+                </DoubleConfirm>
                 <Tooltip title="Visualizar" placement="top">
                   <Button
                     type="text"

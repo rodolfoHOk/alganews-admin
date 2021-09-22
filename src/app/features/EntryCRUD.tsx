@@ -21,6 +21,7 @@ import EntryCategoryManager from './EntryCategoryManager';
 import EntryForm from './EntryForm';
 import EntryDetails from './EntryDetails';
 import moment from 'moment';
+import useBreakpoint from 'antd/lib/grid/hooks/useBreakpoint';
 
 const { Title, Text } = Typography;
 
@@ -29,6 +30,8 @@ interface EntryCRUDProps {
 }
 
 export default function EntryCRUD({ type }: EntryCRUDProps) {
+  const { xs } = useBreakpoint();
+
   const { selected, fetching, removeEntriesInBatch, query } = useCashFlow(type);
 
   const [showCategoryModal, setShowCategoryModal] = useState(false);
@@ -99,7 +102,14 @@ export default function EntryCRUD({ type }: EntryCRUDProps) {
         {detailedEntry && <EntryDetails entryId={detailedEntry} />}
       </Modal>
 
-      <Row justify="space-between" style={{ marginBottom: 16 }}>
+      <Row
+        justify="space-between"
+        style={
+          xs
+            ? { marginBottom: 16, flexDirection: 'column-reverse' }
+            : { marginBottom: 16 }
+        }
+      >
         <DoubleConfirm
           popConfirmTitle={
             selected.length > 1
@@ -123,7 +133,13 @@ export default function EntryCRUD({ type }: EntryCRUDProps) {
           }
           disabled={!selected.length}
         >
-          <Button type="primary" loading={fetching} disabled={!selected.length}>
+          <Button
+            type="primary"
+            style={xs ? { marginTop: 16, width: 100 } : { width: 100 }}
+            loading={fetching}
+            disabled={!selected.length}
+            danger={xs ? true : false}
+          >
             Remover
           </Button>
         </DoubleConfirm>
