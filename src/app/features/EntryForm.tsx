@@ -24,14 +24,16 @@ type FormType = Omit<CashFlow.EntryInput, 'transactedOn'> & {
 
 interface EntryFormProps {
   type: 'EXPENSE' | 'REVENUE';
-  onSuccess: () => any;
   editingEntry?: number | undefined;
+  onSuccess: () => any;
+  onCancel: () => any;
 }
 
 export default function EntryForm({
   type,
-  onSuccess,
   editingEntry,
+  onSuccess,
+  onCancel
 }: EntryFormProps) {
   const [form] = useForm();
   const { expenses, revenues, fetching, fetchCategories } =
@@ -151,7 +153,7 @@ export default function EntryForm({
       <Divider style={{ marginTop: 0 }} />
       <Row justify="end">
         <Space>
-          <Button type="default">Cancelar</Button>
+          <Button type="default" onClick={onCancel}>Cancelar</Button>
           <Button type="primary" htmlType="submit" loading={fetchingEntries}>
             {`${editingEntry ? 'Atualizar' : 'Cadastrar'} ${
               type === 'EXPENSE' ? 'despesa' : 'receita'

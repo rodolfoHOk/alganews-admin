@@ -64,7 +64,9 @@ export default function EntryCRUD({ type }: EntryCRUDProps) {
       </Modal>
 
       <Modal
-        title={type === 'EXPENSE' ? 'Cadastrar despesa' : 'Cadastrar receita'}
+        title={`${editingEntry ? 'Atualizar' : 'Cadastrar'} ${
+          type === 'EXPENSE' ? 'despesa' : 'receita'
+        }`}
         visible={showFormModal}
         onCancel={() => {
           closeFormModal();
@@ -87,6 +89,10 @@ export default function EntryCRUD({ type }: EntryCRUDProps) {
                 ? 'Despesa cadastrada com sucesso'
                 : 'Receita cadastrada com sucesso',
             });
+            setEditingEntry(undefined);
+          }}
+          onCancel={() => {
+            closeFormModal();
             setEditingEntry(undefined);
           }}
         />
