@@ -10,11 +10,12 @@ import {
 } from 'antd';
 import { EyeOutlined, DeleteOutlined, EditOutlined } from '@ant-design/icons';
 import moment from 'moment';
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { CashFlow } from 'rodolfohiok-sdk';
 import useCashFlow from '../../core/hooks/useCashFlow';
 import formatToBrl from '../../core/utils/formatToBrl';
 import DoubleConfirm from '../components/DoubleConfirm';
+import { useHistory, useLocation } from 'react-router-dom';
 
 interface EntriesListProps {
   onEdit: (entryId: number) => any;
@@ -22,20 +23,35 @@ interface EntriesListProps {
 }
 
 export default function EntriesList(props: EntriesListProps) {
+  const location = useLocation();
+  const history = useHistory();
+
   const {
     entries,
     fetchEntries,
     fetching,
-    query,
     setQuery,
     selected,
     setSelected,
     deleteEntry,
   } = useCashFlow('EXPENSE');
 
+  const didMount = useRef(false);
+
   useEffect(() => {
     fetchEntries();
   }, [fetchEntries]);
+
+  useEffect(() => {
+    if (didMount.current) {
+      const params = new URLSearchParams(location.search);
+      const yearMonth = params.get('yearMonth');
+      if (yearMonth) setQuery({ yearMonth });
+    } else {
+      didMount.current = true;
+    }
+  }, [location.search, setQuery]);
+
   return (
     <Table<CashFlow.EntrySummary>
       loading={fetching}
@@ -77,10 +93,10 @@ export default function EntriesList(props: EntriesListProps) {
                   allowClear={false}
                   format={'YYYY - MMM'}
                   onChange={(date) =>
-                    setQuery({
-                      ...query,
-                      yearMonth:
-                        date?.format('YYYY-MM') || moment().format('YYYY-MM'),
+                    history.push({
+                      search: `yearMonth=${
+                        date?.format('YYYY-MM') || moment().format('YYYY-MM')
+                      }`,
                     })
                   }
                 />
