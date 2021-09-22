@@ -1,6 +1,6 @@
 import { message, notification } from 'antd';
 import { useEffect } from 'react';
-import { Switch, Route } from 'react-router-dom';
+import { Switch, Route, useHistory } from 'react-router-dom';
 import CustomError from 'rodolfohiok-sdk/dist/CustomError';
 import AuthorizationService from '../auth/Authorization.service';
 import CashFlowExpensesView from './views/CashFlowExpenses.view';
@@ -15,6 +15,8 @@ import UserEditView from './views/UserEdit.view';
 import UserListView from './views/UserList.view';
 
 export default function Routes() {
+  const history = useHistory();
+
   useEffect(() => {
     window.onunhandledrejection = ({ reason }) => {
       if (reason instanceof CustomError) {
@@ -50,15 +52,44 @@ export default function Routes() {
   useEffect(() => {
     async function identify() {
       const isInAuthorizationRoute = window.location.pathname === '/authorize';
+      const code = new URLSearchParams(window.location.search).get('code');
+
+      const codeVerifier = AuthorizationService.getCodeVerifier();
       const accessToken = AuthorizationService.getAccessToken();
 
       if (!accessToken && !isInAuthorizationRoute) {
         AuthorizationService.imperativelySendToLoginScreen();
       }
+
+      if (isInAuthorizationRoute) {
+        if (!code) {
+          notification.error({
+            message: 'Código não foi informado',
+          });
+          return;
+        }
+
+        if (!codeVerifier) {
+          // necessário fazer o logout
+          return;
+        }
+
+        const { access_token, refresh_token } =
+          await AuthorizationService.getFirstAccessToken({
+            code,
+            codeVerifier,
+            redirectUri: 'http://localhost:3000/authorize',
+          });
+
+        AuthorizationService.setAccessToken(access_token);
+        AuthorizationService.setRefreshToken(refresh_token);
+
+        history.push('/');
+      }
     }
 
     identify();
-  }, []);
+  }, [history]);
 
   return (
     <Switch>
