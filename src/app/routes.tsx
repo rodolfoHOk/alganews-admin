@@ -2,6 +2,7 @@ import { message, notification } from 'antd';
 import { useEffect } from 'react';
 import { Switch, Route } from 'react-router-dom';
 import CustomError from 'rodolfohiok-sdk/dist/CustomError';
+import AuthorizationService from '../auth/Authorization.service';
 import CashFlowExpensesView from './views/CashFlowExpenses.view';
 import CashFlowRevenuesView from './views/CashFlowRevenues.view';
 import HomeView from './views/Home.view';
@@ -44,6 +45,19 @@ export default function Routes() {
     return () => {
       window.onunhandledrejection = null;
     };
+  }, []);
+
+  useEffect(() => {
+    async function identify() {
+      const isInAuthorizationRoute = window.location.pathname === '/authorize';
+      const accessToken = AuthorizationService.getAccessToken();
+
+      if (!accessToken && !isInAuthorizationRoute) {
+        AuthorizationService.imperativelySendToLoginScreen();
+      }
+    }
+
+    identify();
   }, []);
 
   return (
