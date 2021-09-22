@@ -16,6 +16,26 @@ const authServer = axios.create({
 });
 
 export default class AuthorizationService {
+  public static async getNewToken(config: {
+    refreshToken: string;
+    codeVerifier: string;
+  }) {
+    const formUrlEncoded = qs.stringify({
+      refresh_token: config.refreshToken,
+      code_verifier: config.codeVerifier,
+      grant_type: 'refresh_token',
+      client_id: 'alganews-admin',
+    });
+
+    return authServer
+      .post<OAuthAuthorizationTokenResponse>('/oauth/token', formUrlEncoded, {
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+      })
+      .then((res) => res.data);
+  }
+
   public static async getFirstAccessToken(config: {
     code: string;
     codeVerifier: string;

@@ -71,6 +71,7 @@ export default function Routes() {
 
         if (!codeVerifier) {
           // necessário fazer o logout
+          window.alert('TODO: IMPLEMENTAR LOGOUT');
           return;
         }
 

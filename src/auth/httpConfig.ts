@@ -1,11 +1,9 @@
+import axios from 'axios';
 import Service from 'rodolfohiok-sdk/dist/Service';
 import AuthorizationService from './Authorization.service';
 
 Service.setRequestInterceptors(async (request) => {
-  const storage = {
-    accessToken: AuthorizationService.getAccessToken(),
-  };
-  const { accessToken } = storage;
+  const accessToken = AuthorizationService.getAccessToken();
 
   if (accessToken) {
     request.headers['Authorization'] = `Bearer ${accessToken}`;
@@ -13,3 +11,40 @@ Service.setRequestInterceptors(async (request) => {
 
   return request;
 });
+
+Service.setResponseInterceptors(
+  (response) => response,
+  async (error) => {
+    const originalRequest = error.config;
+
+    if (error?.response?.status === 401 && !originalRequest._retry) {
+      originalRequest._retry = true;
+
+      const storage = {
+        codeVerifier: AuthorizationService.getCodeVerifier(),
+        refreshToken: AuthorizationService.getRefreshToken(),
+      };
+      const { codeVerifier, refreshToken } = storage;
+
+      if (!refreshToken || !codeVerifier) {
+        // necessário fazer logout
+        window.alert('TODO: IMPLEMENTAR LOGOUT');
+        return;
+      }
+
+      const tokens = await AuthorizationService.getNewToken({
+        refreshToken,
+        codeVerifier,
+      });
+
+      AuthorizationService.setAccessToken(tokens.access_token);
+      AuthorizationService.setRefreshToken(tokens.refresh_token);
+
+      originalRequest.headers[
+        'Authorization'
+      ] = `Bearer ${tokens.access_token}`;
+
+      return axios(originalRequest);
+    }
+  }
+);

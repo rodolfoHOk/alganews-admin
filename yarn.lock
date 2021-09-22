@@ -10918,10 +10918,10 @@ ripemd160@^2.0.0, ripemd160@^2.0.1:
     hash-base "^3.0.0"
     inherits "^2.0.1"
 
-rodolfohiok-sdk@^2.8.2:
-  version "2.8.2"
-  resolved "https://registry.yarnpkg.com/rodolfohiok-sdk/-/rodolfohiok-sdk-2.8.2.tgz#a9cbea59648d2dc09e6679b5bd48013227fe106c"
-  integrity sha512-hFQax1sUmVqI0RnFGbniB5HbpRfHUyeK37HegLYzrnMmHs7fkLSpXvkLWT1OJ2pAiWHWy6il8U6XZzYpBsmfBA==
+rodolfohiok-sdk@^3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/rodolfohiok-sdk/-/rodolfohiok-sdk-3.0.0.tgz#4e0a5b1ccb6bc5923142ff177de59255b587e3ae"
+  integrity sha512-zauWSwIAf3l4OBpm24YXdx1P7fEy7OELh0IUgRWl0LekILt4huvedXTqwFCud0ZR1pmuN4PvX8dYBnqfKxenSQ==
   dependencies:
     axios "^0.21.4"
     date-fns "^2.23.0"
