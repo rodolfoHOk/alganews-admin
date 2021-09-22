@@ -134,7 +134,7 @@ export default function EntryForm({
         </Col>
         <Col xs={24} lg={12}>
           <Form.Item
-            label="Data de entrada"
+            label={type === 'EXPENSE' ? 'Data da saída' : 'Data da entrada'}
             name="transactedOn"
             rules={[{ required: true, message: 'O campo é obrigatório' }]}
           >

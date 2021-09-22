@@ -18,11 +18,14 @@ import DoubleConfirm from '../components/DoubleConfirm';
 import { useHistory, useLocation } from 'react-router-dom';
 
 interface EntriesListProps {
+  type: 'EXPENSE' | 'REVENUE';
   onEdit: (entryId: number) => any;
   onDetail: (entryId: number) => any;
 }
 
 export default function EntriesList(props: EntriesListProps) {
+  const { type } = props;
+
   const location = useLocation();
   const history = useHistory();
 
@@ -34,7 +37,7 @@ export default function EntriesList(props: EntriesListProps) {
     selected,
     setSelected,
     deleteEntry,
-  } = useCashFlow('EXPENSE');
+  } = useCashFlow(type);
 
   const didMount = useRef(false);
 
@@ -122,13 +125,23 @@ export default function EntriesList(props: EntriesListProps) {
               <Space>
                 <Tooltip title="Remover" placement="left">
                   <DoubleConfirm
-                    popConfirmTitle="Remover despesa?"
-                    modalTitle="Deseja mesmo remover esta despesa?"
-                    modalContent="Remover uma despesa pode gerar um impacto negativo no gráfico de receitas e despesas. Esta ação é irreversível"
+                    popConfirmTitle={
+                      type === 'EXPENSE'
+                        ? 'Remover despesa?'
+                        : 'Remover receita?'
+                    }
+                    modalTitle={`Deseja mesmo remover esta ${
+                      type === 'EXPENSE' ? 'despesa' : 'receita'
+                    }?`}
+                    modalContent={`Remover uma ${
+                      type === 'EXPENSE' ? 'despesa' : 'receita'
+                    } pode gerar um impacto negativo no gráfico de receitas e despesas. Esta ação é irreversível`}
                     onConfirm={async () => {
                       await deleteEntry(id);
                       notification.success({
-                        message: 'Despesa removida com sucesso',
+                        message: `${
+                          type === 'EXPENSE' ? 'Despesa' : 'Receita'
+                        } removida com sucesso`,
                       });
                     }}
                   >

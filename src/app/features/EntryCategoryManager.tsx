@@ -40,6 +40,7 @@ export default function EntryCategoryManager(props: {
         destroyOnClose
       >
         <CategoryForm
+          type={props.type}
           onSuccess={() => {
             closeCreationModal();
             notification.success({
@@ -105,7 +106,10 @@ export default function EntryCategoryManager(props: {
   );
 }
 
-function CategoryForm(props: { onSuccess: () => any }) {
+function CategoryForm(props: {
+  onSuccess: () => any;
+  type: 'EXPENSE' | 'REVENUE';
+}) {
   const { onSuccess } = props;
   const { fetching, createCategory } = useEntriesCategories();
 
@@ -113,14 +117,14 @@ function CategoryForm(props: { onSuccess: () => any }) {
     async (form: CashFlow.CategoryInput) => {
       const newCategoryDto: CashFlow.CategoryInput = {
         ...form,
-        type: 'EXPENSE',
+        type: props.type,
       };
 
       await createCategory(newCategoryDto);
 
       onSuccess();
     },
-    [createCategory, onSuccess]
+    [createCategory, onSuccess, props.type]
   );
 
   return (
