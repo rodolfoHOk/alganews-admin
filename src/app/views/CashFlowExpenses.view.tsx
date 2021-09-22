@@ -20,11 +20,13 @@ import { useCallback, useState } from 'react';
 import EntryCategoryManager from '../features/EntryCategoryManager';
 import EntryForm from '../features/EntryForm';
 import EntryDetails from '../features/EntryDetails';
+import moment from 'moment';
 
 const { Title, Text } = Typography;
 
 export default function CashFlowExpensesView() {
-  const { selected, fetching, removeEntriesInBatch } = useCashFlow('EXPENSE');
+  const { selected, fetching, removeEntriesInBatch, query } =
+    useCashFlow('EXPENSE');
 
   const [showCategoryModal, setShowCategoryModal] = useState(false);
   const [showFormModal, setShowFormModal] = useState(false);
@@ -125,7 +127,10 @@ export default function CashFlowExpensesView() {
         </Space>
       </Row>
       <Space direction="vertical">
-        <Title level={3}>Recuperando entradas do mês de agosto</Title>
+        <Title level={3}>
+          Recuperando entradas do mês de{' '}
+          {moment(query.yearMonth).format('MMMM \\d\\e YYYY')}
+        </Title>
         <Space>
           <Text>É possivel filtrar lançamentos por mês</Text>
           <Tooltip title="Use a coluna data para filtrar" placement="right">
