@@ -28,7 +28,7 @@ export default function Routes() {
           notification.error({
             message: reason.message,
             description:
-              reason.data?.detail === 'Network reason'
+              reason.data?.detail === 'Network Error'
                 ? 'Erro na rede'
                 : reason.data?.detail,
           });
@@ -43,7 +43,6 @@ export default function Routes() {
         });
       }
     };
-
     return () => {
       window.onunhandledrejection = null;
     };

@@ -1,14 +1,6 @@
 import axios from 'axios';
 import qs from 'qs';
 import pkceChallenge from 'pkce-challenge';
-import jwtDecode from 'jwt-decode';
-import { Authentication } from './Auth';
-
-const testToken =
-  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhbGdhbmV3czp1c2VyX2Z1bGxfbmFtZSI6Ikpvw6NvIGRhIFNpbHZhIiwidXNlcl9uYW1lIjoiam9hby5nZXJAYWxnYW5ld3MuY29tLmJyIiwic2NvcGUiOlsiYWxsOndyaXRlIiwiYWxsOnJlYWQiLCJwb3N0OnJlYWQiXSwiYWxnYW5ld3M6dXNlcl9pZCI6MSwiZXhwIjoxNjMyMzU3NDY4LCJhdXRob3JpdGllcyI6WyJNQU5BR0VSIl0sImp0aSI6ImQ2ODhhOTFiLWZkNGUtNDI2ZC05Y2M2LTc0NGM3NGNhYjVmNiIsImNsaWVudF9pZCI6ImFsZ2FuZXdzLWFkbWluIn0.ZZfrsvJXpK0oZTTdNLVgVLFUNzPazyZdKCHgkCVr9UY';
-const decodedToken: Authentication.AccessTokenDecodedBody =
-  jwtDecode(testToken);
-console.log(decodedToken);
 
 export interface OAuthAuthorizationTokenResponse {
   access_token: string;
