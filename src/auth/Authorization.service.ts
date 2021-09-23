@@ -15,7 +15,21 @@ const authServer = axios.create({
   baseURL: 'http://localhost:8081',
 });
 
+authServer.interceptors.response.use(undefined, async (error) => {
+  if (error?.response?.status === 401) {
+    AuthorizationService.imperativelySendToLogout();
+  }
+
+  return Promise.reject(error);
+});
+
 export default class AuthorizationService {
+  public static imperativelySendToLogout() {
+    window.localStorage.clear();
+    // codigo imperativo: gera efeito colateral
+    window.location.href = `http://localhost:8081/logout?redirect=http://localhost:3000`;
+  }
+
   public static async getNewToken(config: {
     refreshToken: string;
     codeVerifier: string;
