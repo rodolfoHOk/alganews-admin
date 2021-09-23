@@ -17,8 +17,16 @@ const initialState: UserState = {
   fetching: false,
 };
 
-export const getAllUsers = createAsyncThunk('/user/getAllUsers', async () =>
-  UserService.getAllUsers()
+export const getAllUsers = createAsyncThunk(
+  '/user/getAllUsers',
+  async (_, { rejectWithValue }) => {
+    try {
+      return await UserService.getAllUsers();
+    } catch (err) {
+      //@ts-ignore
+      return rejectWithValue({ ...err });
+    }
+  }
 );
 
 export const toggleUserStatus = createAsyncThunk(

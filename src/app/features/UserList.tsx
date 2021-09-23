@@ -11,7 +11,7 @@ import {
   Row,
 } from 'antd';
 import { format } from 'date-fns';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { User } from 'rodolfohiok-sdk';
 import useUsers from '../../core/hooks/useUsers';
 import {
@@ -23,12 +23,20 @@ import {
 import Avatar from 'antd/lib/avatar/avatar';
 import { ColumnProps } from 'antd/lib/table';
 import { Link } from 'react-router-dom';
+import Forbidden from '../components/Forbidden';
 
 export default function UserList() {
   const { users, fetchUsers, toggleUserStatus, fetching } = useUsers();
+  const [forbidden, setForbidden] = useState(false);
 
   useEffect(() => {
-    fetchUsers();
+    fetchUsers().catch((err) => {
+      if (err?.data?.status === 403) {
+        setForbidden(true);
+        return;
+      }
+      throw err;
+    });
   }, [fetchUsers]);
 
   const getColumnSearchProps = (
@@ -79,6 +87,8 @@ export default function UserList() {
             .includes((value as string).toLowerCase())
         : '',
   });
+
+  if (forbidden) return <Forbidden />;
 
   return (
     <>

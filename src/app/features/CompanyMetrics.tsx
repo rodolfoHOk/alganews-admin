@@ -5,8 +5,7 @@ import transformDataIntoAntdChart from '../../core/utils/transformDataIntoAntdCh
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { ForbiddenError } from 'rodolfohiok-sdk/dist/errors';
-import { Card, Space, Typography } from 'antd';
-import { LockFilled } from '@ant-design/icons';
+import Forbidden from '../components/Forbidden';
 
 export default function CompanyMetrics() {
   const [data, setData] = useState<
@@ -32,22 +31,7 @@ export default function CompanyMetrics() {
       });
   }, []);
 
-  if (forbidden)
-    return (
-      <Card style={{ minHeight: 256, display: 'flex', alignItems: 'center' }}>
-        <Space direction={'vertical'}>
-          <Space align={'center'}>
-            <LockFilled style={{ fontSize: 32 }} />
-            <Typography.Title style={{ margin: 0 }}>
-              Acesso negado
-            </Typography.Title>
-          </Space>
-          <Typography.Paragraph>
-            Você não tem permissão para visualizar estes dados
-          </Typography.Paragraph>
-        </Space>
-      </Card>
-    );
+  if (forbidden) return <Forbidden minHeight={256} />;
 
   const config: AreaConfig = {
     data,
