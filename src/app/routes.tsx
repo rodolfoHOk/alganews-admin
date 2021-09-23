@@ -1,8 +1,12 @@
 import { message, notification } from 'antd';
+import jwtDecode from 'jwt-decode';
 import { useEffect } from 'react';
+import { useDispatch } from 'react-redux';
 import { Switch, Route, useHistory } from 'react-router-dom';
 import CustomError from 'rodolfohiok-sdk/dist/CustomError';
+import { Authentication } from '../auth/Auth';
 import AuthorizationService from '../auth/Authorization.service';
+import { fetchUser } from '../core/store/Auth.slice';
 import CashFlowExpensesView from './views/CashFlowExpenses.view';
 import CashFlowRevenuesView from './views/CashFlowRevenues.view';
 import HomeView from './views/Home.view';
@@ -16,6 +20,7 @@ import UserListView from './views/UserList.view';
 
 export default function Routes() {
   const history = useHistory();
+  const dispatch = useDispatch();
 
   useEffect(() => {
     window.onunhandledrejection = ({ reason }) => {
@@ -86,10 +91,16 @@ export default function Routes() {
 
         history.push('/');
       }
+
+      if (accessToken) {
+        const decodedToken: Authentication.AccessTokenDecodedBody =
+          jwtDecode(accessToken);
+        dispatch(fetchUser(decodedToken['alganews:user_id']));
+      }
     }
 
     identify();
-  }, [history]);
+  }, [history, dispatch]);
 
   return (
     <Switch>
