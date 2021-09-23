@@ -14,6 +14,7 @@ import { DeleteOutlined, CheckCircleOutlined } from '@ant-design/icons';
 import { useCallback, useEffect, useState } from 'react';
 import { CashFlow } from 'rodolfohiok-sdk';
 import useEntriesCategories from '../../core/hooks/useEntriesCategories';
+import Forbidden from '../components/Forbidden';
 
 export default function EntryCategoryManager(props: {
   type: 'EXPENSE' | 'REVENUE';
@@ -22,13 +23,22 @@ export default function EntryCategoryManager(props: {
     useEntriesCategories();
 
   const [showCreationModal, setShowCreationModal] = useState(false);
+  const [forbidden, setForbidden] = useState(false);
 
   const openCreationModal = useCallback(() => setShowCreationModal(true), []);
   const closeCreationModal = useCallback(() => setShowCreationModal(false), []);
 
   useEffect(() => {
-    fetchCategories();
+    fetchCategories().catch((err) => {
+      if (err?.data?.status === 403) {
+        setForbidden(true);
+        return;
+      }
+      throw err;
+    });
   }, [fetchCategories]);
+
+  if (forbidden) return <Forbidden />;
 
   return (
     <>

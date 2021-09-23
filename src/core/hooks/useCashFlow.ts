@@ -32,12 +32,12 @@ export default function useCashFlow(type: CashFlowEntryType) {
       : state.cashFlow.revenue.fetching
   );
 
-  const fetchEntries = useCallback(async () => {
-    await dispatch(
+  const fetchEntries = useCallback(() => {
+    return dispatch(
       type === 'EXPENSE'
         ? ExpenseActions.getExpenses()
         : RevenueActions.getRevenues()
-    );
+    ).unwrap();
   }, [dispatch, type]);
 
   const removeEntriesInBatch = useCallback(

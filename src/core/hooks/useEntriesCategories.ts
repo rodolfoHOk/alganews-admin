@@ -17,8 +17,8 @@ export default function useEntriesCategories() {
     (state: RootState) => state.cashFlow.category.fetching
   );
 
-  const fetchCategories = useCallback(() => {
-    dispatch(CategoryActions.getCategories());
+  const fetchCategories = useCallback(async () => {
+    return dispatch(CategoryActions.getCategories()).unwrap();
   }, [dispatch]);
 
   const createCategory = useCallback(

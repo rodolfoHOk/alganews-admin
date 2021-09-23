@@ -11,12 +11,13 @@ import {
 } from 'antd';
 import { EyeOutlined, DeleteOutlined, EditOutlined } from '@ant-design/icons';
 import moment from 'moment';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { CashFlow } from 'rodolfohiok-sdk';
 import useCashFlow from '../../core/hooks/useCashFlow';
 import formatToBrl from '../../core/utils/formatToBrl';
 import DoubleConfirm from '../components/DoubleConfirm';
 import { useHistory, useLocation } from 'react-router-dom';
+import Forbidden from '../components/Forbidden';
 
 interface EntriesListProps {
   type: 'EXPENSE' | 'REVENUE';
@@ -42,8 +43,16 @@ export default function EntriesList(props: EntriesListProps) {
 
   const didMount = useRef(false);
 
+  const [forbidden, setForbidden] = useState(false);
+
   useEffect(() => {
-    fetchEntries();
+    fetchEntries().catch((err) => {
+      if (err?.data?.status === 403) {
+        setForbidden(true);
+        return;
+      }
+      throw err;
+    });
   }, [fetchEntries]);
 
   useEffect(() => {
@@ -55,6 +64,8 @@ export default function EntriesList(props: EntriesListProps) {
       didMount.current = true;
     }
   }, [location.search, setQuery]);
+
+  if (forbidden) return <Forbidden />;
 
   return (
     <Table<CashFlow.EntrySummary>

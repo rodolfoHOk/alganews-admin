@@ -17,6 +17,7 @@ import moment, { Moment } from 'moment';
 import { useForm } from 'antd/lib/form/Form';
 import useEntriesCategories from '../../core/hooks/useEntriesCategories';
 import useCashFlow from '../../core/hooks/useCashFlow';
+import Forbidden from '../components/Forbidden';
 
 type FormType = Omit<CashFlow.EntryInput, 'transactedOn'> & {
   transactedOn: Moment;
@@ -33,7 +34,7 @@ export default function EntryForm({
   type,
   editingEntry,
   onSuccess,
-  onCancel
+  onCancel,
 }: EntryFormProps) {
   const [form] = useForm();
   const { expenses, revenues, fetching, fetchCategories } =
@@ -45,9 +46,16 @@ export default function EntryForm({
   } = useCashFlow(type);
 
   const [loading, setLoading] = useState(false);
+  const [forbidden, setForbidden] = useState(false);
 
   useEffect(() => {
-    fetchCategories();
+    fetchCategories().catch((err) => {
+      if (err?.data?.status === 403) {
+        setForbidden(true);
+        return;
+      }
+      throw err;
+    });
   }, [fetchCategories]);
 
   useEffect(() => {
@@ -84,6 +92,8 @@ export default function EntryForm({
     },
     [type, editingEntry, createEntry, updateEntry, onSuccess]
   );
+
+  if (forbidden) return <Forbidden />;
 
   return loading ? (
     <>
@@ -153,7 +163,9 @@ export default function EntryForm({
       <Divider style={{ marginTop: 0 }} />
       <Row justify="end">
         <Space>
-          <Button type="default" onClick={onCancel}>Cancelar</Button>
+          <Button type="default" onClick={onCancel}>
+            Cancelar
+          </Button>
           <Button type="primary" htmlType="submit" loading={fetchingEntries}>
             {`${editingEntry ? 'Atualizar' : 'Cadastrar'} ${
               type === 'EXPENSE' ? 'despesa' : 'receita'

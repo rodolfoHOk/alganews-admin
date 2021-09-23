@@ -20,6 +20,8 @@ import { SorterResult } from 'antd/lib/table/interface';
 import useBreakpoint from 'antd/lib/grid/hooks/useBreakpoint';
 import DoubleConfirm from '../components/DoubleConfirm';
 import { Link } from 'react-router-dom';
+import { useState } from 'react';
+import Forbidden from '../components/Forbidden';
 
 export default function PaymentListView() {
   const { xs } = useBreakpoint();
@@ -35,9 +37,19 @@ export default function PaymentListView() {
     removePayment,
   } = usePayments();
 
+  const [forbidden, setForbidden] = useState(false);
+
   useEffect(() => {
-    fetchPayments();
+    fetchPayments().catch((err) => {
+      if (err?.data?.status === 403) {
+        setForbidden(true);
+        return;
+      }
+      throw err;
+    });
   }, [fetchPayments]);
+
+  if (forbidden) return <Forbidden />;
 
   return (
     <>
