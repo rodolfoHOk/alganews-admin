@@ -46,5 +46,7 @@ Service.setResponseInterceptors(
 
       return axios(originalRequest);
     }
+
+    return Promise.reject(error);
   }
 );
