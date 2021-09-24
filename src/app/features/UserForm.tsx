@@ -251,12 +251,13 @@ export default function UserForm(props: UserFormProps) {
           >
             <Select
               placeholder="Selecione um perfil"
+              disabled={!props.user?.canSensitiveDataBeUpdated}
               onChange={(value) => {
                 setIsEditorRole(value === 'EDITOR');
               }}
             >
               <Select.Option value={'EDITOR'}>Editor</Select.Option>
-              <Select.Option value={'ASSISTANT'}>Assitente</Select.Option>
+              <Select.Option value={'ASSISTANT'}>Assistente</Select.Option>
               <Select.Option value={'MANAGER'}>Gerente</Select.Option>
             </Select>
           </Form.Item>
@@ -276,7 +277,11 @@ export default function UserForm(props: UserFormProps) {
               },
             ]}
           >
-            <Input type="email" placeholder="E.g.: contato@joao.silva" />
+            <Input
+              type="email"
+              placeholder="E.g.: contato@joao.silva"
+              disabled={!props.user?.canSensitiveDataBeUpdated}
+            />
           </Form.Item>
         </Col>
         <Col sm={24}>
@@ -362,6 +367,7 @@ export default function UserForm(props: UserFormProps) {
                     <MaskedInput
                       mask="(11) 11111-1111"
                       placeholder="(12) 91234-4567"
+                      disabled={!props.user?.canSensitiveDataBeUpdated}
                     />
                   </Form.Item>
                 </Col>
