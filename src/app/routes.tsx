@@ -1,11 +1,12 @@
 import { message, notification } from 'antd';
 import jwtDecode from 'jwt-decode';
-import { useEffect } from 'react';
-import { Switch, Route, useHistory } from 'react-router-dom';
+import { useEffect, useMemo } from 'react';
+import { Switch, Route, useHistory, useLocation } from 'react-router-dom';
 import CustomError from 'rodolfohiok-sdk/dist/CustomError';
 import { Authentication } from '../auth/Auth';
 import AuthorizationService from '../auth/Authorization.service';
 import useAuth from '../core/hooks/useAuth';
+import GlobalLoading from './components/GlobalLoading';
 import CashFlowExpensesView from './views/CashFlowExpenses.view';
 import CashFlowRevenuesView from './views/CashFlowRevenues.view';
 import HomeView from './views/Home.view';
@@ -19,7 +20,8 @@ import UserListView from './views/UserList.view';
 
 export default function Routes() {
   const history = useHistory();
-  const { fetchUser } = useAuth();
+  const location = useLocation();
+  const { fetchUser, user } = useAuth();
 
   useEffect(() => {
     window.onunhandledrejection = ({ reason }) => {
@@ -104,6 +106,13 @@ export default function Routes() {
 
     identify();
   }, [history, fetchUser]);
+
+  const isAuthorizationRoute = useMemo(
+    () => location.pathname === '/authorize',
+    [location.pathname]
+  );
+
+  if (isAuthorizationRoute || !user) return <GlobalLoading />;
 
   return (
     <Switch>
