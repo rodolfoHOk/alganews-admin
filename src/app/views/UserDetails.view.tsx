@@ -26,12 +26,18 @@ import { Post } from 'rodolfohiok-sdk';
 import moment from 'moment';
 import usePageTitle from '../../core/hooks/usePageTitle';
 import formatPhone from '../../core/utils/formatPhone';
+import useBreadcrumb from '../../core/hooks/useBreadcrumb';
 
 export default function UserDetailsView() {
   usePageTitle('Detalhes do usuário');
+
   const params = useParams<{ id: string }>();
+
   const [page, setPage] = useState(0);
+
   const { user, fetchUser, notFound, toggleUserStatus } = useUser();
+  useBreadcrumb(`Usuários/${user?.name || 'Detalhes'}`);
+
   const { posts, fetchUserPosts, togglePostStatus, loadingPosts } = usePosts();
 
   const { lg } = useBreakpoint();

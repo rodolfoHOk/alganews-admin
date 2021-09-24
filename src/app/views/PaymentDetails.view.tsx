@@ -10,9 +10,11 @@ import moment from 'moment';
 import NotFoundError from '../components/NotFoundError';
 import usePageTitle from '../../core/hooks/usePageTitle';
 import DoubleConfirm from '../components/DoubleConfirm';
+import useBreadcrumb from '../../core/hooks/useBreadcrumb';
 
 export default function PaymentDetailsView() {
   usePageTitle('Detalhes do pagamento');
+  useBreadcrumb('Pagamento/Detalhes');
 
   const params = useParams<{ id: string }>();
   const {

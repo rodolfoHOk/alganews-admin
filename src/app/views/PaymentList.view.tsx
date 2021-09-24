@@ -22,8 +22,13 @@ import DoubleConfirm from '../components/DoubleConfirm';
 import { Link } from 'react-router-dom';
 import { useState } from 'react';
 import Forbidden from '../components/Forbidden';
+import usePageTitle from '../../core/hooks/usePageTitle';
+import useBreadcrumb from '../../core/hooks/useBreadcrumb';
 
 export default function PaymentListView() {
+  usePageTitle('Consulta de pagamentos');
+  useBreadcrumb('Pagamentos/Consulta');
+
   const { xs } = useBreakpoint();
   const {
     payments,
