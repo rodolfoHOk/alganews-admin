@@ -28,14 +28,18 @@ export default function DefaultLayoutSideBar() {
   const [show, setShow] = useState(false);
 
   const SidebarWrapper: React.FC = useMemo(() => (lg ? Sider : Drawer), [lg]);
+
   const siderProps = useMemo((): SiderProps => {
     return {
       width: 200,
       className: 'site-layout-background no-print',
     };
   }, []);
+
   const drawerProps = useMemo((): DrawerProps => {
     return {
+      visible: show,
+      closable: true,
       title: (
         <>
           <img src={logo} alt="logo AlgaNews" />
@@ -43,18 +47,16 @@ export default function DefaultLayoutSideBar() {
       ),
       headerStyle: { height: 64 },
       bodyStyle: { padding: 0 },
-      visible: show,
-      closable: true,
       onClose() {
         setShow(false);
       },
       placement: 'left',
     };
   }, [show]);
-  const sidebarProps = useMemo(
-    () => (lg ? drawerProps : siderProps),
-    [lg, drawerProps, siderProps]
-  );
+
+  const sidebarProps = useMemo(() => {
+    return lg ? siderProps : drawerProps;
+  }, [lg, drawerProps, siderProps]);
 
   return (
     <>
