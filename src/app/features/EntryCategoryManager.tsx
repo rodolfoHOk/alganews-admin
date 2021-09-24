@@ -10,15 +10,22 @@ import {
   notification,
   Popconfirm,
 } from 'antd';
-import { DeleteOutlined, CheckCircleOutlined } from '@ant-design/icons';
+import {
+  DeleteOutlined,
+  CheckCircleOutlined,
+  ReloadOutlined,
+  PlusCircleOutlined,
+} from '@ant-design/icons';
 import { useCallback, useEffect, useState } from 'react';
 import { CashFlow } from 'rodolfohiok-sdk';
 import useEntriesCategories from '../../core/hooks/useEntriesCategories';
 import Forbidden from '../components/Forbidden';
+import useBreakpoint from 'antd/lib/grid/hooks/useBreakpoint';
 
 export default function EntryCategoryManager(props: {
   type: 'EXPENSE' | 'REVENUE';
 }) {
+  const { xs } = useBreakpoint();
   const { expenses, revenues, fetchCategories, fetching, deleteCategory } =
     useEntriesCategories();
 
@@ -60,11 +67,19 @@ export default function EntryCategoryManager(props: {
         />
       </Modal>
       <Row justify="space-between" style={{ marginBottom: 16 }}>
-        <Button type="default" onClick={fetchCategories}>
-          Atualizar categorias
+        <Button
+          type="default"
+          icon={<ReloadOutlined />}
+          onClick={fetchCategories}
+        >
+          {xs ? 'Atualizar' : 'Atualizar categorias'}
         </Button>
-        <Button type="default" onClick={openCreationModal}>
-          Adicionar categoria
+        <Button
+          type="primary"
+          icon={<PlusCircleOutlined />}
+          onClick={openCreationModal}
+        >
+          {xs ? 'Adicionar' : 'Adicionar categoria'}
         </Button>
       </Row>
       <Table<CashFlow.CategorySummary>
