@@ -61,7 +61,7 @@ export default function PaymentDetailsView() {
           )}`}</Tag>
         ) : (
           <DoubleConfirm
-            disabled={!payment}
+            disabled={!payment || !payment.canBeApproved}
             popConfirmTitle="Deseja aprovar este agendamento?"
             modalTitle="Ação irreversível"
             modalContent="Aprovar um agendamento de pagamento gera uma despesa que não pode ser removida do fluxo de caixa. Essa ação não poderá ser desfeita."
@@ -77,7 +77,7 @@ export default function PaymentDetailsView() {
           >
             <Button
               loading={approvingPayment}
-              disabled={!payment}
+              disabled={!payment || !payment.canBeApproved}
               className="no-print"
               type="primary"
               danger

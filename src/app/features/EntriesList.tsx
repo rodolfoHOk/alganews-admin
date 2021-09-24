@@ -120,6 +120,7 @@ export default function EntriesList(props: EntriesListProps) {
                           } removida com sucesso`,
                         });
                       }}
+                      disabled={!entry.canBeDeleted}
                     >
                       <Tooltip title="Remover" placement="left">
                         <Button
@@ -127,24 +128,26 @@ export default function EntriesList(props: EntriesListProps) {
                           size="small"
                           loading={fetching}
                           icon={<DeleteOutlined />}
+                          disabled={!entry.canBeDeleted}
                           danger
                         />
                       </Tooltip>
                     </DoubleConfirm>
-                    <Tooltip title="Visualizar" placement="top">
+                    <Tooltip title="Editar" placement="top">
+                      <Button
+                        type="text"
+                        size="small"
+                        icon={<EditOutlined />}
+                        disabled={!entry.canBeEdited}
+                        onClick={() => props.onEdit(entry.id)}
+                      />
+                    </Tooltip>
+                    <Tooltip title="Visualizar" placement="right">
                       <Button
                         type="text"
                         size="small"
                         icon={<EyeOutlined />}
                         onClick={() => props.onDetail(entry.id)}
-                      />
-                    </Tooltip>
-                    <Tooltip title="Editar" placement="right">
-                      <Button
-                        type="text"
-                        size="small"
-                        icon={<EditOutlined />}
-                        onClick={() => props.onEdit(entry.id)}
                       />
                     </Tooltip>
                   </Space>
@@ -214,7 +217,7 @@ export default function EntriesList(props: EntriesListProps) {
           align: 'center',
           width: 120,
           responsive: ['sm'],
-          render(id: number) {
+          render(id: number, entry: CashFlow.EntrySummary) {
             return (
               <Space>
                 <DoubleConfirm
@@ -235,6 +238,7 @@ export default function EntriesList(props: EntriesListProps) {
                       } removida com sucesso`,
                     });
                   }}
+                  disabled={!entry.canBeDeleted}
                 >
                   <Tooltip title="Remover" placement="left">
                     <Button
@@ -242,24 +246,26 @@ export default function EntriesList(props: EntriesListProps) {
                       size="small"
                       loading={fetching}
                       icon={<DeleteOutlined />}
+                      disabled={!entry.canBeDeleted}
                       danger
                     />
                   </Tooltip>
                 </DoubleConfirm>
-                <Tooltip title="Visualizar" placement="top">
+                <Tooltip title="Editar" placement="top">
+                  <Button
+                    type="text"
+                    size="small"
+                    icon={<EditOutlined />}
+                    disabled={!entry.canBeEdited}
+                    onClick={() => props.onEdit(id)}
+                  />
+                </Tooltip>
+                <Tooltip title="Visualizar" placement="right">
                   <Button
                     type="text"
                     size="small"
                     icon={<EyeOutlined />}
                     onClick={() => props.onDetail(id)}
-                  />
-                </Tooltip>
-                <Tooltip title="Editar" placement="right">
-                  <Button
-                    type="text"
-                    size="small"
-                    icon={<EditOutlined />}
-                    onClick={() => props.onEdit(id)}
                   />
                 </Tooltip>
               </Space>

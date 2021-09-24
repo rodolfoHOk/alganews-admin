@@ -81,6 +81,10 @@ export default function UserDetailsView() {
                     ? `Desabilitar ${user.name}`
                     : `Habilitar ${user.name}`
                 }
+                disabled={
+                  (user.active && !user.canBeDeactivated) ||
+                  (!user.active && !user.canBeActivated)
+                }
                 onConfirm={() =>
                   confirm({
                     icon: <WarningFilled style={{ color: '#0099FF' }} />,
@@ -98,7 +102,13 @@ export default function UserDetailsView() {
                   })
                 }
               >
-                <Button type="primary">
+                <Button
+                  type="primary"
+                  disabled={
+                    (user.active && !user.canBeDeactivated) ||
+                    (!user.active && !user.canBeActivated)
+                  }
+                >
                   {user.active ? 'Desabilitar' : 'Habilitar'}
                 </Button>
               </Popconfirm>
