@@ -3,6 +3,9 @@ import Meta from 'antd/lib/card/Meta';
 import { UserOutlined, LogoutOutlined } from '@ant-design/icons';
 import logo from '../../../assets/logo.svg';
 import useAuth from '../../../core/hooks/useAuth';
+import { Link } from 'react-router-dom';
+import confirm from 'antd/lib/modal/confirm';
+import AuthorizationService from '../../../auth/Authorization.service';
 
 const { Header } = Layout;
 
@@ -21,7 +24,7 @@ export default function DefaultLayoutHeader() {
         <Dropdown
           placement="bottomRight"
           overlay={
-            <Card style={{ width: 220 }}>
+            <Menu style={{ width: 220 }}>
               <Card bordered={false}>
                 <Meta
                   // avatar={<Avatar src={user?.avatarUrls.small} />}
@@ -37,13 +40,30 @@ export default function DefaultLayoutHeader() {
                   }
                 />
               </Card>
-              <Menu>
-                <Menu.Item icon={<UserOutlined />}>Meu Perfil</Menu.Item>
-                <Menu.Item icon={<LogoutOutlined />} danger>
-                  Fazer Logout
-                </Menu.Item>
-              </Menu>
-            </Card>
+              <Menu.Item icon={<UserOutlined />}>
+                <Link to={`/usuarios/${user?.id}`}>Meu Perfil</Link>
+              </Menu.Item>
+              <Menu.Item
+                icon={<LogoutOutlined />}
+                onClick={() => {
+                  confirm({
+                    closable: true,
+                    title: 'Fazer Logout',
+                    content:
+                      'Deseja realmente fazer o logout? Será necessário inserir as credenciais novamente.',
+                    onOk() {
+                      AuthorizationService.imperativelySendToLogout();
+                    },
+                    okButtonProps: { danger: true },
+                    okText: 'Fazer logout',
+                    cancelText: 'Permanecer logado',
+                  });
+                }}
+                danger
+              >
+                Fazer Logout
+              </Menu.Item>
+            </Menu>
           }
         >
           <Avatar src={user?.avatarUrls.small} />
