@@ -222,6 +222,10 @@ export default function UserList() {
             render(active, user) {
               return (
                 <Switch
+                  disabled={
+                    (active && !user.canBeDeactivated) ||
+                    (!active && !user.canBeActivated)
+                  }
                   checked={active}
                   onChange={() => toggleUserStatus(user)}
                 />
