@@ -88,6 +88,10 @@ export default function Routes() {
         AuthorizationService.setAccessToken(access_token);
         AuthorizationService.setRefreshToken(refresh_token);
 
+        const decodedToken: Authentication.AccessTokenDecodedBody =
+          jwtDecode(access_token);
+        fetchUser(decodedToken['alganews:user_id']);
+
         history.push('/');
       }
 
