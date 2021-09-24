@@ -27,8 +27,7 @@ Service.setResponseInterceptors(
       const { codeVerifier, refreshToken } = storage;
 
       if (!refreshToken || !codeVerifier) {
-        // necessário fazer logout
-        window.alert('TODO: IMPLEMENTAR LOGOUT');
+        AuthorizationService.imperativelySendToLogout();
         return;
       }
 

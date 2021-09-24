@@ -71,12 +71,12 @@ export default function Routes() {
           notification.error({
             message: 'Código não foi informado',
           });
+          AuthorizationService.imperativelySendToLoginScreen();
           return;
         }
 
         if (!codeVerifier) {
-          // necessário fazer o logout
-          window.alert('TODO: IMPLEMENTAR LOGOUT');
+          AuthorizationService.imperativelySendToLogout();
           return;
         }
 
