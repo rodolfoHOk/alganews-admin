@@ -22,6 +22,7 @@ import { MaskedInput } from 'antd-mask-input';
 import { Moment } from 'moment';
 import { useHistory } from 'react-router-dom';
 import CurrencyInput from '../components/CurrencyInput';
+import useAuth from '../../core/hooks/useAuth';
 
 const { TabPane } = Tabs;
 
@@ -39,6 +40,8 @@ interface UserFormProps {
 export default function UserForm(props: UserFormProps) {
   const history = useHistory();
   const [form] = Form.useForm<User.Input>();
+  const { user: authenticatedUser } = useAuth();
+
   const [loading, setLoading] = useState(false);
   const [avatar, setAvatar] = useState(props.user?.avatarUrls.default || '');
   const [activeTab, setActiveTab] = useState<'personal' | 'bankAccount'>(
@@ -258,7 +261,12 @@ export default function UserForm(props: UserFormProps) {
             >
               <Select.Option value={'EDITOR'}>Editor</Select.Option>
               <Select.Option value={'ASSISTANT'}>Assistente</Select.Option>
-              <Select.Option value={'MANAGER'}>Gerente</Select.Option>
+              <Select.Option
+                value={'MANAGER'}
+                disabled={authenticatedUser?.role !== 'MANAGER'}
+              >
+                Gerente
+              </Select.Option>
             </Select>
           </Form.Item>
         </Col>
