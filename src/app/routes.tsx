@@ -1,22 +1,31 @@
 import { message, notification } from 'antd';
 import jwtDecode from 'jwt-decode';
-import { useEffect, useMemo } from 'react';
+import React, { Suspense, useEffect, useMemo } from 'react';
 import { Switch, Route, useHistory, useLocation } from 'react-router-dom';
 import CustomError from 'rodolfohiok-sdk/dist/CustomError';
 import { Authentication } from '../auth/Auth';
 import AuthorizationService from '../auth/Authorization.service';
 import useAuth from '../core/hooks/useAuth';
 import GlobalLoading from './components/GlobalLoading';
-import CashFlowExpensesView from './views/CashFlowExpenses.view';
-import CashFlowRevenuesView from './views/CashFlowRevenues.view';
-import HomeView from './views/Home.view';
-import PaymentCreateView from './views/PaymentCreate.view';
-import PaymentDetailsView from './views/PaymentDetails.view';
-import PaymentListView from './views/PaymentList.view';
-import UserCreateView from './views/UserCreate.view';
-import UserDetailsView from './views/UserDetails.view';
-import UserEditView from './views/UserEdit.view';
-import UserListView from './views/UserList.view';
+
+const HomeView = React.lazy(() => import('./views/Home.view'));
+const UserCreateView = React.lazy(() => import('./views/UserCreate.view'));
+const UserDetailsView = React.lazy(() => import('./views/UserDetails.view'));
+const UserEditView = React.lazy(() => import('./views/UserEdit.view'));
+const UserListView = React.lazy(() => import('./views/UserList.view'));
+const PaymentListView = React.lazy(() => import('./views/PaymentList.view'));
+const PaymentCreateView = React.lazy(
+  () => import('./views/PaymentCreate.view')
+);
+const PaymentDetailsView = React.lazy(
+  () => import('./views/PaymentDetails.view')
+);
+const CashFlowExpensesView = React.lazy(
+  () => import('./views/CashFlowExpenses.view')
+);
+const CashFlowRevenuesView = React.lazy(
+  () => import('./views/CashFlowRevenues.view')
+);
 
 const APP_BASE_URL = process.env.REACT_APP_BASE_URL;
 
@@ -117,29 +126,31 @@ export default function Routes() {
   if (isAuthorizationRoute || !user) return <GlobalLoading />;
 
   return (
-    <Switch>
-      <Route path={'/'} exact component={HomeView} />
-      <Route path={'/usuarios'} exact component={UserListView} />
-      <Route path={'/usuarios/cadastro'} exact component={UserCreateView} />
-      <Route path={'/usuarios/edicao/:id'} exact component={UserEditView} />
-      <Route path={'/usuarios/:id'} exact component={UserDetailsView} />
-      <Route path={'/pagamentos'} exact component={PaymentListView} />
-      <Route
-        path={'/pagamentos/cadastro'}
-        exact
-        component={PaymentCreateView}
-      />
-      <Route path={'/pagamentos/:id'} exact component={PaymentDetailsView} />
-      <Route
-        path={'/fluxo-de-caixa/despesas'}
-        exact
-        component={CashFlowExpensesView}
-      />
-      <Route
-        path={'/fluxo-de-caixa/receitas'}
-        exact
-        component={CashFlowRevenuesView}
-      />
-    </Switch>
+    <Suspense fallback={<GlobalLoading />}>
+      <Switch>
+        <Route path={'/'} exact component={HomeView} />
+        <Route path={'/usuarios'} exact component={UserListView} />
+        <Route path={'/usuarios/cadastro'} exact component={UserCreateView} />
+        <Route path={'/usuarios/edicao/:id'} exact component={UserEditView} />
+        <Route path={'/usuarios/:id'} exact component={UserDetailsView} />
+        <Route path={'/pagamentos'} exact component={PaymentListView} />
+        <Route
+          path={'/pagamentos/cadastro'}
+          exact
+          component={PaymentCreateView}
+        />
+        <Route path={'/pagamentos/:id'} exact component={PaymentDetailsView} />
+        <Route
+          path={'/fluxo-de-caixa/despesas'}
+          exact
+          component={CashFlowExpensesView}
+        />
+        <Route
+          path={'/fluxo-de-caixa/receitas'}
+          exact
+          component={CashFlowRevenuesView}
+        />
+      </Switch>
+    </Suspense>
   );
 }
