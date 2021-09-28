@@ -10,7 +10,7 @@ import {
   Tooltip,
   Row,
 } from 'antd';
-import { format } from 'date-fns';
+import format from 'date-fns/format';
 import { useEffect, useState } from 'react';
 import { User } from 'rodolfohiok-sdk';
 import useUsers from '../../core/hooks/useUsers';

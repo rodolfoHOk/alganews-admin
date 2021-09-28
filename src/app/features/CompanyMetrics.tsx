@@ -2,8 +2,8 @@ import { Area, AreaConfig } from '@ant-design/charts';
 import { useEffect, useState } from 'react';
 import { MetricService } from 'rodolfohiok-sdk';
 import transformDataIntoAntdChart from '../../core/utils/transformDataIntoAntdChart';
-import { format } from 'date-fns';
-import { ptBR } from 'date-fns/locale';
+import format from 'date-fns/format';
+import ptBR from 'date-fns/locale/pt-BR';
 import { ForbiddenError } from 'rodolfohiok-sdk/dist/errors';
 import Forbidden from '../components/Forbidden';
 
