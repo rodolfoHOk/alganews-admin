@@ -14,3 +14,7 @@ https://ant.design/docs/react/customize-theme
 ## Tax Image
 
 Credits: https://storyset.com/
+
+## Deployed URL
+
+https://alganews-admin-rudolf-hiok.netlify.app
