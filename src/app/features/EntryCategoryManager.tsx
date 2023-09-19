@@ -114,7 +114,7 @@ export default function EntryCategoryManager(props: {
                     }}
                   >
                     <Button
-                      type="ghost"
+                      type="default"
                       size="small"
                       icon={<DeleteOutlined />}
                       disabled={!record.canBeDeleted}

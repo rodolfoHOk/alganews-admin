@@ -16,7 +16,7 @@ import { CashFlow } from 'rodolfohiok-sdk';
 import useCashFlow from '../../core/hooks/useCashFlow';
 import formatToBrl from '../../core/utils/formatToBrl';
 import DoubleConfirm from '../components/DoubleConfirm';
-import { useHistory, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import Forbidden from '../components/Forbidden';
 
 interface EntriesListProps {
@@ -29,7 +29,7 @@ export default function EntriesList(props: EntriesListProps) {
   const { type } = props;
 
   const location = useLocation();
-  const history = useHistory();
+  const navigate = useNavigate();
 
   const {
     entries,
@@ -189,7 +189,7 @@ export default function EntriesList(props: EntriesListProps) {
                   allowClear={false}
                   format={'YYYY - MMM'}
                   onChange={(date) =>
-                    history.push({
+                    navigate({
                       search: `yearMonth=${
                         date?.format('YYYY-MM') || moment().format('YYYY-MM')
                       }`,

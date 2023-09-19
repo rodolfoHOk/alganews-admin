@@ -20,7 +20,7 @@ import ImageCrop from 'antd-img-crop';
 import { useEffect } from 'react';
 import { MaskedInput } from 'antd-mask-input';
 import { Moment } from 'moment';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import CurrencyInput from '../components/CurrencyInput';
 import useAuth from '../../core/hooks/useAuth';
 
@@ -38,7 +38,7 @@ interface UserFormProps {
 }
 
 export default function UserForm(props: UserFormProps) {
-  const history = useHistory();
+  const navigate = useNavigate();
   const [form] = Form.useForm<User.Input>();
   const { user: authenticatedUser } = useAuth();
 
@@ -102,7 +102,7 @@ export default function UserForm(props: UserFormProps) {
 
         try {
           await UserService.insertNewUser(userDTO);
-          history.push('/usuarios');
+          navigate('/usuarios');
           notification.success({
             message: 'Sucesso',
             description: 'Usuário cadastrado com sucesso',
@@ -151,6 +151,7 @@ export default function UserForm(props: UserFormProps) {
       <Row gutter={24} align="middle">
         <Col xs={24} lg={4}>
           <Row justify="center">
+            {/* @ts-ignore */}
             <ImageCrop rotate shape={'round'} grid aspect={1 / 1}>
               <Upload
                 maxCount={1}

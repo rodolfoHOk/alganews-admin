@@ -1,7 +1,7 @@
 import { message, notification } from 'antd';
 import jwtDecode from 'jwt-decode';
 import React, { Suspense, useEffect, useMemo } from 'react';
-import { Switch, Route, useHistory, useLocation } from 'react-router-dom';
+import { Routes, Route, useNavigate, useLocation } from 'react-router-dom';
 import CustomError from 'rodolfohiok-sdk/dist/CustomError';
 import { Authentication } from '../auth/Auth';
 import AuthorizationService from '../auth/Authorization.service';
@@ -29,8 +29,8 @@ const CashFlowRevenuesView = React.lazy(
 
 const APP_BASE_URL = process.env.REACT_APP_BASE_URL;
 
-export default function Routes() {
-  const history = useHistory();
+export default function AppRoutes() {
+  const navigate = useNavigate();
   const location = useLocation();
   const { fetchUser, user } = useAuth();
 
@@ -105,7 +105,7 @@ export default function Routes() {
           jwtDecode(access_token);
         fetchUser(decodedToken['alganews:user_id']);
 
-        history.push('/');
+        navigate('/');
       }
 
       if (accessToken) {
@@ -116,7 +116,7 @@ export default function Routes() {
     }
 
     identify();
-  }, [history, fetchUser]);
+  }, [navigate, fetchUser]);
 
   const isAuthorizationRoute = useMemo(
     () => location.pathname === '/authorize',
@@ -127,30 +127,24 @@ export default function Routes() {
 
   return (
     <Suspense fallback={<GlobalLoading />}>
-      <Switch>
-        <Route path={'/'} exact component={HomeView} />
-        <Route path={'/usuarios'} exact component={UserListView} />
-        <Route path={'/usuarios/cadastro'} exact component={UserCreateView} />
-        <Route path={'/usuarios/edicao/:id'} exact component={UserEditView} />
-        <Route path={'/usuarios/:id'} exact component={UserDetailsView} />
-        <Route path={'/pagamentos'} exact component={PaymentListView} />
-        <Route
-          path={'/pagamentos/cadastro'}
-          exact
-          component={PaymentCreateView}
-        />
-        <Route path={'/pagamentos/:id'} exact component={PaymentDetailsView} />
+      <Routes>
+        <Route path={'/'} element={<HomeView />} />
+        <Route path={'/usuarios'} element={<UserListView />} />
+        <Route path={'/usuarios/cadastro'} element={<UserCreateView />} />
+        <Route path={'/usuarios/edicao/:id'} element={<UserEditView />} />
+        <Route path={'/usuarios/:id'} element={<UserDetailsView />} />
+        <Route path={'/pagamentos'} element={<PaymentListView />} />
+        <Route path={'/pagamentos/cadastro'} element={<PaymentCreateView />} />
+        <Route path={'/pagamentos/:id'} element={<PaymentDetailsView />} />
         <Route
           path={'/fluxo-de-caixa/despesas'}
-          exact
-          component={CashFlowExpensesView}
+          element={<CashFlowExpensesView />}
         />
         <Route
           path={'/fluxo-de-caixa/receitas'}
-          exact
-          component={CashFlowRevenuesView}
+          element={<CashFlowRevenuesView />}
         />
-      </Switch>
+      </Routes>
     </Suspense>
   );
 }

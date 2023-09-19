@@ -154,7 +154,7 @@ export default function EntryForm({
               format="DD/MM/YYYY"
               style={{ width: '100%' }}
               disabledDate={(date) => {
-                return date.isAfter(moment());
+                return date.isAfter(moment().toString());
               }}
             />
           </Form.Item>

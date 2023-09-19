@@ -53,7 +53,7 @@ export default function UserList() {
         <Input
           style={{ marginBottom: 8, display: 'block' }}
           placeholder={`Buscar ${displayName || dataIndex}`}
-          value={selectedKeys[0]}
+          value={selectedKeys[0]?.toString()}
           onChange={(e) =>
             setSelectedKeys(e.target.value ? [e.target.value] : [])
           }

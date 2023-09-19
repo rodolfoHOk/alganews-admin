@@ -1,7 +1,7 @@
 import { Card, notification, Skeleton } from 'antd';
 import moment from 'moment';
 import { useCallback, useEffect } from 'react';
-import { Redirect, useHistory, useParams } from 'react-router-dom';
+import { Navigate, useNavigate, useParams } from 'react-router-dom';
 import { User, UserService } from 'rodolfohiok-sdk';
 import useBreadcrumb from '../../core/hooks/useBreadcrumb';
 import usePageTitle from '../../core/hooks/usePageTitle';
@@ -13,7 +13,7 @@ export default function UserEditView() {
   usePageTitle('Edição do usuário');
   useBreadcrumb('Usuários/Edição');
   const params = useParams<{ id: string }>();
-  const history = useHistory();
+  const navigate = useNavigate();
   const { user, fetchUser, notFound } = useUser();
 
   useEffect(() => {
@@ -31,12 +31,12 @@ export default function UserEditView() {
 
   async function handleUserUpdate(user: User.Input) {
     await UserService.updateExistingUser(Number(params.id), user).then(() => {
-      history.push('/usuarios');
+      navigate('/usuarios');
       notification.success({ message: 'Usuário foi atualizado com sucesso' });
     });
   }
 
-  if (isNaN(Number(params.id))) return <Redirect to={'/usuarios'} />;
+  if (isNaN(Number(params.id))) return <Navigate to={'/usuarios'} />;
 
   if (notFound)
     return (

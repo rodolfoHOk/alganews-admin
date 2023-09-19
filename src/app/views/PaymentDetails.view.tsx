@@ -1,7 +1,7 @@
 import { Card, Divider, Button, Tag, Space, notification } from 'antd';
 import { PrinterOutlined, CheckCircleOutlined } from '@ant-design/icons';
 import { useEffect } from 'react';
-import { Redirect, useParams } from 'react-router';
+import { Navigate, useParams } from 'react-router';
 import usePayment from '../../core/hooks/usePayment';
 import PaymentHeader from '../features/PaymentHeader';
 import PaymentBonuses from '../features/PaymentBonuses';
@@ -34,7 +34,7 @@ export default function PaymentDetailsView() {
     fetchPosts(Number(params.id));
   }, [fetchPayment, fetchPosts, params.id]);
 
-  if (isNaN(Number(params.id))) return <Redirect to="/pagamentos" />;
+  if (isNaN(Number(params.id))) return <Navigate to="/pagamentos" />;
 
   if (paymentNotFound) {
     return (

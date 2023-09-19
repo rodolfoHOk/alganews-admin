@@ -19,7 +19,7 @@ import useBreakpoint from 'antd/lib/grid/hooks/useBreakpoint';
 import confirm from 'antd/lib/modal/confirm';
 import { WarningFilled } from '@ant-design/icons';
 import { useEffect, useState } from 'react';
-import { Link, Redirect, useParams } from 'react-router-dom';
+import { Link, Navigate, useParams } from 'react-router-dom';
 import useUser from '../../core/hooks/useUser';
 import usePosts from '../../core/hooks/usePosts';
 import { Post } from 'rodolfohiok-sdk';
@@ -50,7 +50,7 @@ export default function UserDetailsView() {
     if (user?.role === 'EDITOR') fetchUserPosts(user.id, page);
   }, [fetchUserPosts, user, page]);
 
-  if (isNaN(Number(params.id))) return <Redirect to={'/usuarios'} />;
+  if (isNaN(Number(params.id))) return <Navigate to={'/usuarios'} />;
 
   if (notFound) return <Card>Usuário não encontrado</Card>;
 

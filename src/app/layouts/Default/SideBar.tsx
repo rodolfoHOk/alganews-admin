@@ -1,4 +1,4 @@
-import { useHistory, Link, useLocation } from 'react-router-dom';
+import { useNavigate, Link, useLocation } from 'react-router-dom';
 import { Button, Drawer, DrawerProps, Layout, Menu } from 'antd';
 import {
   UserOutlined,
@@ -12,9 +12,9 @@ import {
   MenuOutlined,
 } from '@ant-design/icons';
 import useBreakpoint from 'antd/lib/grid/hooks/useBreakpoint';
-import { useMemo, useState } from 'react';
+import { Attributes, useMemo, useState } from 'react';
 import { SiderProps } from 'antd/lib/layout';
-import logo from '../../../assets/logo.svg';
+import { LogoSVG } from '../../components/LogoSVG';
 
 const { Sider } = Layout;
 const { SubMenu } = Menu;
@@ -22,7 +22,7 @@ const { SubMenu } = Menu;
 export default function DefaultLayoutSideBar() {
   const { lg } = useBreakpoint();
 
-  const history = useHistory();
+  const navigate = useNavigate();
   const location = useLocation();
 
   const [show, setShow] = useState(false);
@@ -42,7 +42,7 @@ export default function DefaultLayoutSideBar() {
       closable: true,
       title: (
         <>
-          <img src={logo} alt="logo AlgaNews" />
+          <LogoSVG />
         </>
       ),
       headerStyle: { height: 64 },
@@ -68,7 +68,7 @@ export default function DefaultLayoutSideBar() {
           onClick={() => setShow(true)}
         />
       )}
-      <SidebarWrapper {...sidebarProps}>
+      <SidebarWrapper {...(sidebarProps as Attributes)}>
         <Menu
           mode="inline"
           defaultSelectedKeys={[location.pathname]}
@@ -78,7 +78,7 @@ export default function DefaultLayoutSideBar() {
           <Menu.Item
             key="/"
             icon={<HomeOutlined />}
-            onClick={() => history.push('/')}
+            onClick={() => navigate('/')}
           >
             <Link to={'/'}>Home</Link>
           </Menu.Item>
@@ -86,14 +86,14 @@ export default function DefaultLayoutSideBar() {
             <Menu.Item
               key="/usuarios"
               icon={<TableOutlined />}
-              onClick={() => history.push('/usuarios')}
+              onClick={() => navigate('/usuarios')}
             >
               <Link to={'/usuarios'}>Consulta</Link>
             </Menu.Item>
             <Menu.Item
               key="/usuarios/cadastro"
               icon={<PlusCircleOutlined />}
-              onClick={() => history.push('/usuarios/cadastro')}
+              onClick={() => navigate('/usuarios/cadastro')}
             >
               <Link to={'/usuarios/cadastro'}>Cadastro</Link>
             </Menu.Item>
@@ -106,14 +106,14 @@ export default function DefaultLayoutSideBar() {
             <Menu.Item
               key="/pagamentos"
               icon={<TableOutlined />}
-              onClick={() => history.push('/pagamentos')}
+              onClick={() => navigate('/pagamentos')}
             >
               <Link to={'/pagamentos'}>Consulta</Link>
             </Menu.Item>
             <Menu.Item
               key="/pagamentos/cadastro"
               icon={<PlusCircleOutlined />}
-              onClick={() => history.push('/pagamentos/cadastro')}
+              onClick={() => navigate('/pagamentos/cadastro')}
             >
               <Link to={'/pagamentos/cadastro'}>Cadastro</Link>
             </Menu.Item>
@@ -126,14 +126,14 @@ export default function DefaultLayoutSideBar() {
             <Menu.Item
               key="/fluxo-de-caixa/despesas"
               icon={<FallOutlined />}
-              onClick={() => history.push('/fluxo-de-caixa/despesas')}
+              onClick={() => navigate('/fluxo-de-caixa/despesas')}
             >
               <Link to={'/fluxo-de-caixa/despesas'}>Despesa</Link>
             </Menu.Item>
             <Menu.Item
               key="/fluxo-de-caixa/receitas"
               icon={<RiseOutlined />}
-              onClick={() => history.push('/fluxo-de-caixa/receitas')}
+              onClick={() => navigate('/fluxo-de-caixa/receitas')}
             >
               <Link to={'/fluxo-de-caixa/receitas'}>Receita</Link>
             </Menu.Item>

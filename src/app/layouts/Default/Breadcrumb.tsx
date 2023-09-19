@@ -4,11 +4,14 @@ import useBreadcrumb from '../../../core/hooks/useBreadcrumb';
 export default function DefaultLayoutBreadcrumb() {
   const { breadcrumb } = useBreadcrumb();
 
+  let breadcrumbItens: { title: string }[] = [];
+  breadcrumb.forEach((item) => breadcrumbItens.push({ title: item }));
+
   return (
-    <Breadcrumb style={{ margin: '16px 0' }} className="no-print">
-      {breadcrumb.map((item, index) => (
-        <Breadcrumb.Item key={index}>{item}</Breadcrumb.Item>
-      ))}
-    </Breadcrumb>
+    <Breadcrumb
+      style={{ margin: '16px 0' }}
+      className="no-print"
+      items={breadcrumbItens}
+    />
   );
 }

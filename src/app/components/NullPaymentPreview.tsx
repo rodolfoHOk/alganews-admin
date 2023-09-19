@@ -1,7 +1,7 @@
 import { Card, Row, Typography } from 'antd';
 import CustomError from 'rodolfohiok-sdk/dist/CustomError';
-import taxImage from '../../assets/tax.svg';
-import confusingImage from '../../assets/confusing.svg';
+import { ConfusingSVG } from './ConfusingSVG';
+import { TaxSVG } from './TaxSVG';
 
 interface NullPaymentPreviewProps {
   error?: CustomError;
@@ -11,12 +11,8 @@ export default function NullPaymentPreview(props: NullPaymentPreviewProps) {
   return (
     <Card>
       <Row justify="center" style={{ textAlign: 'center' }}>
-        <img
-          key={props.error ? 'errorImg' : 'img'}
-          src={props.error ? confusingImage : taxImage}
-          alt="Payment Preview"
-          width={240}
-        />
+        {props.error ? <ConfusingSVG /> : <TaxSVG />}
+
         <Typography.Title level={4} style={{ maxWidth: 360 }}>
           {props.error
             ? props.error.message

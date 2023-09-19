@@ -1,7 +1,7 @@
 import { ReactNode } from 'react';
 import { Layout } from 'antd';
 import DefaultLayoutHeader from './Header';
-import DefaultLayoutSideBar from './SideBar';
+import DefaultLayoutSideBar2 from './SideBar2';
 import DefaultLayoutBreadcrumb from './Breadcrumb';
 import DefaultLayoutContent from './Content';
 
@@ -14,7 +14,7 @@ export default function DefaultLayout(props: DefaultLayoutProps) {
     <Layout>
       <DefaultLayoutHeader />
       <Layout id="PageLayout">
-        <DefaultLayoutSideBar />
+        <DefaultLayoutSideBar2 />
         <Layout style={{ padding: '0 24px 24px' }}>
           <DefaultLayoutBreadcrumb />
           <DefaultLayoutContent>{props.children}</DefaultLayoutContent>

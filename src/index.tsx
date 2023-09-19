@@ -1,5 +1,5 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
+import { createRoot } from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
 import reportWebVitals from './reportWebVitals';
 import { ConfigProvider } from 'antd';
@@ -9,25 +9,24 @@ import 'moment/locale/pt-br';
 import { Provider } from 'react-redux';
 import { store } from './core/store';
 import { DefaultLayout } from './app/layouts/Default';
-import Routes from './app/routes';
+import AppRoutes from './app/routes';
 import './auth/httpConfig';
 import './index.less';
 
 moment.locale('pt-br');
 
-ReactDOM.render(
+createRoot(document.getElementById('root') as HTMLElement).render(
   <React.StrictMode>
     <ConfigProvider locale={ptBR}>
       <Provider store={store}>
         <BrowserRouter>
           <DefaultLayout>
-            <Routes />
+            <AppRoutes />
           </DefaultLayout>
         </BrowserRouter>
       </Provider>
     </ConfigProvider>
-  </React.StrictMode>,
-  document.getElementById('root')
+  </React.StrictMode>
 );
 
 // If you want to start measuring performance in your app, pass a function

@@ -9,7 +9,7 @@ Service.setRequestInterceptors(async (request) => {
   const accessToken = AuthorizationService.getAccessToken();
 
   if (accessToken) {
-    request.headers['Authorization'] = `Bearer ${accessToken}`;
+    request.headers!['Authorization'] = `Bearer ${accessToken}`;
   }
 
   return request;

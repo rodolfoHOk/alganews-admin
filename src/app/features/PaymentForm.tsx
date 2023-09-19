@@ -33,12 +33,12 @@ import formatToBrl from '../../core/utils/formatToBrl';
 import NullPaymentPreview from '../components/NullPaymentPreview';
 import CustomError from 'rodolfohiok-sdk/dist/CustomError';
 import { BusinessError } from 'rodolfohiok-sdk/dist/errors';
-import { useHistory } from 'react-router';
+import { useNavigate } from 'react-router';
 
 const { TabPane } = Tabs;
 
 export default function PaymentForm() {
-  const history = useHistory();
+  const navigate = useNavigate();
   const [form] = useForm<Payment.Input>();
   const { editors, fetchUsers, fetching } = useUsers();
   const {
@@ -129,9 +129,9 @@ export default function PaymentForm() {
         message: 'Pagamento agendado com sucesso',
       });
 
-      history.push('/pagamentos');
+      navigate('/pagamentos');
     },
-    [schedulePayment, history]
+    [schedulePayment, navigate]
   );
 
   return (
@@ -160,12 +160,14 @@ export default function PaymentForm() {
                 fetching ? 'Carregando editores...' : 'Selecione um editor'
               }
               filterOption={(input, option) =>
-                (option?.children as string)
+                option!
+                  .children!.toString()
                   .normalize('NFD')
                   .replace(/[\u0300-\u036f]/g, '')
                   .toLowerCase()
                   .indexOf(input.toLowerCase()) >= 0 ||
-                (option?.children as string)
+                option!
+                  .children!.toString()
                   .toLowerCase()
                   .indexOf(input.toLowerCase()) >= 0
               }
@@ -200,7 +202,7 @@ export default function PaymentForm() {
               format="DD-MM-YYYY"
               onChange={(date) => {
                 if (date !== null) {
-                  const [startsOn, endsOn] = date as Moment[];
+                  const [startsOn, endsOn] = date as unknown as Moment[];
                   form.setFieldsValue({
                     accountingPeriod: {
                       startsOn: startsOn.format('YYYY-MM-DD'),
@@ -235,8 +237,8 @@ export default function PaymentForm() {
               format="DD-MM-YYYY"
               disabledDate={(date) => {
                 return (
-                  date.isBefore(moment()) ||
-                  date.isAfter(moment().add(7, 'days'))
+                  date.isBefore(moment().toString()) ||
+                  date.isAfter(moment().add(7, 'days').toString())
                 );
               }}
             />
