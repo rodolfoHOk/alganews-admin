@@ -15,7 +15,7 @@
     "@types/react": "^18.2.37",
     "@types/react-dom": "^18.2.15",
     "antd": "^5.11.0",
-    "antd-img-crop": "^4.15.0",
+    "antd-img-crop": "^4.17.0",
     "antd-mask-input": "^2.0.7",
     "axios": "^1.6.1",
     "craco-less": "^3.0.1",
@@ -32,7 +32,7 @@
     "react-router-dom": "^6.18.0",
     "react-scripts": "5.0.1",
     "redux": "^4.2.1",
-    "rodolfohiok-sdk": "3.2.6",
+    "rodolfohiok-sdk": "3.2.10",
     "source-map-explorer": "^2.5.3",
     "typescript": "^5.2.2",
     "web-vitals": "^3.5.0"

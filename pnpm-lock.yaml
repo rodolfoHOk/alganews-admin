@@ -42,8 +42,8 @@ dependencies:
     specifier: ^5.11.0
     version: 5.11.0(date-fns@2.30.0)(moment@2.29.4)(react-dom@18.2.0)(react@18.2.0)
   antd-img-crop:
-    specifier: ^4.15.0
-    version: 4.15.0(antd@5.11.0)(react-dom@18.2.0)(react@18.2.0)
+    specifier: ^4.17.0
+    version: 4.17.0(antd@5.11.0)(react-dom@18.2.0)(react@18.2.0)
   antd-mask-input:
     specifier: ^2.0.7
     version: 2.0.7(antd@5.11.0)(react@18.2.0)
@@ -93,8 +93,8 @@ dependencies:
     specifier: ^4.2.1
     version: 4.2.1
   rodolfohiok-sdk:
-    specifier: 3.2.6
-    version: 3.2.6
+    specifier: 3.2.10
+    version: 3.2.10
   source-map-explorer:
     specifier: ^2.5.3
     version: 2.5.3
@@ -4523,8 +4523,8 @@ packages:
     engines: {node: '>=10'}
     dev: false
 
-  /antd-img-crop@4.15.0(antd@5.11.0)(react-dom@18.2.0)(react@18.2.0):
-    resolution: {integrity: sha512-DWNyjBOQWPmTwlKNjwwezgp7A02ZArFGxrIY57vThzOEMmOffEpGAmWyTLe+G+dEqfsNw/QhOlqY4crH9kPxqQ==}
+  /antd-img-crop@4.17.0(antd@5.11.0)(react-dom@18.2.0)(react@18.2.0):
+    resolution: {integrity: sha512-IopBtoFRcr+qJ40NjqQ+LsCgs9af4zltT4Aq5379NB9p+SHdD6NNGyU8sNIeQZMWiojhKa/rx2ZdujQEMTR0MQ==}
     peerDependencies:
       antd: '>=4.0.0'
       react: '>=16.8.0'
@@ -12268,8 +12268,8 @@ packages:
       glob: 7.2.3
     dev: false
 
-  /rodolfohiok-sdk@3.2.6:
-    resolution: {integrity: sha512-N3B8iUwKXAU2EodxgZPIrrhVavflMD6v+XDGeUTJIho2U9KvZ3hN+gtJaWRRTyNT/+YL2ye70to77TbUTAUCZg==}
+  /rodolfohiok-sdk@3.2.10:
+    resolution: {integrity: sha512-I/2Gjcm3WoMM7Vk+Od4WFNKjJf7n54jt4KMgc+3RL2HNxlf8ceDrx/oY6aORe8cSJNw63L0THbfrXBDXmxLg6g==}
     dependencies:
       axios: 0.27.2
       date-fns: 2.30.0
