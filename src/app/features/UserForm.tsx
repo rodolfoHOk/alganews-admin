@@ -11,6 +11,7 @@ import {
   Upload,
   Button,
   notification,
+  TabsProps,
 } from 'antd';
 import { UserOutlined } from '@ant-design/icons';
 import React, { useCallback, useState } from 'react';
@@ -23,8 +24,6 @@ import { Moment } from 'moment';
 import { useNavigate } from 'react-router-dom';
 import CurrencyInput from '../components/CurrencyInput';
 import useAuth from '../../core/hooks/useAuth';
-
-const { TabPane } = Tabs;
 
 type UserFormType = {
   createdAt: Moment;
@@ -61,6 +60,306 @@ export default function UserForm(props: UserFormProps) {
       avatarUrl: avatar || undefined,
     });
   }, [avatar, form]);
+
+  const items: TabsProps['items'] = [
+    {
+      key: 'personal',
+      label: 'Dados pessoais',
+      children: (
+        <Row gutter={24}>
+          <Col xs={24} lg={8}>
+            <Form.Item
+              label="País"
+              name={['location', 'country']}
+              rules={[
+                {
+                  required: true,
+                  message: 'O campo é obrigatório',
+                },
+                {
+                  max: 50,
+                  message: 'O campo não pode ter mais de 50 caracteres',
+                },
+              ]}
+            >
+              <Input placeholder="E.g.: Brasil" />
+            </Form.Item>
+          </Col>
+          <Col xs={24} lg={8}>
+            <Form.Item
+              label="Estado"
+              name={['location', 'state']}
+              rules={[
+                {
+                  required: true,
+                  message: 'O campo é obrigatório',
+                },
+                {
+                  max: 50,
+                  message: 'O campo não pode ter mais de 50 caracteres',
+                },
+              ]}
+            >
+              <Input placeholder="E.g.: Espírito Santo" />
+            </Form.Item>
+          </Col>
+          <Col xs={24} lg={8}>
+            <Form.Item
+              label="Cidade"
+              name={['location', 'city']}
+              rules={[
+                {
+                  required: true,
+                  message: 'O campo é obrigatório',
+                },
+                {
+                  max: 255,
+                  message: 'O campo não pode ter mais de 255 caracteres',
+                },
+              ]}
+            >
+              <Input placeholder="E.g.: Vitória" />
+            </Form.Item>
+          </Col>
+          <Col xs={24} lg={8}>
+            <Form.Item
+              label="Telefone"
+              name={'phone'}
+              rules={[
+                {
+                  required: true,
+                  message: 'O campo é obrigatório',
+                },
+                {
+                  max: 20,
+                  message: 'O campo não pode ter mais de 20 caracteres',
+                },
+              ]}
+            >
+              <MaskedInput
+                mask="(11) 11111-1111"
+                placeholder="(12) 91234-4567"
+                disabled={props.user && !props.user?.canSensitiveDataBeUpdated}
+              />
+            </Form.Item>
+          </Col>
+          <Col xs={24} lg={8}>
+            <Form.Item
+              label="CPF"
+              name={'taxpayerId'}
+              rules={[
+                {
+                  required: true,
+                  message: 'O campo é obrigatório',
+                },
+                {
+                  max: 14,
+                  message: 'O campo não pode ter mais de 14 caracteres',
+                },
+              ]}
+            >
+              <MaskedInput mask="111.111.111-11" placeholder="123.456.789-01" />
+            </Form.Item>
+          </Col>
+          {isEditorRole && (
+            <>
+              <Col xs={24} lg={8}>
+                <Form.Item
+                  label="Preço por palavra"
+                  name={'pricePerWord'}
+                  rules={[
+                    {
+                      required: true,
+                      message: 'O campo é obrigatório',
+                    },
+                    {
+                      type: 'number',
+                      min: 0.01,
+                      message: 'O valor mínimo é 1 centavo',
+                    },
+                  ]}
+                >
+                  <CurrencyInput
+                    placeholder="R$ 0,00"
+                    onChange={(e, value) =>
+                      form.setFieldsValue({
+                        pricePerWord: value,
+                      })
+                    }
+                  />
+                </Form.Item>
+              </Col>
+              {Array(3)
+                .fill(null)
+                .map((_, index) => {
+                  return (
+                    <React.Fragment key={index}>
+                      <Col xs={18} lg={6}>
+                        <Form.Item
+                          label="Habilidade"
+                          name={['skills', index, 'name']}
+                          rules={[
+                            {
+                              required: true,
+                              message: 'O campo é obrigatório',
+                            },
+                            {
+                              max: 50,
+                              message:
+                                'O campo não pode ter mais de 50 caracteres',
+                            },
+                          ]}
+                        >
+                          <Input placeholder="E.g.: Javascript" />
+                        </Form.Item>
+                      </Col>
+                      <Col xs={6} lg={2}>
+                        <Form.Item
+                          label="%"
+                          name={['skills', index, 'percentage']}
+                          rules={[
+                            {
+                              required: true,
+                              message: '',
+                            },
+                            {
+                              async validator(field, value) {
+                                if (isNaN(Number(value)))
+                                  throw new Error('Apenas números');
+                                if (Number(value) > 100)
+                                  throw new Error('Máximo é 100');
+                                if (Number(value) < 0)
+                                  throw new Error('Mínimo é 0');
+                              },
+                            },
+                          ]}
+                        >
+                          <Input />
+                        </Form.Item>
+                      </Col>
+                    </React.Fragment>
+                  );
+                })}
+            </>
+          )}
+        </Row>
+      ),
+    },
+    {
+      key: 'bankAccount',
+      label: 'Dados bancários',
+      forceRender: true,
+      children: (
+        <Row gutter={24}>
+          <Col xs={24} lg={8}>
+            <Form.Item
+              label="Instituição"
+              name={['bankAccount', 'bankCode']}
+              rules={[
+                {
+                  required: true,
+                  message: 'O campo é obrigatório',
+                },
+                {
+                  min: 3,
+                  message: 'O campo deve ter no mínimo 3 caracteres',
+                },
+                {
+                  max: 3,
+                  message: 'O campo não pode ter mais de 3 caracteres',
+                },
+              ]}
+            >
+              <Input placeholder="123" />
+            </Form.Item>
+          </Col>
+          <Col xs={24} lg={8}>
+            <Form.Item
+              label="Agência"
+              name={['bankAccount', 'agency']}
+              rules={[
+                {
+                  required: true,
+                  message: 'O campo é obrigatório',
+                },
+                {
+                  min: 1,
+                  message: 'O campo deve ter no mínimo 1 caractere',
+                },
+                {
+                  max: 10,
+                  message: 'O campo não pode ter mais de 10 caracteres',
+                },
+              ]}
+            >
+              <Input placeholder="1234" />
+            </Form.Item>
+          </Col>
+          <Col xs={24} lg={8}>
+            <Form.Item
+              label="Conta sem o dígito"
+              name={['bankAccount', 'number']}
+              rules={[
+                {
+                  required: true,
+                  message: 'O campo é obrigatório',
+                },
+                {
+                  min: 1,
+                  message: 'O campo deve ter no mínimo 1 caractere',
+                },
+                {
+                  max: 20,
+                  message: 'O campo não pode ter mais de 20 caracteres',
+                },
+              ]}
+            >
+              <Input placeholder="12345" />
+            </Form.Item>
+          </Col>
+          <Col xs={24} lg={8}>
+            <Form.Item
+              label="Dígito"
+              name={['bankAccount', 'digit']}
+              rules={[
+                {
+                  required: true,
+                  message: 'O campo é obrigatório',
+                },
+                {
+                  min: 1,
+                  message: 'O campo deve ter no mínimo 1 caractere',
+                },
+                {
+                  max: 1,
+                  message: 'O campo não pode ter mais de 1 caractere',
+                },
+              ]}
+            >
+              <Input placeholder="1" />
+            </Form.Item>
+          </Col>
+          <Col xs={24} lg={8}>
+            <Form.Item
+              label="Tipo de conta"
+              name={['bankAccount', 'type']}
+              rules={[
+                {
+                  required: true,
+                  message: 'O campo é obrigatório',
+                },
+              ]}
+            >
+              <Select placeholder="Selecione o tipo de conta">
+                <Select.Option value={'CHECKING'}>Conta corrente</Select.Option>
+                <Select.Option value={'SAVING'}>Conta poupança</Select.Option>
+              </Select>
+            </Form.Item>
+          </Col>
+        </Row>
+      ),
+    },
+  ];
 
   return (
     <Form
@@ -152,7 +451,12 @@ export default function UserForm(props: UserFormProps) {
         <Col xs={24} lg={4}>
           <Row justify="center">
             {/* @ts-ignore */}
-            <ImageCrop rotate shape={'round'} grid aspect={1 / 1}>
+            <ImageCrop
+              rotationSlider
+              cropShape={'round'}
+              showGrid
+              aspect={1 / 1}
+            >
               <Upload
                 maxCount={1}
                 beforeUpload={(file) => {
@@ -300,306 +604,9 @@ export default function UserForm(props: UserFormProps) {
           <Tabs
             defaultActiveKey="personal"
             activeKey={activeTab}
+            items={items}
             onChange={(tab) => setActiveTab(tab as 'personal' | 'bankAccount')}
-          >
-            <TabPane key="personal" tab="Dados pessoais">
-              <Row gutter={24}>
-                <Col xs={24} lg={8}>
-                  <Form.Item
-                    label="País"
-                    name={['location', 'country']}
-                    rules={[
-                      {
-                        required: true,
-                        message: 'O campo é obrigatório',
-                      },
-                      {
-                        max: 50,
-                        message: 'O campo não pode ter mais de 50 caracteres',
-                      },
-                    ]}
-                  >
-                    <Input placeholder="E.g.: Brasil" />
-                  </Form.Item>
-                </Col>
-                <Col xs={24} lg={8}>
-                  <Form.Item
-                    label="Estado"
-                    name={['location', 'state']}
-                    rules={[
-                      {
-                        required: true,
-                        message: 'O campo é obrigatório',
-                      },
-                      {
-                        max: 50,
-                        message: 'O campo não pode ter mais de 50 caracteres',
-                      },
-                    ]}
-                  >
-                    <Input placeholder="E.g.: Espírito Santo" />
-                  </Form.Item>
-                </Col>
-                <Col xs={24} lg={8}>
-                  <Form.Item
-                    label="Cidade"
-                    name={['location', 'city']}
-                    rules={[
-                      {
-                        required: true,
-                        message: 'O campo é obrigatório',
-                      },
-                      {
-                        max: 255,
-                        message: 'O campo não pode ter mais de 255 caracteres',
-                      },
-                    ]}
-                  >
-                    <Input placeholder="E.g.: Vitória" />
-                  </Form.Item>
-                </Col>
-                <Col xs={24} lg={8}>
-                  <Form.Item
-                    label="Telefone"
-                    name={'phone'}
-                    rules={[
-                      {
-                        required: true,
-                        message: 'O campo é obrigatório',
-                      },
-                      {
-                        max: 20,
-                        message: 'O campo não pode ter mais de 20 caracteres',
-                      },
-                    ]}
-                  >
-                    <MaskedInput
-                      mask="(11) 11111-1111"
-                      placeholder="(12) 91234-4567"
-                      disabled={
-                        props.user && !props.user?.canSensitiveDataBeUpdated
-                      }
-                    />
-                  </Form.Item>
-                </Col>
-                <Col xs={24} lg={8}>
-                  <Form.Item
-                    label="CPF"
-                    name={'taxpayerId'}
-                    rules={[
-                      {
-                        required: true,
-                        message: 'O campo é obrigatório',
-                      },
-                      {
-                        max: 14,
-                        message: 'O campo não pode ter mais de 14 caracteres',
-                      },
-                    ]}
-                  >
-                    <MaskedInput
-                      mask="111.111.111-11"
-                      placeholder="123.456.789-01"
-                    />
-                  </Form.Item>
-                </Col>
-                {isEditorRole && (
-                  <>
-                    <Col xs={24} lg={8}>
-                      <Form.Item
-                        label="Preço por palavra"
-                        name={'pricePerWord'}
-                        rules={[
-                          {
-                            required: true,
-                            message: 'O campo é obrigatório',
-                          },
-                          {
-                            type: 'number',
-                            min: 0.01,
-                            message: 'O valor mínimo é 1 centavo',
-                          },
-                        ]}
-                      >
-                        <CurrencyInput
-                          placeholder="R$ 0,00"
-                          onChange={(e, value) =>
-                            form.setFieldsValue({
-                              pricePerWord: value,
-                            })
-                          }
-                        />
-                      </Form.Item>
-                    </Col>
-                    {Array(3)
-                      .fill(null)
-                      .map((_, index) => {
-                        return (
-                          <React.Fragment key={index}>
-                            <Col xs={18} lg={6}>
-                              <Form.Item
-                                label="Habilidade"
-                                name={['skills', index, 'name']}
-                                rules={[
-                                  {
-                                    required: true,
-                                    message: 'O campo é obrigatório',
-                                  },
-                                  {
-                                    max: 50,
-                                    message:
-                                      'O campo não pode ter mais de 50 caracteres',
-                                  },
-                                ]}
-                              >
-                                <Input placeholder="E.g.: Javascript" />
-                              </Form.Item>
-                            </Col>
-                            <Col xs={6} lg={2}>
-                              <Form.Item
-                                label="%"
-                                name={['skills', index, 'percentage']}
-                                rules={[
-                                  {
-                                    required: true,
-                                    message: '',
-                                  },
-                                  {
-                                    async validator(field, value) {
-                                      if (isNaN(Number(value)))
-                                        throw new Error('Apenas números');
-                                      if (Number(value) > 100)
-                                        throw new Error('Máximo é 100');
-                                      if (Number(value) < 0)
-                                        throw new Error('Mínimo é 0');
-                                    },
-                                  },
-                                ]}
-                              >
-                                <Input />
-                              </Form.Item>
-                            </Col>
-                          </React.Fragment>
-                        );
-                      })}
-                  </>
-                )}
-              </Row>
-            </TabPane>
-            <TabPane key="bankAccount" tab="Dados bancários" forceRender>
-              <Row gutter={24}>
-                <Col xs={24} lg={8}>
-                  <Form.Item
-                    label="Instituição"
-                    name={['bankAccount', 'bankCode']}
-                    rules={[
-                      {
-                        required: true,
-                        message: 'O campo é obrigatório',
-                      },
-                      {
-                        min: 3,
-                        message: 'O campo deve ter no mínimo 3 caracteres',
-                      },
-                      {
-                        max: 3,
-                        message: 'O campo não pode ter mais de 3 caracteres',
-                      },
-                    ]}
-                  >
-                    <Input placeholder="123" />
-                  </Form.Item>
-                </Col>
-                <Col xs={24} lg={8}>
-                  <Form.Item
-                    label="Agência"
-                    name={['bankAccount', 'agency']}
-                    rules={[
-                      {
-                        required: true,
-                        message: 'O campo é obrigatório',
-                      },
-                      {
-                        min: 1,
-                        message: 'O campo deve ter no mínimo 1 caractere',
-                      },
-                      {
-                        max: 10,
-                        message: 'O campo não pode ter mais de 10 caracteres',
-                      },
-                    ]}
-                  >
-                    <Input placeholder="1234" />
-                  </Form.Item>
-                </Col>
-                <Col xs={24} lg={8}>
-                  <Form.Item
-                    label="Conta sem o dígito"
-                    name={['bankAccount', 'number']}
-                    rules={[
-                      {
-                        required: true,
-                        message: 'O campo é obrigatório',
-                      },
-                      {
-                        min: 1,
-                        message: 'O campo deve ter no mínimo 1 caractere',
-                      },
-                      {
-                        max: 20,
-                        message: 'O campo não pode ter mais de 20 caracteres',
-                      },
-                    ]}
-                  >
-                    <Input placeholder="12345" />
-                  </Form.Item>
-                </Col>
-                <Col xs={24} lg={8}>
-                  <Form.Item
-                    label="Dígito"
-                    name={['bankAccount', 'digit']}
-                    rules={[
-                      {
-                        required: true,
-                        message: 'O campo é obrigatório',
-                      },
-                      {
-                        min: 1,
-                        message: 'O campo deve ter no mínimo 1 caractere',
-                      },
-                      {
-                        max: 1,
-                        message: 'O campo não pode ter mais de 1 caractere',
-                      },
-                    ]}
-                  >
-                    <Input placeholder="1" />
-                  </Form.Item>
-                </Col>
-                <Col xs={24} lg={8}>
-                  <Form.Item
-                    label="Tipo de conta"
-                    name={['bankAccount', 'type']}
-                    rules={[
-                      {
-                        required: true,
-                        message: 'O campo é obrigatório',
-                      },
-                    ]}
-                  >
-                    <Select placeholder="Selecione o tipo de conta">
-                      <Select.Option value={'CHECKING'}>
-                        Conta corrente
-                      </Select.Option>
-                      <Select.Option value={'SAVING'}>
-                        Conta poupança
-                      </Select.Option>
-                    </Select>
-                  </Form.Item>
-                </Col>
-              </Row>
-            </TabPane>
-          </Tabs>
+          />
         </Col>
         <Col xs={24}>
           <Row justify="end">

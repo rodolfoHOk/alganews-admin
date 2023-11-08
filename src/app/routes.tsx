@@ -1,5 +1,5 @@
 import { message, notification } from 'antd';
-import jwtDecode from 'jwt-decode';
+import { jwtDecode } from 'jwt-decode';
 import React, { Suspense, useEffect, useMemo } from 'react';
 import { Routes, Route, useNavigate, useLocation } from 'react-router-dom';
 import CustomError from 'rodolfohiok-sdk/dist/CustomError';

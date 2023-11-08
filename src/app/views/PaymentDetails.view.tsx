@@ -1,7 +1,7 @@
 import { Card, Divider, Button, Tag, Space, notification } from 'antd';
 import { PrinterOutlined, CheckCircleOutlined } from '@ant-design/icons';
 import { useEffect } from 'react';
-import { Navigate, useParams } from 'react-router';
+import { Navigate, useParams } from 'react-router-dom';
 import usePayment from '../../core/hooks/usePayment';
 import PaymentHeader from '../features/PaymentHeader';
 import PaymentBonuses from '../features/PaymentBonuses';

@@ -51,7 +51,7 @@ export default function EntryCategoryManager(props: {
     <>
       <Modal
         title="Adicionar categoria"
-        visible={showCreationModal}
+        open={showCreationModal}
         onCancel={closeCreationModal}
         footer={null}
         destroyOnClose

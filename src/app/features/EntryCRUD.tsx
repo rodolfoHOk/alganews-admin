@@ -55,7 +55,7 @@ export default function EntryCRUD({ type }: EntryCRUDProps) {
     <>
       <Modal
         title="Gerenciar categorias"
-        visible={showCategoryModal}
+        open={showCategoryModal}
         onCancel={closeCategoryModal}
         footer={null}
         destroyOnClose
@@ -67,7 +67,7 @@ export default function EntryCRUD({ type }: EntryCRUDProps) {
         title={`${editingEntry ? 'Atualizar' : 'Cadastrar'} ${
           type === 'EXPENSE' ? 'despesa' : 'receita'
         }`}
-        visible={showFormModal}
+        open={showFormModal}
         onCancel={() => {
           closeFormModal();
           setEditingEntry(undefined);
@@ -100,7 +100,7 @@ export default function EntryCRUD({ type }: EntryCRUDProps) {
 
       <Modal
         title={`Detalhes da ${type === 'EXPENSE' ? 'despesa' : 'receita'}`}
-        visible={showDetailsModal}
+        open={showDetailsModal}
         onCancel={closeDetailsModal}
         footer={null}
         destroyOnClose
@@ -174,7 +174,7 @@ export default function EntryCRUD({ type }: EntryCRUDProps) {
         </Title>
         <Space>
           <Text>
-            {`É possivel filtrar ${
+            {`É possível filtrar ${
               type === 'EXPENSE' ? 'despesas' : 'receitas'
             } por mês`}
           </Text>

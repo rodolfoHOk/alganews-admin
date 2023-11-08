@@ -33,7 +33,7 @@ import formatToBrl from '../../core/utils/formatToBrl';
 import NullPaymentPreview from '../components/NullPaymentPreview';
 import CustomError from 'rodolfohiok-sdk/dist/CustomError';
 import { BusinessError } from 'rodolfohiok-sdk/dist/errors';
-import { useNavigate } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 
 const { TabPane } = Tabs;
 
