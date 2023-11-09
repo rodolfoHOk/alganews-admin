@@ -14,6 +14,7 @@ import {
   Tooltip,
   Skeleton,
   notification,
+  TabsProps,
 } from 'antd';
 import { Payment } from 'rodolfohiok-sdk';
 import useUsers from '../../core/hooks/useUsers';
@@ -34,8 +35,6 @@ import NullPaymentPreview from '../components/NullPaymentPreview';
 import CustomError from 'rodolfohiok-sdk/dist/CustomError';
 import { BusinessError } from 'rodolfohiok-sdk/dist/errors';
 import { useNavigate } from 'react-router-dom';
-
-const { TabPane } = Tabs;
 
 export default function PaymentForm() {
   const navigate = useNavigate();
@@ -133,6 +132,97 @@ export default function PaymentForm() {
     },
     [schedulePayment, navigate]
   );
+
+  const items: TabsProps['items'] = [
+    {
+      key: 'payment',
+      label: 'Demonstrativo',
+      children: (
+        <Descriptions
+          column={1}
+          labelStyle={{ width: 160 }}
+          bordered
+          size="small"
+        >
+          <Descriptions.Item label="Editor">
+            {paymentPreview?.payee.name}
+          </Descriptions.Item>
+          <Descriptions.Item label="Período">
+            {paymentPreview?.accountingPeriod && (
+              <Space>
+                {moment(paymentPreview?.accountingPeriod.startsOn).format(
+                  'DD/MM/YYYY'
+                )}
+                <span>à</span>
+                {moment(paymentPreview?.accountingPeriod.endsOn).format(
+                  'DD/MM/YYYY'
+                )}
+              </Space>
+            )}
+          </Descriptions.Item>
+          <Descriptions.Item label="Agendamento">
+            {scheduledTo && moment(scheduledTo).format('DD/MM/YYYY')}
+          </Descriptions.Item>
+          <Descriptions.Item label="Palavras">
+            {paymentPreview?.earnings.words}
+          </Descriptions.Item>
+          <Descriptions.Item label="Ganhos">
+            {formatToBrl(paymentPreview?.grandTotalAmount)}
+          </Descriptions.Item>
+          {paymentPreview?.bonuses.map((bonus, index) => {
+            return (
+              <Descriptions.Item
+                label={
+                  <Space>
+                    {`Bônus ${index + 1}`}
+                    <Tooltip title={bonus.title}>
+                      <InfoCircleFilled style={{ color: '#09F' }} />
+                    </Tooltip>
+                  </Space>
+                }
+                key={index}
+              >
+                {formatToBrl(bonus.amount)}
+              </Descriptions.Item>
+            );
+          })}
+          <Descriptions.Item label="Ganhos de Posts">
+            {formatToBrl(paymentPreview?.earnings.totalAmount)}
+          </Descriptions.Item>
+        </Descriptions>
+      ),
+    },
+    {
+      key: 'bankAccount',
+      label: 'Dados Bancários',
+      children: (
+        <Descriptions
+          column={1}
+          labelStyle={{ width: 160 }}
+          bordered
+          size="small"
+        >
+          <Descriptions.Item label="Código do banco">
+            {paymentPreview?.bankAccount.bankCode}
+          </Descriptions.Item>
+          <Descriptions.Item label="Número da conta">
+            {paymentPreview?.bankAccount.number}
+          </Descriptions.Item>
+          <Descriptions.Item label="Dígito da conta">
+            {paymentPreview?.bankAccount.digit}
+          </Descriptions.Item>
+          <Descriptions.Item label="Agência">
+            {paymentPreview?.bankAccount.agency}
+          </Descriptions.Item>
+          <Descriptions.Item label="Tipo de conta">
+            {paymentPreview?.bankAccount.type === 'CHECKING'
+              ? 'Conta corrente'
+              : 'Conta poupança'}
+          </Descriptions.Item>
+        </Descriptions>
+      ),
+    },
+  ];
 
   return (
     <Form<Payment.Input>
@@ -254,88 +344,7 @@ export default function PaymentForm() {
           ) : !paymentPreview ? (
             <NullPaymentPreview error={paymentPreviewError} />
           ) : (
-            <Tabs defaultActiveKey={'payment'}>
-              <TabPane tab="Demonstrativo" key="payment">
-                <Descriptions
-                  column={1}
-                  labelStyle={{ width: 160 }}
-                  bordered
-                  size="small"
-                >
-                  <Descriptions.Item label="Editor">
-                    {paymentPreview?.payee.name}
-                  </Descriptions.Item>
-                  <Descriptions.Item label="Período">
-                    {paymentPreview?.accountingPeriod && (
-                      <Space>
-                        {moment(
-                          paymentPreview?.accountingPeriod.startsOn
-                        ).format('DD/MM/YYYY')}
-                        <span>à</span>
-                        {moment(paymentPreview?.accountingPeriod.endsOn).format(
-                          'DD/MM/YYYY'
-                        )}
-                      </Space>
-                    )}
-                  </Descriptions.Item>
-                  <Descriptions.Item label="Agendamento">
-                    {scheduledTo && moment(scheduledTo).format('DD/MM/YYYY')}
-                  </Descriptions.Item>
-                  <Descriptions.Item label="Palavras">
-                    {paymentPreview?.earnings.words}
-                  </Descriptions.Item>
-                  <Descriptions.Item label="Ganhos">
-                    {formatToBrl(paymentPreview?.grandTotalAmount)}
-                  </Descriptions.Item>
-                  {paymentPreview?.bonuses.map((bonus, index) => {
-                    return (
-                      <Descriptions.Item
-                        label={
-                          <Space>
-                            {`Bônus ${index + 1}`}
-                            <Tooltip title={bonus.title}>
-                              <InfoCircleFilled style={{ color: '#09F' }} />
-                            </Tooltip>
-                          </Space>
-                        }
-                        key={index}
-                      >
-                        {formatToBrl(bonus.amount)}
-                      </Descriptions.Item>
-                    );
-                  })}
-                  <Descriptions.Item label="Ganhos de Posts">
-                    {formatToBrl(paymentPreview?.earnings.totalAmount)}
-                  </Descriptions.Item>
-                </Descriptions>
-              </TabPane>
-              <TabPane tab="Dados Bancários" key="bankAccount">
-                <Descriptions
-                  column={1}
-                  labelStyle={{ width: 160 }}
-                  bordered
-                  size="small"
-                >
-                  <Descriptions.Item label="Código do banco">
-                    {paymentPreview?.bankAccount.bankCode}
-                  </Descriptions.Item>
-                  <Descriptions.Item label="Número da conta">
-                    {paymentPreview?.bankAccount.number}
-                  </Descriptions.Item>
-                  <Descriptions.Item label="Dígito da conta">
-                    {paymentPreview?.bankAccount.digit}
-                  </Descriptions.Item>
-                  <Descriptions.Item label="Agência">
-                    {paymentPreview?.bankAccount.agency}
-                  </Descriptions.Item>
-                  <Descriptions.Item label="Tipo de conta">
-                    {paymentPreview?.bankAccount.type === 'CHECKING'
-                      ? 'Conta corrente'
-                      : 'Conta poupança'}
-                  </Descriptions.Item>
-                </Descriptions>
-              </TabPane>
-            </Tabs>
+            <Tabs defaultActiveKey={'payment'} items={items} />
           )}
         </Col>
         <Col xs={24} lg={12}>
