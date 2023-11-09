@@ -24,6 +24,7 @@ import Avatar from 'antd/lib/avatar/avatar';
 import { ColumnProps } from 'antd/lib/table';
 import { Link } from 'react-router-dom';
 import Forbidden from '../components/Forbidden';
+import { parseISO } from 'date-fns';
 
 export default function UserList() {
   const { users, fetchUsers, toggleUserStatus, fetching } = useUsers();
@@ -131,7 +132,7 @@ export default function UserList() {
                     </Tag>
                   </Descriptions.Item>
                   <Descriptions.Item label={'Criação'}>
-                    {format(new Date(user.createdAt), 'dd/MM/yyyy')}
+                    {format(parseISO(user.createdAt), 'dd/MM/yyyy')}
                   </Descriptions.Item>
                   <Descriptions.Item label={'Ações'}>
                     <Space>
@@ -210,7 +211,7 @@ export default function UserList() {
               return new Date(a.createdAt) > new Date(b.createdAt) ? 1 : -1;
             },
             render(createdAt: string) {
-              return format(new Date(createdAt), 'dd/MM/yyyy');
+              return format(parseISO(createdAt), 'dd/MM/yyyy');
             },
           },
           {

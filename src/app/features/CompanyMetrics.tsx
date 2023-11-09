@@ -6,6 +6,7 @@ import format from 'date-fns/format';
 import ptBR from 'date-fns/locale/pt-BR';
 import { ForbiddenError } from 'rodolfohiok-sdk/dist/errors';
 import Forbidden from '../components/Forbidden';
+import { parseISO } from 'date-fns';
 
 export default function CompanyMetrics() {
   const [data, setData] = useState<
@@ -43,7 +44,7 @@ export default function CompanyMetrics() {
     seriesField: 'category',
     tooltip: {
       title(title) {
-        return format(new Date(title), 'MMMM yyyy', { locale: ptBR });
+        return format(parseISO(title), 'MMMM yyyy', { locale: ptBR });
       },
       formatter(data) {
         return {
@@ -59,7 +60,7 @@ export default function CompanyMetrics() {
     xAxis: {
       label: {
         formatter(item) {
-          return format(new Date(item), 'MM/yyyy');
+          return format(parseISO(item), 'MM/yyyy');
         },
       },
     },
